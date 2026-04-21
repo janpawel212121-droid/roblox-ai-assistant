@@ -113,6 +113,43 @@ var App = {
             };
         });
 
+        // Custom Select Dropdown
+        var customSelect = document.getElementById('customModelSelect');
+        var selectSelected = customSelect.querySelector('.select-selected');
+        var selectItems = customSelect.querySelector('.select-items');
+        var realSelectInput = document.getElementById('modelSelect');
+        var titleSpan = document.getElementById('customModelSelectTitle');
+
+        selectSelected.onclick = function(e) {
+            e.stopPropagation();
+            selectItems.classList.toggle('select-hide');
+            this.classList.toggle('select-arrow-active');
+        };
+
+        selectItems.querySelectorAll('div').forEach(function(item) {
+            item.onclick = function(e) {
+                e.stopPropagation();
+                titleSpan.textContent = this.textContent;
+                realSelectInput.value = this.getAttribute('data-value');
+                selectItems.classList.add('select-hide');
+                selectSelected.classList.remove('select-arrow-active');
+                selectItems.querySelectorAll('div').forEach(function(i) { i.classList.remove('same-as-selected'); });
+                this.classList.add('same-as-selected');
+            };
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!customSelect.contains(e.target)) {
+                selectItems.classList.add('select-hide');
+                selectSelected.classList.remove('select-arrow-active');
+            }
+        });
+
+        // Plugin ping monitor
+        setInterval(function() {
+            self.checkPluginStatus();
+        }, 5000);
+
         // Chat
         this.dom.newChatBtn.onclick = function() { self.createNewChat(); };
         this.dom.sendBtn.onclick    = function() { self.send(); };
@@ -375,7 +412,12 @@ var App = {
             fileCtx += 'Jeśli chce USUNĄĆ plik, użyj @ACTION: delete.\n';
         }
 
-        var apiMsgs = [{ role: 'system', content: this.getSysPrompt() + fileCtx }];
+        var sysPrompt = this.getSysPrompt() + fileCtx;
+        if (mode === 'plan') {
+            sysPrompt += '\n\nWAŻNE: Użytkownik wykorzystuje tryb "PLAN". ZAWSZE na samym początku swojej odpowiedzi wygeneruj interaktywną listę kroków w Markdown (Checklista).\nUżyj [-] [ ] Zadanie, [-] [x] Zrobione.\nPrzykładowy start odpowiedzi:\n- [x] Zaplanowano implementację\n- [/] Tworzenie plików widoku\n- [ ] Weryfikacja kodu\nZnacznik [x] używaj dla rzeczy oczywistych, [/] dla punktu, który aktualnie jest najważniejszym focusem tej wiadomości, a [ ] dla reszty planu.\n';
+        }
+
+        var apiMsgs = [{ role: 'system', content: sysPrompt }];
         for (var i = 0; i < this.messages.length; i++) {
             apiMsgs.push({ role: this.messages[i].role, content: this.messages[i].text });
         }
@@ -521,7 +563,35 @@ var App = {
                 '</div>' +
                 '<pre><code>' + self.esc(code.trim()) + '</code></pre>' +
                 '</div>';
+                '</div>';
         });
+        
+        var checklistRegex = /(?:^[ \t]*-[ \t]+\[[xX \/]\][ \t]+.*(?:\r?\n|$))+/gm;
+        html = html.replace(checklistRegex, function(match) {
+            var lines = match.trim().split('\n');
+            var stepsHtml = '';
+            var count = lines.length;
+            for(var i=0; i<lines.length; i++) {
+               var line = lines[i].trim();
+               var stateMatch = line.match(/^[ \t]*-[ \t]+\[(x|X| |\/)\][ \t]+(.*)$/);
+               if(stateMatch) {
+                   var state = stateMatch[1].toLowerCase();
+                   var text = stateMatch[2];
+                   if(state === 'x') {
+                       stepsHtml += '<div class="plan-step checked"><svg><use href="#ic-check"/></svg> ' + text + '</div>';
+                   } else if(state === '/') {
+                       stepsHtml += '<div class="plan-step active"><span class="loader-spinner"></span> ' + text + '</div>';
+                   } else {
+                       stepsHtml += '<div class="plan-step"><div class="empty-checkbox"></div> ' + text + '</div>';
+                   }
+               }
+            }
+            return '<div class="plan-steps-box">' +
+                     '<div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Steps (' + count + ')</div>' +
+                     stepsHtml +
+                   '</div>';
+        });
+
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,212,255,0.08);border:1px solid var(--border);padding:2px 7px;border-radius:4px;font-size:0.8em;font-family:var(--mono);">$1</code>');
         html = html.replace(/\n/g, '<br>');
@@ -553,7 +623,32 @@ var App = {
                 '</div>' +
                 '<pre><code>' + self.esc(code.trim()) + '</code></pre>' +
                 '</div>';
+                '</div>';
         });
+
+        var checklistRegex = /(?:^[ \t]*-[ \t]+\[[xX \/]\][ \t]+.*(?:\r?\n|$))+/gm;
+        html = html.replace(checklistRegex, function(match) {
+            var lines = match.trim().split('\n');
+            var stepsHtml = '';
+            var count = lines.length;
+            for(var i=0; i<lines.length; i++) {
+               var line = lines[i].trim();
+               var stateMatch = line.match(/^[ \t]*-[ \t]+\[(x|X| |\/)\][ \t]+(.*)$/);
+               if(stateMatch) {
+                   var state = stateMatch[1].toLowerCase();
+                   var text = stateMatch[2];
+                   if(state === 'x') {
+                       stepsHtml += '<div class="plan-step checked"><svg><use href="#ic-check"/></svg> ' + text + '</div>';
+                   } else if(state === '/') {
+                       stepsHtml += '<div class="plan-step active"><span class="loader-spinner"></span> ' + text + '</div>';
+                   } else {
+                       stepsHtml += '<div class="plan-step"><div class="empty-checkbox"></div> ' + text + '</div>';
+                   }
+               }
+            }
+            return '<div class="plan-steps-box"><div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Steps (' + count + ')</div>' + stepsHtml + '</div>';
+        });
+
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,212,255,0.08);border:1px solid var(--border);padding:2px 7px;border-radius:4px;font-size:0.8em;font-family:var(--mono);">$1</code>');
         html = html.replace(/\n/g, '<br>');
@@ -596,6 +691,34 @@ var App = {
     scrollDown: function() {
         var c = this.dom.chat;
         requestAnimationFrame(function() { c.scrollTop = c.scrollHeight; });
+    },
+
+    checkPluginStatus: function() {
+        if (!this.sessionToken || !this.userId) return;
+        var code = this.connectCode || '';
+        fetch('/api/status?cc=' + encodeURIComponent(code))
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                var dot = document.querySelector('.status-dot');
+                var txt = document.getElementById('pluginStatusText');
+                if (!dot || !txt) return;
+                if (d.online === true) {
+                    dot.classList.add('connected');
+                    dot.classList.remove('disconnected');
+                    txt.textContent = '🟢 Aktywny (Online)';
+                    txt.style.color = 'var(--green)';
+                } else {
+                    dot.classList.remove('connected');
+                    dot.classList.add('disconnected');
+                    txt.textContent = '🔴 Rozłączony (Czekam...)';
+                    txt.style.color = 'var(--text2)';
+                }
+            }).catch(function(){});
+    },
+
+    toggleDropdown: function(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.toggle('show');
     },
 
     // ==========================================

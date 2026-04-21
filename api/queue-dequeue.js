@@ -49,6 +49,20 @@ exports.handler = async function(event) {
 
         var userId = codeRows[0].user_id;
 
+        // Register heartbeat ping
+        try {
+           await fetch(SUPA_URL + "/rest/v1/settings", {
+               method: "POST",
+               headers: {
+                   "apikey": SUPA_KEY,
+                   "Authorization": "Bearer " + SUPA_KEY,
+                   "Content-Type": "application/json",
+                   "Prefer": "resolution=merge-duplicates"
+               },
+               body: JSON.stringify({ key: "ping_" + userId, value: Date.now().toString() })
+           });
+        } catch(e) {}
+
         // Fetch tasks for this user
         var tasks = await supa(SUPA_URL, SUPA_KEY, "GET",
             "plugin_tasks?user_id=eq." + userId +

@@ -1102,3 +1102,129 @@ body {
     .credits-packages { grid-template-columns: repeat(2, 1fr); }
     .tab { padding: 8px 10px; font-size: 0.72rem; }
 }
+
+/* =====================================================
+   NEW UI: PLUGIN STATUS
+   ===================================================== */
+.plugin-status-section {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 12px;
+}
+.plugin-status-indicator {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(1, 13, 26, 0.7);
+    border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 8px;
+}
+.status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+    flex-shrink: 0;
+}
+.status-dot.connected {
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: pulseGreen 2s infinite;
+}
+@keyframes pulseGreen {
+    0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+}
+.plugin-status-indicator .status-text {
+    font-size: 0.75rem; font-weight: 700; color: var(--text2);
+    letter-spacing: 0.3px;
+}
+
+/* =====================================================
+   NEW UI: CUSTOM SELECT
+   ===================================================== */
+.custom-select-wrapper {
+    position: relative;
+    width: 200px;
+}
+.custom-select {
+    position: relative;
+    font-family: var(--font);
+}
+.select-selected {
+    background: rgba(1, 13, 26, 0.8);
+    border: 1px solid var(--border);
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--cyan2);
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: all 0.2s;
+}
+.select-selected:hover, .select-selected.select-arrow-active {
+    border-color: var(--cyan2);
+    background: rgba(0, 212, 255, 0.05);
+}
+.select-items {
+    position: absolute;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    top: 110%; left: 0; right: 0;
+    z-index: 99;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+}
+.select-hide {
+    display: none;
+}
+.select-items div {
+    color: var(--text2);
+    padding: 10px 14px;
+    font-size: 0.82rem; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.select-items div:hover, .same-as-selected {
+    background: var(--blue-1);
+    color: #fff;
+}
+
+/* =====================================================
+   NEW UI: PLAN STEPS CHECKLIST
+   ===================================================== */
+.plan-steps-box {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-family: var(--font);
+}
+.plan-steps-header {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; color: var(--text3); font-weight: 600;
+    margin-bottom: 12px;
+}
+.plan-steps-header svg { width: 14px; height: 14px; }
+.plan-step {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.85rem; color: var(--text2);
+    margin-bottom: 10px; line-height: 1.4;
+    transition: opacity 0.2s;
+}
+.plan-step:last-child { margin-bottom: 0; }
+.plan-step.checked {
+    opacity: 0.6; text-decoration: line-through; color: var(--text3);
+}
+.plan-step.checked svg { width: 14px; height: 14px; color: var(--green); flex-shrink: 0; margin-top: 2px;}
+.empty-checkbox {
+    width: 14px; height: 14px; border: 1.5px solid var(--text4);
+    border-radius: 3px; flex-shrink: 0; margin-top: 2px;
+}
+.loader-spinner {
+    width: 14px; height: 14px; border: 1.5px solid rgba(0, 212, 255, 0.2);
+    border-top-color: var(--cyan2); border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
