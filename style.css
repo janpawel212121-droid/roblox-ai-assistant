@@ -602,13 +602,23 @@ a { text-decoration:none; }
     overflow:hidden;
 }
 .select-items div {
-    padding:10px 14px; font-size:0.82rem; color:var(--text3);
+    padding:9px 13px; font-size:0.82rem; color:var(--text3);
     cursor:pointer; transition:all 0.12s; border-bottom:1px solid var(--border);
-    white-space:nowrap;
+    white-space:nowrap; display:flex; align-items:center; gap:8px;
 }
 .select-items div:last-child { border-bottom:none; }
 .select-items div:hover { background:var(--bg4); color:var(--text); }
 .select-hide { display:none !important; }
+
+/* Groq model icon */
+.model-icon {
+    width:14px; height:14px; object-fit:contain;
+    border-radius:3px; opacity:0.85; flex-shrink:0;
+}
+.model-icon-sm {
+    width:13px; height:13px; object-fit:contain;
+    border-radius:3px; opacity:0.75; flex-shrink:0;
+}
 
 /* Credits chip — RIGHT side of toolbar */
 .credits-chip {
