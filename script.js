@@ -575,7 +575,7 @@ var App = {
             var parsed = this.parseBotMsg(text);
             div.innerHTML =
                 '<div class="msg-sender">' +
-                    '<svg style="width:15px;height:15px;flex-shrink:0"><use href="#ic-rocket"/></svg>' +
+                    '<img src="ikona.png" alt="" style="width:16px;height:16px;object-fit:contain;flex-shrink:0">' +
                     '<span>Astro</span>' +
                 '</div>' +
                 (parsed.tools ? '<div class="tool-chain">' + parsed.tools + '</div>' : '') +
