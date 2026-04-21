@@ -1,71 +1,70 @@
 /* =====================================================
-   ROBOAI STUDIO — OCEAN THEME
-   Inspired by lemonade.gg — premium dark ocean UI
+   ASTRO STUDIO — LEMONADE THEME
+   Premium dark grey minimalist UI
    ===================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-    /* Ocean Palette */
-    --ocean-1: #010d1a;
-    --ocean-2: #030f20;
-    --ocean-3: #051526;
-    --ocean-4: #071c30;
-    --ocean-5: #0a2540;
-    --ocean-6: #0d2e50;
+    /* Astro Palette */
+    --astro-bg:      #1a1a1a;
+    --astro-bg2:     #252525;
+    --astro-bg3:     #2d2d2d;
+    --astro-bg4:     #353535;
 
-    --bg:  var(--ocean-1);
-    --bg2: var(--ocean-2);
-    --bg3: var(--ocean-3);
-    --bg4: var(--ocean-4);
+    --bg:  var(--astro-bg);
+    --bg2: var(--astro-bg2);
+    --bg3: var(--astro-bg3);
+    --bg4: var(--astro-bg4);
 
     /* Glass */
-    --glass: rgba(5, 21, 38, 0.7);
-    --glass2: rgba(10, 37, 64, 0.5);
-    --glass-border: rgba(14, 165, 233, 0.12);
-    --glass-border2: rgba(14, 165, 233, 0.25);
+    --glass: rgba(37, 37, 37, 0.7);
+    --glass2: rgba(45, 45, 45, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border2: rgba(255, 255, 255, 0.12);
 
     /* Brand */
-    --cyan:  #00d4ff;
-    --cyan2: #0ea5e9;
-    --teal:  #00e5c4;
-    --teal2: #14b8a6;
-    --blue:  #2563eb;
-    --indigo:#4f46e5;
+    --cyan:  #e0e0e0;
+    --cyan2: #ffffff;
+    --teal:  #2e7d32;
+    --teal2: #4caf50;
+    --blue:  #1b5e20;
+    --indigo:#43a047;
 
     /* Glow */
-    --glow-cyan: 0 0 30px rgba(0, 212, 255, 0.2);
-    --glow-teal: 0 0 30px rgba(0, 229, 196, 0.2);
-    --glow-sm:   0 0 14px rgba(0, 212, 255, 0.15);
-    --glow:      0 0 30px rgba(0, 212, 255, 0.18);
+    --glow-cyan: 0 0 30px rgba(255, 255, 255, 0.05);
+    --glow-teal: 0 0 30px rgba(76, 175, 80, 0.15);
+    --glow-sm:   0 0 14px rgba(255, 255, 255, 0.05);
+    --glow:      0 0 20px rgba(255, 255, 255, 0.03);
 
     /* Gradients */
-    --grad-brand: linear-gradient(135deg, var(--cyan), var(--teal));
-    --grad-dark:  linear-gradient(180deg, #030f20, #010d1a);
-    --grad-card:  linear-gradient(145deg, rgba(10,37,64,0.8), rgba(5,21,38,0.9));
+    --grad-brand: linear-gradient(135deg, #4caf50, #2e7d32);
+    --grad-dark:  linear-gradient(180deg, #252525, #1a1a1a);
+    --grad-card:  linear-gradient(145deg, rgba(45, 45, 45, 0.8), rgba(30, 30, 30, 0.9));
 
     /* Text */
-    --text:  #e2f4ff;
-    --text2: #85c1e9;
-    --text3: #4a8ab5;
-    --text4: #2d5f80;
+    --text:  #f0f0f0;
+    --text2: #cccccc;
+    --text3: #999999;
+    --text4: #666666;
 
     /* Status */
-    --green:  #00e676;
-    --red:    #ff4569;
-    --yellow: #ffd166;
-    --purple: #a855f7;
+    --green:  #4caf50;
+    --red:    #f44336;
+    --yellow: #ffeb3b;
+    --purple: #9c27b0;
 
     /* Borders */
-    --border:  rgba(14, 165, 233, 0.1);
-    --border2: rgba(14, 165, 233, 0.2);
-    --border3: rgba(14, 165, 233, 0.35);
+    --border:  rgba(255, 255, 255, 0.05);
+    --border2: rgba(255, 255, 255, 0.1);
+    --border3: rgba(255, 255, 255, 0.15);
 
     /* Sizes */
-    --radius:    14px;
+    --radius:    12px;
     --radius-sm: 8px;
     --radius-xs: 5px;
-    --font: 'Inter', system-ui, sans-serif;
+    /* Font specifically requested by user */
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --mono: 'JetBrains Mono', monospace;
 
     /* Transitions */
@@ -88,73 +87,24 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: rgba(0, 212, 255, 0.2); color: var(--cyan); }
+::selection { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.3); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(14, 165, 233, 0.5); }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
 
 /* =====================================================
-   BG — OCEAN ANIMATION
+   BG — ASTRO / LEMONADE FLAT BG
    ===================================================== */
 .bg-animation {
     position: fixed; inset: 0; z-index: 0;
     pointer-events: none; overflow: hidden;
+    background: var(--bg);
 }
 
-.wave-orb {
-    position: absolute; border-radius: 50%;
-    filter: blur(120px); pointer-events: none;
-}
-.wave-orb-1 {
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
-    top: -200px; right: -150px;
-    animation: orbDrift 25s ease-in-out infinite;
-}
-.wave-orb-2 {
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(0,229,196,0.06) 0%, transparent 70%);
-    bottom: -150px; left: -100px;
-    animation: orbDrift 30s ease-in-out infinite reverse;
-    animation-delay: -8s;
-}
-.wave-orb-3 {
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(79,70,229,0.05) 0%, transparent 70%);
-    top: 40%; left: 35%;
-    animation: orbDrift 20s ease-in-out infinite;
-    animation-delay: -12s;
-}
-.wave-orb-4 {
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 70%);
-    top: 20%; left: 15%;
-    animation: orbDrift 18s ease-in-out infinite;
-    animation-delay: -5s;
-}
-
-/* Horizontal light streak at top */
-.bg-streak {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.3), rgba(0,229,196,0.2), transparent);
-}
-
-@keyframes orbDrift {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33%       { transform: translate(-40px, 30px) scale(1.05); }
-    66%       { transform: translate(30px, -40px) scale(0.95); }
-}
-
-/* Grid overlay */
-.bg-grid {
-    position: absolute; inset: 0;
-    background-image:
-        linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
-    background-size: 40px 40px;
+.wave-orb, .bg-streak, .bg-grid {
+    display: none;
 }
 
 /* =====================================================
@@ -201,17 +151,16 @@ body {
 }
 .auth-logo-icon {
     width: 60px; height: 60px;
-    background: var(--grad-brand);
+    background: transparent;
+    border: 1px solid var(--border);
     border-radius: 18px;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 32px rgba(0,212,255,0.35), 0 0 0 1px rgba(0,212,255,0.2);
+    box-shadow: none;
 }
-.auth-logo-icon svg { width: 30px; height: 30px; color: #fff; }
+.auth-logo-icon svg { width: 30px; height: 30px; color: var(--text); }
 .auth-logo h2 {
     font-weight: 800; font-size: 1.55rem; letter-spacing: -0.5px;
-    background: var(--grad-brand);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text);
 }
 .auth-logo p { color: var(--text3); font-size: 0.82rem; margin-top: 2px; }
 
@@ -266,8 +215,8 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 .form-field input:focus {
-    border-color: var(--cyan2);
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 .form-field input:focus + svg.field-icon,
 .form-field:focus-within svg.field-icon { color: var(--cyan2); }
@@ -290,8 +239,7 @@ body {
 }
 .custom-check svg { width: 10px; height: 10px; color: transparent; transition: color 0.15s; }
 .remember-label input:checked ~ .custom-check {
-    background: var(--grad-brand); border-color: transparent;
-    box-shadow: 0 0 10px rgba(0,212,255,0.3);
+    background: var(--green); border-color: transparent;
 }
 .remember-label input:checked ~ .custom-check svg { color: #fff; }
 
@@ -324,11 +272,7 @@ body {
     position: relative;
 }
 .panel-left::after {
-    content: '';
-    position: absolute; top: 0; right: -1px;
-    width: 1px; height: 100%;
-    background: linear-gradient(180deg, var(--cyan) 0%, transparent 40%, transparent 60%, var(--teal) 100%);
-    opacity: 0.15;
+    display: none;
 }
 
 /* Header / Logo */
@@ -341,13 +285,13 @@ body {
 }
 .logo-icon {
     width: 40px; height: 40px;
-    background: var(--grad-brand);
+    background: transparent;
     border-radius: 11px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(0,212,255,0.3);
+    box-shadow: none;
 }
-.logo-icon svg { width: 20px; height: 20px; color: #fff; }
+.logo-icon svg { width: 22px; height: 22px; color: var(--text); }
 .logo-text h1 { font-size: 1.05rem; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
 .logo-text .version {
     font-size: 0.6rem; color: var(--text4);
