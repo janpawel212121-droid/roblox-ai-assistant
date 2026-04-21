@@ -2,6 +2,7 @@
    ASTRO — Lemonade Layout  |  SF Pro Display  |  Dark
    ===================================================== */
 
+@import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
@@ -33,9 +34,8 @@
     --radius-sm: 8px;
     --radius-xs: 5px;
 
-    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-            "Helvetica Neue", Arial, sans-serif;
-    --mono: 'JetBrains Mono', "SF Mono", "Fira Code", Consolas, monospace;
+    --font: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
     --ease: cubic-bezier(0.4,0,0.2,1);
 
     /* Layout */
@@ -49,11 +49,17 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { font-size: 15px; }
 body {
-    font-family: var(--font);
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     height: 100vh; overflow: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+}
+/* Force SF Pro everywhere */
+input, button, textarea, select, code, pre {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 }
 ::selection { background: rgba(74,222,128,0.2); }
 ::-webkit-scrollbar { width:3px; height:3px; }
