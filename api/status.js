@@ -56,7 +56,7 @@ exports.handler = async function(event) {
         }
 
         var lastPing = parseInt(settingsRows[0].value, 10);
-        var isOnline = (Date.now() - lastPing) < 15000; // 15 sekund marginesu pingu
+        var isOnline = (Date.now() - lastPing) < 30000; // 30 sekund marginesu (plugin pinguje co 2s)
 
         return {
             statusCode: 200, headers,

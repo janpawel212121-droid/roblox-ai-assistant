@@ -49,17 +49,17 @@ exports.handler = async function(event) {
 
         var userId = codeRows[0].user_id;
 
-        // Register heartbeat ping
+        // Register heartbeat ping (upsert)
         try {
-           await fetch(SUPA_URL + "/rest/v1/settings", {
+           await fetch(SUPA_URL + "/rest/v1/settings?on_conflict=key", {
                method: "POST",
                headers: {
                    "apikey": SUPA_KEY,
                    "Authorization": "Bearer " + SUPA_KEY,
                    "Content-Type": "application/json",
-                   "Prefer": "resolution=merge-duplicates"
+                   "Prefer": "resolution=merge-duplicates,return=minimal"
                },
-               body: JSON.stringify({ key: "ping_" + userId, value: Date.now().toString() })
+               body: JSON.stringify({ key: "ping_" + userId, value: String(Date.now()) })
            });
         } catch(e) {}
 
