@@ -239,9 +239,10 @@ var App = {
                 self.hideAuth();
                 self.consolePrint('Zalogowano jako ' + d.username, 'success');
             } else {
-            self.sessionToken = '';
-            localStorage.removeItem('astro_session');
-            self.showAuth();
+                self.sessionToken = '';
+                localStorage.removeItem('astro_session');
+                self.showAuth();
+            }
         })
         .catch(function() {
             self.sessionToken = '';
