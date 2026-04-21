@@ -49,8 +49,9 @@ exports.handler = async function(event) {
         var userId = codeRows[0].user_id;
 
         // Register heartbeat ping (upsert)
+        var pingStatus = "ok";
         try {
-           await fetch(SUPA_URL + "/rest/v1/settings?on_conflict=key", {
+           var pingRes = await fetch(SUPA_URL + "/rest/v1/settings?on_conflict=key", {
                method: "POST",
                headers: {
                    "apikey": SUPA_KEY,
@@ -60,7 +61,12 @@ exports.handler = async function(event) {
                },
                body: JSON.stringify({ key: "ping_" + userId, value: String(Date.now()) })
            });
-        } catch(e) {}
+           if (!pingRes.ok) {
+               pingStatus = "error_" + pingRes.status + "_" + await pingRes.text();
+           }
+        } catch(e) {
+           pingStatus = "exception_" + e.message;
+        }
 
         // Fetch tasks for this user
         var tasks = await supa(SUPA_URL, SUPA_KEY, "GET",
@@ -92,7 +98,7 @@ exports.handler = async function(event) {
 
         return {
             statusCode: 200, headers,
-            body: JSON.stringify({ tasks: mapped })
+            body: JSON.stringify({ tasks: mapped, pingStatus: pingStatus })
         };
 
     } catch (err) {

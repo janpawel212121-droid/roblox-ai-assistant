@@ -2,7 +2,7 @@
 --  Astro Plugin v8  |  Lemonade UI  |  fleetyai.netlify.app
 -- ============================================================
 
-local SERVER     = "https://fleetyai.netlify.app"
+local SERVER     = "https://astroaj.vercel.app"
 local POLL_DELAY = 2
 local VERSION    = "v8"
 
