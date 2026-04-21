@@ -147,10 +147,10 @@ var App = {
             }
         });
 
-        // Plugin ping monitor
+        // Plugin ping monitor — every 3s
         setInterval(function() {
             self.checkPluginStatus();
-        }, 5000);
+        }, 3000);
 
         // Chat
         this.dom.newChatBtn.onclick = function() { self.createNewChat(); };
@@ -163,6 +163,40 @@ var App = {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 140) + 'px';
         };
+
+        // Image upload
+        var imgInput = document.getElementById('imageInput');
+        var imgPreviewBar = document.getElementById('imgPreviewBar');
+        var imgPreviewThumb = document.getElementById('imgPreviewThumb');
+        var imgRemoveBtn = document.getElementById('imgRemoveBtn');
+        var attachBtn = document.getElementById('attachBtn');
+        if (imgInput) {
+            imgInput.onchange = function() {
+                var file = this.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    self._attachedImage = e.target.result; // full base64 data URL
+                    self._attachedImagePreview = e.target.result;
+                    if (imgPreviewThumb) imgPreviewThumb.src = e.target.result;
+                    if (imgPreviewBar) imgPreviewBar.style.display = 'flex';
+                    if (attachBtn) attachBtn.classList.add('has-image');
+                    // Enable send even without text
+                    self.dom.sendBtn.disabled = self.generating;
+                };
+                reader.readAsDataURL(file);
+            };
+        }
+        if (imgRemoveBtn) {
+            imgRemoveBtn.onclick = function() {
+                self._attachedImage = null;
+                self._attachedImagePreview = null;
+                if (imgInput) imgInput.value = '';
+                if (imgPreviewBar) imgPreviewBar.style.display = 'none';
+                if (attachBtn) attachBtn.classList.remove('has-image');
+                self.dom.sendBtn.disabled = !self.dom.msgInput.value.trim();
+            };
+        }
 
         // Suggestion chips
         document.querySelectorAll('.chip').forEach(function(b) {
@@ -424,13 +458,37 @@ var App = {
             apiMsgs.push({ role: this.messages[i].role, content: this.messages[i].text });
         }
 
+        // Include image in last user message if attached
+        var imageBase64 = this._attachedImage || null;
+        var usedModel = this.dom.modelSelect.value;
+        if (imageBase64) {
+            // Switch to vision-capable model
+            usedModel = 'meta-llama/llama-4-scout-17b-16e-instruct';
+            // Replace last user message with multimodal content
+            var lastMsg = apiMsgs[apiMsgs.length - 1];
+            if (lastMsg && lastMsg.role === 'user') {
+                lastMsg.content = [
+                    { type: 'text', text: lastMsg.content },
+                    { type: 'image_url', image_url: { url: imageBase64 } }
+                ];
+            }
+            // Clear attachment after building message
+            this._attachedImage = null;
+            var imgPreviewBar = document.getElementById('imgPreviewBar');
+            var attachBtn = document.getElementById('attachBtn');
+            var imgInput = document.getElementById('imageInput');
+            if (imgPreviewBar) imgPreviewBar.style.display = 'none';
+            if (attachBtn) attachBtn.classList.remove('has-image');
+            if (imgInput) imgInput.value = '';
+        }
+
         fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 sessionToken: this.sessionToken,
                 messages:     apiMsgs,
-                model:        this.dom.modelSelect.value,
+                model:        usedModel,
                 mode:         mode
             })
         })
@@ -510,22 +568,28 @@ var App = {
 
     addMsg: function(role, text) {
         this.messages.push({ role: role === 'bot' ? 'assistant' : 'user', text: text });
-        var div     = document.createElement('div');
+        var div = document.createElement('div');
         div.className = 'msg ' + role;
-        var content   = role === 'bot' ? this.parseBotMsg(text) : this.esc(text);
 
         if (role === 'bot') {
+            var parsed = this.parseBotMsg(text);
             div.innerHTML =
-                '<div class="msg-avatar bot">' +
-                    '<svg style="width:16px;height:16px;color:#fff;"><use href="#ic-robot"/></svg>' +
+                '<div class="msg-sender">' +
+                    '<svg style="width:14px;height:14px;color:var(--green);flex-shrink:0"><use href="#ic-sparkles"/></svg>' +
+                    '<span>Astro</span>' +
                 '</div>' +
-                '<div class="msg-body"><div class="msg-bubble">' + content + '</div></div>';
+                (parsed.tools ? '<div class="tool-chain">' + parsed.tools + '</div>' : '') +
+                (parsed.text ? '<div class="msg-text">' + parsed.text + '</div>' : '');
         } else {
+            var imgHtml = '';
+            if (this._attachedImagePreview) {
+                imgHtml = '<img src="' + this._attachedImagePreview + '" class="msg-img-preview" alt="załącznik">';
+                this._attachedImagePreview = null;
+            }
             div.innerHTML =
-                '<div class="msg-avatar">' +
-                    '<svg style="width:16px;height:16px;color:var(--text3);"><use href="#ic-user"/></svg>' +
-                '</div>' +
-                '<div class="msg-body"><div class="msg-bubble">' + content + '</div></div>';
+                '<div class="msg-user-row">' +
+                    '<div class="msg-user-bubble">' + imgHtml + this.esc(text) + '</div>' +
+                '</div>';
         }
 
         this.dom.messages.appendChild(div);
@@ -535,68 +599,77 @@ var App = {
 
     parseBotMsg: function(text) {
         var self = this;
-        var html = text;
-        html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
+        var tools = '';
+        var remaining = text;
+
+        // Extract and process code blocks → show as tool pills NOT raw code
+        remaining = remaining.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
             var info = self.parseInfo(code);
             self.addFile(info.name, code, info.type, info.parent);
             self.saveChats();
-            var actionBadge = '';
-            if (info.action === 'update') actionBadge = ' <span style="color:var(--yellow);font-size:0.63rem;font-weight:700;">UPDATE</span>';
-            else if (info.action === 'delete') actionBadge = ' <span style="color:var(--red);font-size:0.63rem;font-weight:700;">DELETE</span>';
-            var copyId = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-            return '<div class="code-wrap">' +
-                '<div class="code-top">' +
-                    '<span class="code-lang">' +
-                        '<svg style="width:12px;height:12px;"><use href="#ic-file-code"/></svg> ' +
-                        self.esc(info.name) +
-                        '<span class="code-lang-info">' + info.type + ' → ' + info.parent + '</span>' +
-                        actionBadge +
-                    '</span>' +
-                    '<div class="code-btns">' +
-                        '<button class="code-btn" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '">' +
-                            '<svg><use href="#ic-copy"/></svg> Kopiuj' +
-                        '</button>' +
-                        '<button class="code-btn" onclick="App.insertCode(this)" data-name="' + self.escAttr(info.name) + '" data-code="' + self.escAttr(code.trim()) + '">' +
-                            '<svg><use href="#ic-bolt"/></svg> Wyślij' +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-                '<pre><code>' + self.esc(code.trim()) + '</code></pre>' +
-                '</div>';
-                '</div>';
-        });
-        
-        var checklistRegex = /(?:^[ \t]*-[ \t]+\[[xX \/]\][ \t]+.*(?:\r?\n|$))+/gm;
-        html = html.replace(checklistRegex, function(match) {
-            var lines = match.trim().split('\n');
-            var stepsHtml = '';
-            var count = lines.length;
-            for(var i=0; i<lines.length; i++) {
-               var line = lines[i].trim();
-               var stateMatch = line.match(/^[ \t]*-[ \t]+\[(x|X| |\/)\][ \t]+(.*)$/);
-               if(stateMatch) {
-                   var state = stateMatch[1].toLowerCase();
-                   var text = stateMatch[2];
-                   if(state === 'x') {
-                       stepsHtml += '<div class="plan-step checked"><svg><use href="#ic-check"/></svg> ' + text + '</div>';
-                   } else if(state === '/') {
-                       stepsHtml += '<div class="plan-step active"><span class="loader-spinner"></span> ' + text + '</div>';
-                   } else {
-                       stepsHtml += '<div class="plan-step"><div class="empty-checkbox"></div> ' + text + '</div>';
-                   }
-               }
+
+            var actionIcon = '#ic-file-code';
+            var actionLabel = 'Utworzono';
+            var actionClass = 'created';
+            if (info.action === 'update') { actionLabel = 'Zaktualizowano'; actionClass = 'updated'; }
+            if (info.action === 'delete') { actionLabel = 'Usunięto'; actionClass = 'deleted'; actionIcon = '#ic-trash'; }
+
+            // Send to plugin if auto-insert
+            if (self.dom.autoInsert && self.dom.autoInsert.checked) {
+                self.sendToPlugin([{ code: code }]);
             }
-            return '<div class="plan-steps-box">' +
-                     '<div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Steps (' + count + ')</div>' +
-                     stepsHtml +
-                   '</div>';
+
+            tools +=
+                '<div class="tool-pill ' + actionClass + '">' +
+                    '<svg><use href="' + actionIcon + '"/></svg>' +
+                    '<span>' + actionLabel + ': <code>' + self.esc(info.name) + '</code></span>' +
+                    '<span class="tool-pill-meta">' + info.type + ' → ' + info.parent + '</span>' +
+                    '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Kopiuj kod">' +
+                        '<svg><use href="#ic-copy"/></svg>' +
+                    '</button>' +
+                '</div>';
+            return ''; // remove from text
         });
 
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,212,255,0.08);border:1px solid var(--border);padding:2px 7px;border-radius:4px;font-size:0.8em;font-family:var(--mono);">$1</code>');
-        html = html.replace(/\n/g, '<br>');
+        // Checklist items → plan steps
+        var checklistRegex = /(?:^[ \t]*-[ \t]+\[[xX \/]\][ \t]+.*(?:\r?\n|$))+/gm;
+        var planHtml = '';
+        remaining = remaining.replace(checklistRegex, function(match) {
+            var lines = match.trim().split('\n');
+            var count = lines.length;
+            var stepsHtml = '';
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                var m = line.match(/^[ \t]*-[ \t]+\[(x|X| |\/)\][ \t]+(.*)$/);
+                if (m) {
+                    var state = m[1].toLowerCase(), label = m[2];
+                    if (state === 'x') {
+                        stepsHtml += '<div class="plan-step checked"><svg><use href="#ic-check"/></svg> ' + label + '</div>';
+                    } else if (state === '/') {
+                        stepsHtml += '<div class="plan-step active"><span class="loader-spinner"></span> ' + label + '</div>';
+                    } else {
+                        stepsHtml += '<div class="plan-step"><div class="empty-checkbox"></div> ' + label + '</div>';
+                    }
+                }
+            }
+            planHtml += '<div class="plan-steps-box"><div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Plan (' + count + ' kroków)</div>' + stepsHtml + '</div>';
+            return '';
+        });
+
+        // Format remaining text
+        remaining = remaining
+            .replace(/^#{1,3}\s+(.+)$/gm, '<div class="msg-heading">$1</div>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
+            .replace(/^[\s]*[-•]\s+(.+)$/gm, '<div class="msg-bullet"><span class="bullet-dot"></span>$1</div>')
+            .replace(/\n{2,}/g, '<div class="msg-spacer"></div>')
+            .replace(/\n/g, '<br>')
+            .trim();
+
+        // Combine: plan steps (if any) + tool pills + text
+        var finalText = planHtml + remaining;
         this.renderTree();
-        return html;
+        return { tools: tools, text: finalText };
     },
 
     parseBotMsgSilently: function(text) {
@@ -695,11 +768,25 @@ var App = {
 
     checkPluginStatus: function() {
         if (!this.sessionToken || !this.userId) return;
+        var self = this;
         var code = this.connectCode || '';
+        if (!code) return;
         fetch('/api/status?cc=' + encodeURIComponent(code))
             .then(function(r) { return r.json(); })
             .then(function(d) {
                 var connected = d.online === true;
+                var wasConnected = self._pluginConnected;
+                self._pluginConnected = connected;
+
+                // Log changes
+                if (connected !== wasConnected) {
+                    if (connected) {
+                        self.consolePrint('Plugin połączony ✓', 'success');
+                    } else {
+                        self.consolePrint('Plugin rozłączony', 'warn');
+                    }
+                }
+
                 document.querySelectorAll('.status-dot').forEach(function(dot) {
                     dot.classList.toggle('connected', connected);
                     dot.classList.toggle('disconnected', !connected);
@@ -709,19 +796,18 @@ var App = {
                 var statusLabel  = document.getElementById('pluginStatusText');
                 var statusLabel2 = document.getElementById('pluginStatusText2');
                 var topLabel     = document.getElementById('topPluginLabel');
-                var sideLabel    = document.querySelector('.side-plugin-status-label');
                 if (connected) {
                     if (statusLabel)  statusLabel.textContent  = 'Plugin połączony';
                     if (statusLabel2) statusLabel2.textContent = 'Plugin połączony';
                     if (topLabel)     topLabel.textContent     = 'Plugin połączony';
-                    if (sideLabel)    sideLabel.textContent    = 'Plugin połączony';
                 } else {
                     if (statusLabel)  statusLabel.textContent  = 'Offline';
                     if (statusLabel2) statusLabel2.textContent = 'Rozłączony (Czekam...)';
                     if (topLabel)     topLabel.textContent     = 'Offline';
-                    if (sideLabel)    sideLabel.textContent    = 'Offline';
                 }
-            }).catch(function(){});
+            }).catch(function(e) {
+                self.consolePrint('Status check error: ' + e.message, 'error');
+            });
     },
 
     toggleDropdown: function(id) {

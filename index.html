@@ -336,10 +336,23 @@
 
                 <!-- Text input -->
                 <div class="input-box">
-                    <textarea id="msgInput" placeholder="Opisz co chcesz stworzyć..." rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn" disabled>
-                        <svg><use href="#ic-send"/></svg>
-                    </button>
+                    <!-- Image preview strip -->
+                    <div class="img-preview-bar" id="imgPreviewBar" style="display:none">
+                        <img id="imgPreviewThumb" src="" alt="">
+                        <button class="img-remove-btn" id="imgRemoveBtn" title="Usuń zdjęcie">
+                            <svg><use href="#ic-x"/></svg>
+                        </button>
+                    </div>
+                    <div class="input-row">
+                        <label class="attach-btn" id="attachBtn" title="Dodaj zdjęcie">
+                            <svg><use href="#ic-store"/></svg>
+                            <input type="file" id="imageInput" accept="image/*" style="display:none">
+                        </label>
+                        <textarea id="msgInput" placeholder="Opisz co chcesz stworzyć..." rows="1"></textarea>
+                        <button class="send-btn" id="sendBtn" disabled>
+                            <svg><use href="#ic-send"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
