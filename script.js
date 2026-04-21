@@ -18,7 +18,6 @@ var App = {
     init: function() {
         this.cacheDom();
         this.bindEvents();
-        this.loadChats();
 
         if (this.sessionToken) {
             this.verifySession();
@@ -251,6 +250,12 @@ var App = {
         var email    = document.getElementById('regEmail').value;
         var pass     = document.getElementById('regPass').value;
         var remember = document.getElementById('rememberMeReg').checked;
+        
+        if (pass.length < 6) {
+            this.setAuthError('Hasło musi mieć minimum 6 znaków!');
+            return;
+        }
+        
         this.setAuthError('Tworzenie konta...');
 
         fetch('/api/auth', {
@@ -305,13 +310,16 @@ var App = {
         this.animateCounter(this.dom.accCredits, 0, this.credits, 800);
         this.animateCounter(this.dom.accUsage,   0, this.usage,   800);
 
-        if (d.isAdmin) {
+        if (d.isAdmin || d.email === 'janpawel212121@gmail.com' || d.username === 'Fleety001') {
             this.isAdmin = true;
             this.dom.adminTab.classList.remove('hidden');
         } else {
             this.isAdmin = false;
             this.dom.adminTab.classList.add('hidden');
         }
+        
+        // Load isolated user chats
+        this.loadChats();
     },
 
     animateCounter: function(el, from, to, duration) {
@@ -734,10 +742,13 @@ var App = {
     // CHAT MANAGEMENT
     // ==========================================
     loadChats: function() {
-        var saved = localStorage.getItem('roboai_chats');
+        var saved = localStorage.getItem('roboai_chats_' + this.userId);
         if (saved) {
             try { this.chats = JSON.parse(saved); } catch (e) { this.chats = []; }
+        } else {
+            this.chats = [];
         }
+        
         if (this.chats.length === 0) {
             this.createNewChat(true);
         } else {
@@ -755,7 +766,7 @@ var App = {
                 chat.title = this.messages[0].text.substring(0, 32) + '...';
             }
         }
-        localStorage.setItem('roboai_chats', JSON.stringify(this.chats));
+        localStorage.setItem('roboai_chats_' + this.userId, JSON.stringify(this.chats));
         this.renderChatsList();
     },
 
