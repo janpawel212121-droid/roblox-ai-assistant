@@ -1,5 +1,5 @@
 var App = {
-    sessionToken: localStorage.getItem('roboai_session') || '',
+    sessionToken: localStorage.getItem('astro_session') || '',
     userId: '',
     username: '',
     connectCode: '',
@@ -45,7 +45,6 @@ var App = {
             accEmail:   document.getElementById('accEmail'),
             accCode:    document.getElementById('accCode'),
             accCredits: document.getElementById('accCredits'),
-            accUsage:   document.getElementById('accUsage'),
 
             consoleOutput: document.getElementById('consoleOutput'),
             fileTree:      document.getElementById('fileTree'),
@@ -71,7 +70,8 @@ var App = {
             editorCode:     document.getElementById('editorCode'),
             editorFileNameText: null,
 
-            notifs: document.getElementById('notifs')
+            notifs: document.getElementById('notifs'),
+            topUsername: document.getElementById('topUsername')
         };
     },
 
@@ -99,18 +99,20 @@ var App = {
         this.dom.regForm.onsubmit   = function(e) { e.preventDefault(); self.doRegister(); };
         document.getElementById('logoutBtn').onclick = function() { self.doLogout(); };
 
-        // Nav tabs
-        document.querySelectorAll('.tab').forEach(function(t) {
-            t.onclick = function() {
-                document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
-                t.classList.add('active');
-                var target = t.getAttribute('data-target');
-                document.querySelectorAll('.view-container').forEach(function(v) { v.classList.add('hidden'); });
-                document.getElementById(target).classList.remove('hidden');
-
-                if (target === 'viewHistory') self.loadHistory();
-                if (target === 'viewAdmin')   self.adminLoadApiKey();
-            };
+        // Nav tabs — top tabs + rail buttons both trigger view switch
+        function switchView(target, clickedBtn) {
+            document.querySelectorAll('.top-tab, .rail-btn[data-target]').forEach(function(x) {
+                if (x.getAttribute('data-target') === target) x.classList.add('active');
+                else x.classList.remove('active');
+            });
+            document.querySelectorAll('.view-container').forEach(function(v) { v.classList.add('hidden'); });
+            var el = document.getElementById(target);
+            if (el) el.classList.remove('hidden');
+            if (target === 'viewHistory') self.loadHistory();
+            if (target === 'viewAdmin')   self.adminLoadApiKey();
+        }
+        document.querySelectorAll('.top-tab, .rail-btn[data-target]').forEach(function(t) {
+            t.onclick = function() { switchView(t.getAttribute('data-target'), t); };
         });
 
         // Custom Select Dropdown
@@ -237,13 +239,13 @@ var App = {
                 self.hideAuth();
                 self.consolePrint('Zalogowano jako ' + d.username, 'success');
             } else {
-                self.sessionToken = '';
-                localStorage.removeItem('roboai_session');
-                self.showAuth();
-            }
-        }).catch(function() {
             self.sessionToken = '';
-            localStorage.removeItem('roboai_session');
+            localStorage.removeItem('astro_session');
+            self.showAuth();
+        })
+        .catch(function() {
+            self.sessionToken = '';
+            localStorage.removeItem('astro_session');
             self.showAuth();
         });
     },
@@ -325,8 +327,8 @@ var App = {
 
     doLogout: function() {
         this.sessionToken = '';
-        localStorage.removeItem('roboai_session');
-        sessionStorage.removeItem('roboai_session_temp');
+        localStorage.removeItem('astro_session');
+        sessionStorage.removeItem('astro_session_temp');
         window.location.reload();
     },
 
@@ -339,14 +341,13 @@ var App = {
 
         this.dom.uiUsername.textContent    = d.username;
         this.dom.uiConnectCode.textContent = d.connectCode;
+        if (this.dom.topUsername) this.dom.topUsername.textContent = d.username;
         this.animateCounter(this.dom.uiCredits, 0, this.credits, 600);
-        this.animateCounter(this.dom.uiUsage,   0, this.usage,   600);
 
         this.dom.accUser.textContent    = d.username;
         this.dom.accEmail.textContent   = d.email || d.userId;
         this.dom.accCode.textContent    = d.connectCode;
         this.animateCounter(this.dom.accCredits, 0, this.credits, 800);
-        this.animateCounter(this.dom.accUsage,   0, this.usage,   800);
 
         if (d.isAdmin || d.email === 'janpawel212121@gmail.com' || d.username === 'Fleety001') {
             this.isAdmin = true;
@@ -355,7 +356,7 @@ var App = {
             this.isAdmin = false;
             this.dom.adminTab.classList.add('hidden');
         }
-        
+
         // Load isolated user chats
         this.loadChats();
     },
@@ -472,9 +473,7 @@ var App = {
 
     updateCreditsDisplay: function() {
         this.dom.uiCredits.textContent  = this.credits;
-        this.dom.uiUsage.textContent    = this.usage;
         this.dom.accCredits.textContent = this.credits;
-        this.dom.accUsage.textContent   = this.usage;
     },
 
     getSysPrompt: function() {
@@ -699,19 +698,27 @@ var App = {
         fetch('/api/status?cc=' + encodeURIComponent(code))
             .then(function(r) { return r.json(); })
             .then(function(d) {
-                var dot = document.querySelector('.status-dot');
-                var txt = document.getElementById('pluginStatusText');
-                if (!dot || !txt) return;
-                if (d.online === true) {
-                    dot.classList.add('connected');
-                    dot.classList.remove('disconnected');
-                    txt.textContent = '🟢 Aktywny (Online)';
-                    txt.style.color = 'var(--green)';
+                var connected = d.online === true;
+                document.querySelectorAll('.status-dot').forEach(function(dot) {
+                    dot.classList.toggle('connected', connected);
+                    dot.classList.toggle('disconnected', !connected);
+                });
+                var railDot = document.getElementById('pluginDot');
+                if (railDot) railDot.classList.toggle('connected', connected);
+                var statusLabel  = document.getElementById('pluginStatusText');
+                var statusLabel2 = document.getElementById('pluginStatusText2');
+                var topLabel     = document.getElementById('topPluginLabel');
+                var sideLabel    = document.querySelector('.side-plugin-status-label');
+                if (connected) {
+                    if (statusLabel)  statusLabel.textContent  = 'Plugin połączony';
+                    if (statusLabel2) statusLabel2.textContent = 'Plugin połączony';
+                    if (topLabel)     topLabel.textContent     = 'Plugin połączony';
+                    if (sideLabel)    sideLabel.textContent    = 'Plugin połączony';
                 } else {
-                    dot.classList.remove('connected');
-                    dot.classList.add('disconnected');
-                    txt.textContent = '🔴 Rozłączony (Czekam...)';
-                    txt.style.color = 'var(--text2)';
+                    if (statusLabel)  statusLabel.textContent  = 'Offline';
+                    if (statusLabel2) statusLabel2.textContent = 'Rozłączony (Czekam...)';
+                    if (topLabel)     topLabel.textContent     = 'Offline';
+                    if (sideLabel)    sideLabel.textContent    = 'Offline';
                 }
             }).catch(function(){});
     },

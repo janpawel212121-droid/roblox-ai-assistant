@@ -3,767 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astro — Twój asystent AI do Roblox</title>
-    <meta name="description" content="Astro — zaawansowany asystent AI do tworzenia gier, systemów i UI w Roblox Studio.">
+    <title>Astro — AI Asystent do Roblox</title>
+    <meta name="description" content="Astro — zaawansowany asystent AI do tworzenia gier w Roblox Studio.">
     <link rel="stylesheet" href="style.css">
 
-    <!-- SVG sprite defs — all icons inline, no Font Awesome -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
         <defs>
-            <!-- waves / logo -->
-            <symbol id="ic-waves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12s3-4 7-4 7 4 7 4 3-4 7-4"/>
-                <path d="M2 17s3-4 7-4 7 4 7 4 3-4 7-4"/>
-                <path d="M2 7s3-4 7-4 7 4 7 4 3-4 7-4"/>
-            </symbol>
-            <!-- user -->
-            <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-            </symbol>
-            <!-- lock -->
-            <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </symbol>
-            <!-- mail -->
-            <symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="16" x="2" y="4" rx="2"/>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </symbol>
-            <!-- login -->
-            <symbol id="ic-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                <polyline points="10 17 15 12 10 7"/>
-                <line x1="15" y1="12" x2="3" y2="12"/>
-            </symbol>
-            <!-- user-plus -->
-            <symbol id="ic-user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <line x1="19" y1="8" x2="19" y2="14"/>
-                <line x1="22" y1="11" x2="16" y2="11"/>
-            </symbol>
-            <!-- check -->
-            <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-            </symbol>
-            <!-- x / close -->
-            <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-            </symbol>
-            <!-- alert circle -->
-            <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </symbol>
-            <!-- plus -->
-            <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-            </symbol>
-            <!-- message -->
-            <symbol id="ic-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </symbol>
-            <!-- code -->
-            <symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6"/>
-                <polyline points="8 6 2 12 8 18"/>
-            </symbol>
-            <!-- account / circle-user -->
-            <symbol id="ic-account" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <circle cx="12" cy="10" r="3"/>
-                <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
-            </symbol>
-            <!-- history / clock -->
-            <symbol id="ic-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 3v5h5"/>
-                <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/>
-                <polyline points="12 7 12 12 15 15"/>
-            </symbol>
-            <!-- shield -->
-            <symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </symbol>
-            <!-- logout -->
-            <symbol id="ic-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-            </symbol>
-            <!-- coins -->
-            <symbol id="ic-coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="8" cy="8" r="6"/>
-                <path d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
-                <path d="M7 6h1v4"/>
-                <path d="m16.71 13.88.7.71-2.82 2.82"/>
-            </symbol>
-            <!-- bar-chart -->
-            <symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="20" x2="18" y2="10"/>
-                <line x1="12" y1="20" x2="12" y2="4"/>
-                <line x1="6" y1="20" x2="6" y2="14"/>
-            </symbol>
-            <!-- bolt / lightning -->
-            <symbol id="ic-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-            </symbol>
-            <!-- brain -->
-            <symbol id="ic-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
-                <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
-            </symbol>
-            <!-- sparkles -->
-            <symbol id="ic-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-                <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
-            </symbol>
-            <!-- fire -->
-            <symbol id="ic-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-            </symbol>
-            <!-- store / shop -->
-            <symbol id="ic-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
-                <path d="M2 7h20"/>
-                <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>
-            </symbol>
-            <!-- robot -->
-            <symbol id="ic-robot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="18" height="10" x="3" y="11" rx="2"/>
-                <circle cx="12" cy="5" r="2"/>
-                <path d="M12 7v4"/>
-                <line x1="8" y1="16" x2="8" y2="16"/>
-                <line x1="16" y1="16" x2="16" y2="16"/>
-            </symbol>
-            <!-- send / arrow-up -->
-            <symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="19" x2="12" y2="5"/>
-                <polyline points="5 12 12 5 19 12"/>
-            </symbol>
-            <!-- copy -->
-            <symbol id="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-            </symbol>
-            <!-- trash -->
-            <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </symbol>
-            <!-- terminal -->
-            <symbol id="ic-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="4 17 10 11 4 5"/>
-                <line x1="12" y1="19" x2="20" y2="19"/>
-            </symbol>
-            <!-- folder-tree -->
-            <symbol id="ic-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>
-            </symbol>
-            <!-- file-code -->
-            <symbol id="ic-file-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
-                <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-                <path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/>
-            </symbol>
-            <!-- plug / connect -->
-            <symbol id="ic-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22v-5"/>
-                <path d="M9 8V2"/><path d="M15 8V2"/>
-                <path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>
-            </symbol>
-            <!-- server -->
-            <symbol id="ic-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/>
-                <rect width="20" height="8" x="2" y="14" rx="2" ry="2"/>
-                <line x1="6" y1="6" x2="6.01" y2="6"/>
-                <line x1="6" y1="18" x2="6.01" y2="18"/>
-            </symbol>
-            <!-- database -->
-            <symbol id="ic-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
-                <path d="M3 12A9 3 0 0 0 21 12"/>
-            </symbol>
-            <!-- save -->
-            <symbol id="ic-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                <polyline points="17 21 17 13 7 13 7 21"/>
-                <polyline points="7 3 7 8 15 8"/>
-            </symbol>
-            <!-- key -->
-            <symbol id="ic-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="7.5" cy="15.5" r="5.5"/>
-                <path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>
-            </symbol>
-            <!-- eye -->
-            <symbol id="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-            </symbol>
-            <!-- info -->
-            <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 16v-4"/><path d="M12 8h.01"/>
-            </symbol>
-            <!-- display -->
-            <symbol id="ic-display" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="14" x="2" y="3" rx="2"/>
-                <path d="M8 21h8"/><path d="M12 17v4"/>
-            </symbol>
-            <!-- box -->
-            <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                <path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
-            </symbol>
-            <!-- inbox / empty -->
-            <symbol id="ic-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
-                <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-            </symbol>
-            <!-- warn triangle -->
-            <symbol id="ic-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                <path d="M12 9v4"/><path d="M12 17h.01"/>
-            </symbol>
+            <symbol id="ic-waves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-4 7-4 7 4 7 4 3-4 7-4"/><path d="M2 17s3-4 7-4 7 4 7 4 3-4 7-4"/><path d="M2 7s3-4 7-4 7 4 7 4 3-4 7-4"/></symbol>
+            <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+            <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+            <symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+            <symbol id="ic-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></symbol>
+            <symbol id="ic-user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></symbol>
+            <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+            <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+            <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+            <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+            <symbol id="ic-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+            <symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+            <symbol id="ic-account" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></symbol>
+            <symbol id="ic-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><polyline points="12 7 12 12 15 15"/></symbol>
+            <symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+            <symbol id="ic-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+            <symbol id="ic-coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></symbol>
+            <symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+            <symbol id="ic-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+            <symbol id="ic-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></symbol>
+            <symbol id="ic-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></symbol>
+            <symbol id="ic-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+            <symbol id="ic-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></symbol>
+            <symbol id="ic-robot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="10" x="3" y="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></symbol>
+            <symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+            <symbol id="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+            <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+            <symbol id="ic-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+            <symbol id="ic-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+            <symbol id="ic-file-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/></symbol>
+            <symbol id="ic-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></symbol>
+            <symbol id="ic-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></symbol>
+            <symbol id="ic-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol>
+            <symbol id="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+            <symbol id="ic-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
         </defs>
     </svg>
 </head>
 <body>
 
-    <!-- BG -->
-    <div class="bg-animation">
-        <div class="bg-grid"></div>
-        <div class="bg-streak"></div>
-        <div class="wave-orb wave-orb-1"></div>
-        <div class="wave-orb wave-orb-2"></div>
-        <div class="wave-orb wave-orb-3"></div>
-        <div class="wave-orb wave-orb-4"></div>
-    </div>
-
-    <!-- AUTH MODAL -->
-    <div class="modal-overlay" id="authModal">
-        <div class="auth-box">
-
-            <div class="auth-logo">
-                <div class="auth-logo-icon" style="color:var(--text); background:transparent; box-shadow:none;">
-                    <svg><use href="#ic-sparkles"/></svg>
-                </div>
-                <h2>Astro</h2>
-                <p>Twój asystent AI do projektów Roblox</p>
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+    <div class="auth-box">
+        <div class="auth-logo">
+            <div class="auth-logo-icon">
+                <svg><use href="#ic-sparkles"/></svg>
             </div>
-
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="tabLoginBtn">
-                    <svg><use href="#ic-login"/></svg>
-                    Logowanie
-                </button>
-                <button class="auth-tab" id="tabRegBtn">
-                    <svg><use href="#ic-user-plus"/></svg>
-                    Rejestracja
-                </button>
+            <h2>Astro</h2>
+            <p>Asystent AI do projektów Roblox</p>
+        </div>
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLoginBtn"><svg><use href="#ic-login"/></svg> Logowanie</button>
+            <button class="auth-tab" id="tabRegBtn"><svg><use href="#ic-user-plus"/></svg> Rejestracja</button>
+        </div>
+        <form class="auth-form" id="loginForm">
+            <div class="form-field">
+                <svg class="field-icon"><use href="#ic-mail"/></svg>
+                <input type="email" id="logEmail" placeholder="Adres email" required autocomplete="email">
             </div>
-
-            <!-- LOGIN -->
-            <form class="auth-form" id="loginForm">
-                <div class="form-field">
-                    <svg class="field-icon"><use href="#ic-mail"/></svg>
-                    <input type="email" id="logEmail" placeholder="Adres email" required autocomplete="email">
-                </div>
-                <div class="form-field">
-                    <svg class="field-icon"><use href="#ic-lock"/></svg>
-                    <input type="password" id="logPass" placeholder="Hasło" required autocomplete="current-password">
-                </div>
-                <label class="remember-label">
-                    <input type="checkbox" id="rememberMe" checked>
-                    <span class="custom-check"><svg><use href="#ic-check"/></svg></span>
-                    Zapamiętaj mnie
-                </label>
-                <button type="submit" class="btn-primary">
-                    <svg><use href="#ic-login"/></svg>
-                    Zaloguj się
-                </button>
-            </form>
-
-            <!-- REGISTER -->
-            <form class="auth-form hidden" id="regForm">
-                <div class="form-field">
-                    <svg class="field-icon"><use href="#ic-user"/></svg>
-                    <input type="text" id="regUser" placeholder="Nazwa użytkownika (min. 3 znaki)" required minlength="3" autocomplete="username">
-                </div>
-                <div class="form-field">
-                    <svg class="field-icon"><use href="#ic-mail"/></svg>
-                    <input type="email" id="regEmail" placeholder="Adres email" required autocomplete="email">
-                </div>
-                <div class="form-field">
-                    <svg class="field-icon"><use href="#ic-lock"/></svg>
-                    <input type="password" id="regPass" placeholder="Hasło (min. 6 znaków)" required minlength="6" autocomplete="new-password">
-                </div>
-                <label class="remember-label">
-                    <input type="checkbox" id="rememberMeReg" checked>
-                    <span class="custom-check"><svg><use href="#ic-check"/></svg></span>
-                    Zapamiętaj mnie
-                </label>
-                <button type="submit" class="btn-primary">
-                    <svg><use href="#ic-user-plus"/></svg>
-                    Utwórz konto
-                </button>
-            </form>
-
-            <div class="auth-error" id="authError">
-                <svg><use href="#ic-alert"/></svg>
-                <span id="authErrorText"></span>
+            <div class="form-field">
+                <svg class="field-icon"><use href="#ic-lock"/></svg>
+                <input type="password" id="logPass" placeholder="Hasło" required autocomplete="current-password">
             </div>
-
+            <label class="remember-label">
+                <input type="checkbox" id="rememberMe" checked>
+                <span class="custom-check"><svg><use href="#ic-check"/></svg></span>
+                Zapamiętaj mnie
+            </label>
+            <button type="submit" class="btn-primary"><svg><use href="#ic-login"/></svg> Zaloguj się</button>
+        </form>
+        <form class="auth-form hidden" id="regForm">
+            <div class="form-field">
+                <svg class="field-icon"><use href="#ic-user"/></svg>
+                <input type="text" id="regUser" placeholder="Nazwa użytkownika (min. 3 znaki)" required minlength="3">
+            </div>
+            <div class="form-field">
+                <svg class="field-icon"><use href="#ic-mail"/></svg>
+                <input type="email" id="regEmail" placeholder="Adres email" required autocomplete="email">
+            </div>
+            <div class="form-field">
+                <svg class="field-icon"><use href="#ic-lock"/></svg>
+                <input type="password" id="regPass" placeholder="Hasło (min. 6 znaków)" required minlength="6">
+            </div>
+            <label class="remember-label">
+                <input type="checkbox" id="rememberMeReg" checked>
+                <span class="custom-check"><svg><use href="#ic-check"/></svg></span>
+                Zapamiętaj mnie
+            </label>
+            <button type="submit" class="btn-primary"><svg><use href="#ic-user-plus"/></svg> Utwórz konto</button>
+        </form>
+        <div class="auth-error" id="authError">
+            <svg><use href="#ic-alert"/></svg>
+            <span id="authErrorText"></span>
         </div>
     </div>
+</div>
 
-    <!-- APP -->
-    <div class="app">
+<!-- ==================== APP ==================== -->
+<div class="app">
 
-        <!-- LEFT PANEL -->
-        <aside class="panel-left" id="panelLeft">
+    <!-- ICON RAIL — Lemonade-style ultra-narrow -->
+    <nav class="icon-rail">
+        <div class="rail-top">
+            <div class="rail-brand" title="Astro">
+                <svg><use href="#ic-sparkles"/></svg>
+                <span class="rail-brand-dot" id="pluginDot"></span>
+            </div>
+        </div>
+        <div class="rail-nav">
+            <button class="rail-btn active" data-target="viewChat" title="Chat">
+                <svg><use href="#ic-message"/></svg>
+            </button>
+            <button class="rail-btn" data-target="viewHistory" title="Historia">
+                <svg><use href="#ic-history"/></svg>
+            </button>
+            <button class="rail-btn" data-target="viewEditor" title="Edytor">
+                <svg><use href="#ic-file-code"/></svg>
+            </button>
+        </div>
+        <div class="rail-bottom">
+            <button class="rail-btn" data-target="viewAccount" title="Konto">
+                <svg><use href="#ic-account"/></svg>
+            </button>
+            <button class="rail-btn rail-btn--danger" id="logoutBtn" title="Wyloguj">
+                <svg><use href="#ic-logout"/></svg>
+            </button>
+        </div>
+    </nav>
 
-            <!-- Logo -->
-            <div class="panel-header">
-                <div class="logo">
-                    <div class="logo-icon" style="background:transparent; color:var(--text); box-shadow:none;">
-                        <svg><use href="#ic-sparkles"/></svg>
-                    </div>
-                    <div class="logo-text">
-                        <h1>Astro</h1>
-                        <span class="version">beta</span>
-                    </div>
+    <!-- SIDE PANEL -->
+    <aside class="side-panel" id="panelLeft">
+
+        <!-- User + plugin status header -->
+        <div class="side-header">
+            <div class="side-user-row">
+                <div class="side-avatar">
+                    <svg><use href="#ic-user"/></svg>
+                </div>
+                <div class="side-user-info">
+                    <div class="side-username" id="uiUsername">—</div>
+                    <div class="side-plugin-status-label" id="pluginStatusText">Offline</div>
                 </div>
             </div>
+        </div>
 
-            <!-- User Info -->
-            <div class="user-info-box">
-                <div class="user-name">
-                    <svg><use href="#ic-user"/></svg>
-                    <span id="uiUsername">—</span>
+        <!-- Connect Code -->
+        <div class="side-block">
+            <div class="side-block-title">CONNECT CODE</div>
+            <div class="connect-code-row">
+                <code class="connect-code-val" id="uiConnectCode">—</code>
+                <button class="icon-btn" id="copyCodeBtn" title="Kopiuj">
+                    <svg><use href="#ic-copy"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Plugin status -->
+        <div class="side-block">
+            <div class="plugin-status-card" id="pluginStatusBox">
+                <div class="psc-indicator">
+                    <span class="status-dot disconnected" id="pluginStatusDot"></span>
+                    <span class="psc-label" id="pluginStatusText2">Rozłączony (Czekam...)</span>
                 </div>
-                <div class="user-stats">
-                    <div class="stat-pill credits-pill">
-                        <svg><use href="#ic-coins"/></svg>
-                        <b id="uiCredits">0</b> kr.
-                    </div>
-                    <div class="stat-pill">
-                        <svg><use href="#ic-chart"/></svg>
-                        <b id="uiUsage">0</b> użyć
-                    </div>
+                <p class="psc-desc">Aby używać AI, zainstaluj wtyczkę w Roblox Studio i użyj Connect Code.</p>
+            </div>
+            <a href="plugin%20roblox/Astro.lua" download="Astro.lua" class="plugin-dl-btn">
+                <svg><use href="#ic-bolt"/></svg> Pobierz Wtyczkę
+            </a>
+        </div>
+
+        <!-- Chats -->
+        <div class="side-block side-block--grow">
+            <div class="side-block-title">
+                CZATY
+                <button class="icon-btn" id="newChatBtn" title="Nowy czat">
+                    <svg><use href="#ic-plus"/></svg>
+                </button>
+            </div>
+            <div class="chats-list" id="chatsList"></div>
+        </div>
+
+        <!-- Explorer -->
+        <div class="side-block side-block--shrink">
+            <div class="side-block-title">EXPLORER</div>
+            <div class="file-tree" id="fileTree">
+                <div class="tree-empty">
+                    <svg><use href="#ic-inbox"/></svg>
+                    <p>Brak plików</p>
                 </div>
-                <div class="connect-code-box">
-                    <span class="connect-code-label">Connect Code</span>
-                    <div class="connect-code-row">
-                        <code class="connect-code-val" id="uiConnectCode">—</code>
-                        <button class="icon-btn" id="copyCodeBtn" title="Kopiuj kod">
-                            <svg><use href="#ic-copy"/></svg>
+            </div>
+        </div>
+
+        <!-- Console -->
+        <div class="side-console">
+            <div class="side-block-title">
+                KONSOLA
+                <button class="icon-btn" id="clearConsole" title="Wyczyść"><svg><use href="#ic-trash"/></svg></button>
+            </div>
+            <div class="console-output" id="consoleOutput">
+                <div class="console-line info"><span class="console-time">[--:--:--]</span> Gotowy</div>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-area">
+
+        <!-- Top bar — Lemonade style -->
+        <header class="top-bar">
+            <div class="top-bar-brand">
+                <div class="top-brand-icon">
+                    <svg><use href="#ic-sparkles"/></svg>
+                </div>
+                <span class="top-brand-name">Astro</span>
+                <span class="top-brand-tag">beta</span>
+                <span class="top-sep">·</span>
+                <span class="top-username" id="topUsername">—</span>
+            </div>
+            <nav class="top-tabs">
+                <button class="top-tab active" data-target="viewChat">Chat</button>
+                <button class="top-tab" data-target="viewEditor">Edytor</button>
+                <button class="top-tab" data-target="viewAccount">Konto</button>
+                <button class="top-tab" data-target="viewHistory">Historia</button>
+                <button class="top-tab hidden" data-target="viewAdmin" id="adminTab">Admin</button>
+            </nav>
+            <div class="top-bar-right">
+                <div class="top-plugin-pill" id="topPluginPill">
+                    <span class="status-dot disconnected" id="topPluginDot"></span>
+                    <span id="topPluginLabel">Offline</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- CHAT VIEW -->
+        <div class="view-container" id="viewChat">
+            <div class="chat" id="chat">
+
+                <!-- Welcome -->
+                <div class="welcome" id="welcome">
+                    <div class="welcome-glow"></div>
+                    <div class="welcome-icon">
+                        <svg><use href="#ic-sparkles"/></svg>
+                    </div>
+                    <h2>Witaj w Astro</h2>
+                    <p>Opisz mechanikę swojej gry lub wybierz gotowy moduł poniżej.</p>
+                    <div class="suggestions">
+                        <button class="chip" data-prompt="Stwórz kompletne GUI menu głównego z ScreenGui, ramkami, przyciskami Play/Settings/Credits, gradientami i animacjami wejścia. Użyj Instance.new dla każdego elementu GUI.">
+                            <svg><use href="#ic-sparkles"/></svg>
+                            Stwórz menu główne GUI
+                        </button>
+                        <button class="chip" data-prompt="Stwórz system walki: GUI z HP barem i 4 umiejętnościami, moduł danych umiejętności, skrypt serwerowy do obrażeń. 3 osobne pliki Luau.">
+                            <svg><use href="#ic-fire"/></svg>
+                            System walki (3 pliki)
+                        </button>
+                        <button class="chip" data-prompt="Stwórz ScreenGui z oknem sklepu: kategorie po lewej, lista przedmiotów po prawej, podgląd na dole, przycisk kup z animacją. Pełne GUI z Instance.new.">
+                            <svg><use href="#ic-store"/></svg>
+                            GUI Sklepu z kategoriami
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Plugin Status & Wtyczka -->
-            <div class="plugin-status-section">
-                <div class="plugin-status-indicator" id="pluginStatusIndicator">
-                    <span class="status-dot disconnected"></span>
-                    <span class="status-text" id="pluginStatusText">🔴 Rozłączony (Czekam...)</span>
-                </div>
-                <div class="plugin-mini-info">
-                    <p style="font-size:0.68rem; color:var(--text3); margin-bottom:8px; line-height:1.4;">Aby używać AI, zainstaluj wtyczkę w Roblox Studio i podłącz używając Connect Code.</p>
-                    <a href="plugin%20roblox/Astro.lua" download="Astro.lua" class="btn-secondary plugin-dl-btn" style="width:100%; justify-content:center; padding:6px; background:var(--green); color:black; font-weight:700; border:none;">
-                        <svg><use href="#ic-bolt"/></svg> Pobierz Wtyczkę
-                    </a>
-                </div>
-            </div>
+                <div class="messages" id="messages"></div>
 
-            <!-- Chats -->
-            <div class="chats-section">
-                <div class="section-header">
-                    <span class="section-header-left">
-                        <svg><use href="#ic-message"/></svg>
-                        Czaty
-                    </span>
-                    <button class="icon-btn" id="newChatBtn" title="Nowy czat">
-                        <svg><use href="#ic-plus"/></svg>
-                    </button>
-                </div>
-                <div class="chats-list" id="chatsList"></div>
-            </div>
-
-            <!-- Explorer -->
-            <div class="explorer">
-                <div class="section-header">
-                    <span class="section-header-left">
-                        <svg><use href="#ic-folder"/></svg>
-                        Explorer
-                    </span>
-                </div>
-                <div class="file-tree" id="fileTree">
-                    <div class="tree-empty">
-                        <svg><use href="#ic-inbox"/></svg>
-                        <p>Oczekiwanie na uruchomienie plików przez AI</p>
+                <!-- Typing indicator -->
+                <div class="typing" id="typing">
+                    <div class="msg-avatar bot">
+                        <svg><use href="#ic-sparkles"/></svg>
+                    </div>
+                    <div class="msg-bubble typing-bubble">
+                        <div class="dots"><span></span><span></span><span></span></div>
+                        <span>Astro generuje odpowiedź...</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Console -->
-            <div class="console-panel">
-                <div class="section-header">
-                    <span class="section-header-left">
-                        <svg><use href="#ic-terminal"/></svg>
-                        Konsola
-                    </span>
-                    <button class="icon-btn" id="clearConsole" title="Wyczyść konsolę">
-                        <svg><use href="#ic-trash"/></svg>
-                    </button>
-                </div>
-                <div class="console-output" id="consoleOutput">
-                    <div class="console-line info">
-                        <span class="console-time">[--:--:--]</span> Gotowy do pracy
-                    </div>
-                </div>
-            </div>
-
-        </aside>
-
-        <!-- CENTER -->
-        <main class="main-area">
-
-            <!-- Tab Bar -->
-            <div class="tab-bar">
-                <div class="tabs">
-                    <button class="tab active" data-target="viewChat">
-                        <svg><use href="#ic-message"/></svg> Chat
-                    </button>
-                    <button class="tab" data-target="viewEditor">
-                        <svg><use href="#ic-code"/></svg> Edytor
-                    </button>
-                    <button class="tab" data-target="viewAccount">
-                        <svg><use href="#ic-account"/></svg> Konto
-                    </button>
-                    <button class="tab" data-target="viewHistory">
-                        <svg><use href="#ic-history"/></svg> Historia
-                    </button>
-                    <button class="tab hidden" data-target="viewAdmin" id="adminTab">
-                        <svg><use href="#ic-shield"/></svg> Admin
-                    </button>
-                </div>
-                <button class="btn-logout" id="logoutBtn" title="Wyloguj się">
-                    <svg><use href="#ic-logout"/></svg>
-                </button>
-            </div>
-
-            <!-- ===== CHAT VIEW ===== -->
-            <div class="view-container" id="viewChat">
-                <div class="chat" id="chat">
-                    <!-- Welcome -->
-                    <div class="welcome" id="welcome">
-                        <div class="welcome-icon">
-                            <div class="welcome-icon-inner">
-                                <svg><use href="#ic-sparkles"/></svg>
-                            </div>
-                        </div>
-                        <h2>Witaj w Astro</h2>
-                        <p>Opisz mechanikę swojej gry, lub wybierz z szybkich modułów poniżej do wygenerowania.</p>
-                        <div class="suggestions">
-                            <button class="chip" data-prompt="Stwórz kompletne GUI menu głównego z ScreenGui, ramkami, przyciskami Play/Settings/Credits, gradientami i animacjami wejścia. Użyj Instance.new dla każdego elementu GUI.">
-                                <svg><use href="#ic-sparkles"/></svg>
-                                Stwórz menu główne GUI
-                            </button>
-                            <button class="chip" data-prompt="Stwórz system walki: GUI z HP barem i 4 umiejętnościami, moduł danych umiejętności, skrypt serwerowy do obrażeń. 3 osobne pliki Luau.">
-                                <svg><use href="#ic-fire"/></svg>
-                                System walki (3 pliki)
-                            </button>
-                            <button class="chip" data-prompt="Stwórz ScreenGui z oknem sklepu: kategorie po lewej, lista przedmiotów po prawej, podgląd na dole, przycisk kup z animacją. Pełne GUI z Instance.new.">
-                                <svg><use href="#ic-store"/></svg>
-                                GUI Sklepu z kategoriami
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="messages" id="messages"></div>
-
-                    <!-- Typing -->
-                    <div class="typing" id="typing">
-                        <div class="msg-avatar bot">
-                            <svg><use href="#ic-sparkles"/></svg>
-                        </div>
-                        <div class="msg-bubble" style="display:flex;align-items:center;gap:10px;padding:10px 14px;">
-                            <div class="dots">
-                                <span></span><span></span><span></span>
-                            </div>
-                            <span style="font-size:0.76rem;color:var(--text4);">Astro generuje odpowiedź...</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input -->
-                <div class="input-area">
-                    <div class="input-options">
-                        <div class="mode-group">
-                            <label class="mode-select">
-                                <input type="radio" name="aiMode" value="quick" checked>
-                                <span class="mode-btn">
-                                    <svg><use href="#ic-bolt"/></svg>
-                                    Quick (1 kr.)
-                                </span>
-                            </label>
-                            <label class="mode-select">
-                                <input type="radio" name="aiMode" value="plan">
-                                <span class="mode-btn">
-                                    <svg><use href="#ic-brain"/></svg>
-                                    Plan (3 kr.)
-                                </span>
-                            </label>
-                        </div>
-
-                        <div class="custom-select-wrapper">
-                            <div class="custom-select" id="customModelSelect">
-                                <div class="select-selected">
-                                    <span id="customModelSelectTitle">Llama 3.3 70B</span>
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                </div>
-                                <div class="select-items select-hide">
-                                    <div data-value="llama-3.3-70b-versatile">Llama 3.3 70B</div>
-                                    <div data-value="llama-3.1-8b-instant">Llama 3.1 8B (Fast)</div>
-                                    <div data-value="gemma2-9b-it">Gemma 2 9B</div>
-                                    <div data-value="mixtral-8x7b-32768">Mixtral 8x7B</div>
-                                </div>
-                            </div>
-                            <input type="hidden" id="modelSelect" value="llama-3.3-70b-versatile">
-                        </div>
-
-                        <label class="toggle-label">
-                            <input type="checkbox" id="autoInsert" checked>
-                            <span class="toggle-switch"></span>
-                            Auto-wstaw
+            <!-- INPUT AREA -->
+            <div class="input-area">
+                <!-- Toolbar: mode + model + credits + toggle -->
+                <div class="input-toolbar">
+                    <div class="mode-group">
+                        <label class="mode-select">
+                            <input type="radio" name="aiMode" value="quick" checked>
+                            <span class="mode-btn"><svg><use href="#ic-bolt"/></svg> Quick (1 kr.)</span>
+                        </label>
+                        <label class="mode-select">
+                            <input type="radio" name="aiMode" value="plan">
+                            <span class="mode-btn"><svg><use href="#ic-brain"/></svg> Plan (3 kr.)</span>
                         </label>
                     </div>
 
-                    <div class="input-box">
-                        <textarea id="msgInput" placeholder="Opisz co chcesz stworzyć..." rows="1"></textarea>
-                        <button class="send-btn" id="sendBtn" disabled>
-                            <svg><use href="#ic-send"/></svg>
-                        </button>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" id="customModelSelect">
+                            <div class="select-selected">
+                                <span id="customModelSelectTitle">Llama 3.3 70B</span>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                            <div class="select-items select-hide">
+                                <div data-value="llama-3.3-70b-versatile">Llama 3.3 70B</div>
+                                <div data-value="llama-3.1-8b-instant">Llama 3.1 8B (Fast)</div>
+                                <div data-value="gemma2-9b-it">Gemma 2 9B</div>
+                                <div data-value="mixtral-8x7b-32768">Mixtral 8x7B</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="modelSelect" value="llama-3.3-70b-versatile">
                     </div>
+
+                    <div class="toolbar-spacer"></div>
+
+                    <!-- Credits — in toolbar next to input -->
+                    <div class="credits-chip">
+                        <svg><use href="#ic-coins"/></svg>
+                        <span id="uiCredits">0</span>
+                        <span class="credits-chip-unit">kr</span>
+                    </div>
+
+                    <label class="toggle-label">
+                        <input type="checkbox" id="autoInsert" checked>
+                        <span class="toggle-switch"></span>
+                        Auto-wstaw
+                    </label>
+                </div>
+
+                <!-- Text input -->
+                <div class="input-box">
+                    <textarea id="msgInput" placeholder="Opisz co chcesz stworzyć..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn" disabled>
+                        <svg><use href="#ic-send"/></svg>
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- ===== EDITOR VIEW ===== -->
-            <div class="view-container hidden" id="viewEditor">
-                <div class="editor-toolbar">
-                    <span class="editor-file-name" id="editorFileName">
-                        <svg><use href="#ic-file-code"/></svg>
-                        Wybierz plik z Explorera
-                    </span>
-                    <div style="display:flex;gap:6px;">
-                        <button class="btn-secondary" id="editorSave">
-                            <svg><use href="#ic-save"/></svg> Zapisz i wyślij
-                        </button>
-                        <button class="btn-danger" id="editorDelete">
-                            <svg><use href="#ic-trash"/></svg> Usuń
-                        </button>
-                    </div>
-                </div>
-                <textarea id="editorCode" class="code-editor" placeholder="-- Kod Luau..." spellcheck="false"></textarea>
-            </div>
-
-            <!-- ===== ACCOUNT VIEW ===== -->
-            <div class="view-container hidden" id="viewAccount">
-                <div class="page-content">
-                    <div class="page-title">
-                        <div class="page-title-icon">
-                            <svg><use href="#ic-account"/></svg>
-                        </div>
-                        <div>
-                            <h2>Twoje konto</h2>
-                            <p>Zarządzaj kredytami i ustawieniami</p>
-                        </div>
-                    </div>
-
-                    <div class="account-grid">
-
-                        <!-- Credits Card -->
-                        <div class="card credits-card">
-                            <div class="card-header">
-                                <div class="card-header-icon" style="background:rgba(0,229,196,0.1);">
-                                    <svg style="color:var(--teal);"><use href="#ic-coins"/></svg>
-                                </div>
-                                <h3>Kredyty</h3>
-                            </div>
-                            <div class="credits-amount">
-                                <span class="credits-number" id="accCredits">0</span>
-                                <span class="credits-label">kredytów</span>
-                            </div>
-                            <p class="credits-meta">Quick = 1 kredyt &nbsp;|&nbsp; Plan = 3 kredyty</p>
-                            <div class="credits-packages">
-                                <div class="credit-pkg">
-                                    <div class="credit-pkg-amount">50</div>
-                                    <div class="credit-pkg-price">Starter</div>
-                                </div>
-                                <div class="credit-pkg popular">
-                                    <div class="credit-pkg-amount">200</div>
-                                    <div class="credit-pkg-price">Pro</div>
-                                </div>
-                                <div class="credit-pkg">
-                                    <div class="credit-pkg-amount">500</div>
-                                    <div class="credit-pkg-price">Ultra</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stats Card -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-header-icon">
-                                    <svg><use href="#ic-chart"/></svg>
-                                </div>
-                                <h3>Statystyki</h3>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-row-label">
-                                    <svg><use href="#ic-user"/></svg>
-                                    Użytkownik
-                                </span>
-                                <span class="stat-row-value" id="accUser">—</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-row-label">
-                                    <svg><use href="#ic-mail"/></svg>
-                                    Email
-                                </span>
-                                <span class="stat-row-value" id="accEmail">—</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-row-label">
-                                    <svg><use href="#ic-bolt"/></svg>
-                                    Użycia AI
-                                </span>
-                                <span class="stat-row-value" id="accUsage">0</span>
-                            </div>
-                        </div>
-
-                        <!-- Connect Code Card -->
-                        <div class="card connect-code-full-card">
-                            <div class="card-header">
-                                <div class="card-header-icon">
-                                    <svg><use href="#ic-plug"/></svg>
-                                </div>
-                                <h3>Connect Code — Plugin Roblox Studio</h3>
-                            </div>
-                            <code class="code-display" id="accCode">—</code>
-                            <div class="steps-list">
-                                <div class="step-item">
-                                    <span class="step-num">1</span>
-                                    <span>Pobierz plik pluginu z panelu bocznego po lewej.</span>
-                                </div>
-                                <div class="step-item">
-                                    <span class="step-num">2</span>
-                                    <span>Wrzuć w Roblox Studio plik bezpośrednio do swojej gry.</span>
-                                </div>
-                                <div class="step-item">
-                                    <span class="step-num">3</span>
-                                    <span><strong>Wklej</strong> Connect Code i kliknij CONNECT — gotowe!</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+        <!-- EDITOR VIEW -->
+        <div class="view-container hidden" id="viewEditor">
+            <div class="editor-toolbar">
+                <span id="editorFileName"><svg><use href="#ic-file-code"/></svg> Wybierz plik z Explorera</span>
+                <div style="display:flex;gap:6px;margin-left:auto;">
+                    <button class="btn-secondary" id="editorSave"><svg><use href="#ic-save"/></svg> Zapisz i wyślij</button>
+                    <button class="btn-danger" id="editorDelete"><svg><use href="#ic-trash"/></svg> Usuń</button>
                 </div>
             </div>
+            <textarea id="editorCode" class="code-editor" placeholder="-- Kod Luau..." spellcheck="false"></textarea>
+        </div>
 
-            <!-- ===== HISTORY VIEW ===== -->
-            <div class="view-container hidden" id="viewHistory">
-                <div class="page-content">
-                    <div class="page-title">
-                        <div class="page-title-icon">
-                            <svg><use href="#ic-history"/></svg>
-                        </div>
-                        <div>
-                            <h2>Historia czatów</h2>
-                            <p>Twoje poprzednie zapytania do AI</p>
-                        </div>
-                    </div>
-                    <div id="historyList">
-                        <p style="color:var(--text4);">Brak historii — zacznij pisać z AI!</p>
-                    </div>
+        <!-- ACCOUNT VIEW -->
+        <div class="view-container hidden" id="viewAccount">
+            <div class="page-content">
+                <div class="page-title">
+                    <div class="page-title-icon"><svg><use href="#ic-account"/></svg></div>
+                    <div><h2>Twoje konto</h2><p>Zarządzaj kredytami i ustawieniami</p></div>
                 </div>
-            </div>
-
-            <!-- ===== ADMIN VIEW ===== -->
-            <div class="view-container hidden" id="viewAdmin">
-                <div class="page-content">
-                    <div class="page-title">
-                        <div class="page-title-icon" style="background:linear-gradient(135deg,var(--purple),var(--indigo));">
-                            <svg><use href="#ic-shield"/></svg>
-                        </div>
-                        <div>
-                            <h2>Panel Admina</h2>
-                            <p>Zarządzanie systemem Astro</p>
-                        </div>
-                    </div>
-
-                    <!-- API Key -->
-                    <div class="card" style="margin-bottom:18px;">
+                <div class="account-grid">
+                    <div class="card credits-card">
                         <div class="card-header">
-                            <div class="card-header-icon">
-                                <svg><use href="#ic-key"/></svg>
-                            </div>
-                            <h3>Globalny klucz API (Groq)</h3>
+                            <div class="card-header-icon"><svg><use href="#ic-coins"/></svg></div>
+                            <h3>Kredyty</h3>
                         </div>
-                        <p style="font-size:0.8rem;color:var(--text4);margin-bottom:14px;">Ten klucz jest używany przez wszystkich użytkowników</p>
-                        <div class="admin-box">
-                            <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;">
-                                <span style="color:var(--text4);font-size:0.75rem;">Aktualny:</span>
-                                <code id="currentApiKey" style="background:rgba(1,13,26,0.8);border:1px solid var(--border);padding:5px 10px;border-radius:6px;font-family:var(--mono);font-size:0.75rem;color:var(--cyan);">Ładowanie...</code>
-                            </div>
-                            <input type="text" class="form-input" id="adminApiKey" placeholder="gsk_... (klucz Groq API)">
-                            <input type="password" class="form-input" id="adminPass" placeholder="Hasło admina">
-                            <div style="display:flex;gap:8px;">
-                                <button class="btn-primary" id="adminSetKeyBtn" style="flex:1;">
-                                    <svg><use href="#ic-key"/></svg> Ustaw klucz API
-                                </button>
-                                <button class="btn-secondary" id="adminCheckKeyBtn">
-                                    <svg><use href="#ic-eye"/></svg> Sprawdź
-                                </button>
-                            </div>
+                        <div class="credits-amount">
+                            <span class="credits-number" id="accCredits">0</span>
+                            <span class="credits-label">kredytów</span>
+                        </div>
+                        <p class="credits-meta">Quick = 1 kredyt &nbsp;|&nbsp; Plan = 3 kredyty</p>
+                        <div class="credits-packages">
+                            <div class="credit-pkg"><div class="credit-pkg-amount">50</div><div class="credit-pkg-price">Starter</div></div>
+                            <div class="credit-pkg popular"><div class="credit-pkg-amount">200</div><div class="credit-pkg-price">Pro</div></div>
+                            <div class="credit-pkg"><div class="credit-pkg-amount">500</div><div class="credit-pkg-price">Ultra</div></div>
                         </div>
                     </div>
-
-                    <!-- Credits -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-header-icon" style="background:rgba(0,229,196,0.1);">
-                                <svg style="color:var(--teal);"><use href="#ic-coins"/></svg>
-                            </div>
-                            <h3>Zarządzanie kredytami</h3>
+                            <div class="card-header-icon"><svg><use href="#ic-user"/></svg></div>
+                            <h3>Konto</h3>
                         </div>
-                        <div class="admin-box">
-                            <input type="text" class="form-input" id="adminUserId" placeholder="User ID (np. user_jan)">
-                            <input type="number" class="form-input" id="adminAmount" placeholder="Ilość kredytów">
-                            <button class="btn-primary" id="adminAddBtn">
-                                <svg><use href="#ic-plus"/></svg> Dodaj kredyty
-                            </button>
+                        <div class="stat-row"><span class="stat-row-label">Użytkownik</span><span class="stat-row-value" id="accUser">—</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Email</span><span class="stat-row-value" id="accEmail">—</span></div>
+                    </div>
+                    <div class="card connect-code-full-card">
+                        <div class="card-header">
+                            <div class="card-header-icon"><svg><use href="#ic-plug"/></svg></div>
+                            <h3>Plugin Roblox Studio</h3>
+                        </div>
+                        <code class="code-display" id="accCode">—</code>
+                        <div class="steps-list">
+                            <div class="step-item"><span class="step-num">1</span><span>Pobierz plugin z panelu bocznego.</span></div>
+                            <div class="step-item"><span class="step-num">2</span><span>Zainstaluj w Roblox Studio.</span></div>
+                            <div class="step-item"><span class="step-num">3</span><span><strong>Wklej</strong> Connect Code i kliknij CONNECT.</span></div>
                         </div>
                     </div>
-
                 </div>
             </div>
+        </div>
 
-        </main>
-    </div>
+        <!-- HISTORY VIEW -->
+        <div class="view-container hidden" id="viewHistory">
+            <div class="page-content">
+                <div class="page-title">
+                    <div class="page-title-icon"><svg><use href="#ic-history"/></svg></div>
+                    <div><h2>Historia czatów</h2><p>Twoje poprzednie zapytania do AI</p></div>
+                </div>
+                <div id="historyList"><p style="color:var(--text4);font-size:0.95rem;">Brak historii — zacznij pisać z AI!</p></div>
+            </div>
+        </div>
 
-    <!-- Notifications -->
-    <div class="notifs" id="notifs"></div>
+        <!-- ADMIN VIEW -->
+        <div class="view-container hidden" id="viewAdmin">
+            <div class="page-content">
+                <div class="page-title">
+                    <div class="page-title-icon"><svg><use href="#ic-shield"/></svg></div>
+                    <div><h2>Panel Admina</h2><p>Zarządzanie systemem Astro</p></div>
+                </div>
+                <div class="card" style="margin-bottom:16px;">
+                    <div class="card-header">
+                        <div class="card-header-icon"><svg><use href="#ic-key"/></svg></div>
+                        <h3>Globalny klucz API (Groq)</h3>
+                    </div>
+                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Używany przez wszystkich użytkowników</p>
+                    <div class="admin-box">
+                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+                            <span style="color:var(--text4);font-size:0.78rem;">Aktualny:</span>
+                            <code id="currentApiKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:var(--green);">Ładowanie...</code>
+                        </div>
+                        <input type="text" class="form-input" id="adminApiKey" placeholder="gsk_... (klucz Groq API)">
+                        <input type="password" class="form-input" id="adminPass" placeholder="Hasło admina">
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-primary" id="adminSetKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Ustaw klucz</button>
+                            <button class="btn-secondary" id="adminCheckKeyBtn"><svg><use href="#ic-eye"/></svg> Sprawdź</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon"><svg><use href="#ic-coins"/></svg></div>
+                        <h3>Zarządzanie kredytami</h3>
+                    </div>
+                    <div class="admin-box">
+                        <input type="text" class="form-input" id="adminUserId" placeholder="User ID">
+                        <input type="number" class="form-input" id="adminAmount" placeholder="Ilość kredytów">
+                        <button class="btn-primary" id="adminAddBtn"><svg><use href="#ic-plus"/></svg> Dodaj kredyty</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <script src="script.js"></script>
+    </main>
+</div>
+
+<!-- Notifications -->
+<div class="notifs" id="notifs"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
