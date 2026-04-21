@@ -441,6 +441,14 @@ var App = {
         var text = this.dom.msgInput.value.trim();
         if (!text || this.generating) return;
 
+        // Block if plugin offline
+        if (!this._pluginConnected) {
+            this.notify('Zanim wyślesz prompt, musisz połączyć się z pluginem w Roblox Studio!', 'error');
+            this.dom.msgInput.parentElement.classList.add('shake');
+            setTimeout(function() { self.dom.msgInput.parentElement.classList.remove('shake'); }, 500);
+            return;
+        }
+
         var modeEl = document.querySelector('input[name="aiMode"]:checked');
         var mode   = modeEl ? modeEl.value : 'quick';
         var cost   = mode === 'plan' ? 3 : 1;
