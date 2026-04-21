@@ -467,11 +467,11 @@
                     <!-- Welcome -->
                     <div class="welcome" id="welcome">
                         <div class="welcome-icon">
-                            <div class="welcome-icon-inner" style="background:transparent; box-shadow:none; color:var(--text); width:64px; height:64px; border:1px solid var(--border); border-radius:16px;">
+                            <div class="welcome-icon-inner">
                                 <svg><use href="#ic-sparkles"/></svg>
                             </div>
                         </div>
-                        <h2>Witaj w <span>Astro</span></h2>
+                        <h2>Witaj w Astro</h2>
                         <p>Opisz mechanikę swojej gry, lub wybierz z szybkich modułów poniżej do wygenerowania.</p>
                         <div class="suggestions">
                             <button class="chip" data-prompt="Stwórz kompletne GUI menu głównego z ScreenGui, ramkami, przyciskami Play/Settings/Credits, gradientami i animacjami wejścia. Użyj Instance.new dla każdego elementu GUI.">
@@ -493,14 +493,14 @@
 
                     <!-- Typing -->
                     <div class="typing" id="typing">
-                        <div class="msg-avatar bot" style="background:var(--grad-brand);border:none;box-shadow:0 4px 16px rgba(0,212,255,0.3);">
-                            <svg style="width:16px;height:16px;color:#fff;"><use href="#ic-robot"/></svg>
+                        <div class="msg-avatar bot">
+                            <svg><use href="#ic-sparkles"/></svg>
                         </div>
-                        <div class="msg-bubble" style="background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:12px 18px;">
+                        <div class="msg-bubble" style="display:flex;align-items:center;gap:10px;padding:10px 14px;">
                             <div class="dots">
                                 <span></span><span></span><span></span>
                             </div>
-                            <span style="font-size:0.78rem;color:var(--text4);">AI generuje odpowiedź...</span>
+                            <span style="font-size:0.76rem;color:var(--text4);">Astro generuje odpowiedź...</span>
                         </div>
                     </div>
                 </div>
@@ -529,11 +529,13 @@
                             <div class="custom-select" id="customModelSelect">
                                 <div class="select-selected">
                                     <span id="customModelSelectTitle">Llama 3.3 70B</span>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                                 </div>
                                 <div class="select-items select-hide">
                                     <div data-value="llama-3.3-70b-versatile">Llama 3.3 70B</div>
                                     <div data-value="llama-3.1-8b-instant">Llama 3.1 8B (Fast)</div>
+                                    <div data-value="gemma2-9b-it">Gemma 2 9B</div>
+                                    <div data-value="mixtral-8x7b-32768">Mixtral 8x7B</div>
                                 </div>
                             </div>
                             <input type="hidden" id="modelSelect" value="llama-3.3-70b-versatile">
