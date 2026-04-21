@@ -144,6 +144,9 @@
             <button class="rail-btn" data-target="viewEditor" title="Edytor">
                 <svg><use href="#ic-file-code"/></svg>
             </button>
+            <button class="rail-btn" data-target="viewShop" title="Sklep tokenów">
+                <svg><use href="#ic-coins"/></svg>
+            </button>
         </div>
         <div class="rail-bottom">
             <button class="rail-btn" data-target="viewAccount" title="Konto">
@@ -389,33 +392,38 @@
             <div class="page-content">
                 <div class="page-title">
                     <div class="page-title-icon"><svg><use href="#ic-account"/></svg></div>
-                    <div><h2>Twoje konto</h2><p>Zarządzaj kredytami i ustawieniami</p></div>
+                    <div><h2>Twoje konto</h2><p>Ustawienia i informacje o koncie</p></div>
                 </div>
                 <div class="account-grid">
-                    <div class="card credits-card">
-                        <div class="card-header">
-                            <div class="card-header-icon"><svg><use href="#ic-coins"/></svg></div>
-                            <h3>Kredyty</h3>
+                    <!-- Profile card -->
+                    <div class="card account-profile-card">
+                        <div class="acc-avatar">
+                            <img src="ikona.png" alt="Astro" style="width:48px;height:48px;object-fit:contain;opacity:0.85;">
                         </div>
-                        <div class="credits-amount">
-                            <span class="credits-number" id="accCredits">0</span>
-                            <span class="credits-label">kredytów</span>
+                        <div class="acc-profile-info">
+                            <div class="acc-username" id="accUser">—</div>
+                            <div class="acc-email" id="accEmail">—</div>
                         </div>
-                        <p class="credits-meta">Quick = 1 kredyt &nbsp;|&nbsp; Plan = 3 kredyty</p>
-                        <div class="credits-packages">
-                            <div class="credit-pkg"><div class="credit-pkg-amount">50</div><div class="credit-pkg-price">Starter</div></div>
-                            <div class="credit-pkg popular"><div class="credit-pkg-amount">200</div><div class="credit-pkg-price">Pro</div></div>
-                            <div class="credit-pkg"><div class="credit-pkg-amount">500</div><div class="credit-pkg-price">Ultra</div></div>
+                        <div class="acc-credits-badge">
+                            <svg><use href="#ic-coins"/></svg>
+                            <span id="accCredits">0</span>
+                            <span class="acc-credits-unit">kr</span>
                         </div>
                     </div>
+
+                    <!-- Info card -->
                     <div class="card">
                         <div class="card-header">
                             <div class="card-header-icon"><svg><use href="#ic-user"/></svg></div>
-                            <h3>Konto</h3>
+                            <h3>Dane konta</h3>
                         </div>
-                        <div class="stat-row"><span class="stat-row-label">Użytkownik</span><span class="stat-row-value" id="accUser">—</span></div>
-                        <div class="stat-row"><span class="stat-row-label">Email</span><span class="stat-row-value" id="accEmail">—</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Użytkownik</span><span class="stat-row-value" id="accUser2">—</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Email</span><span class="stat-row-value" id="accEmail2">—</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Kredyty</span><span class="stat-row-value" style="color:var(--green)" id="accCredits2">0</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Quick = 1 kr.</span><span class="stat-row-value" style="color:var(--text4)">Plan = 3 kr.</span></div>
                     </div>
+
+                    <!-- Plugin card -->
                     <div class="card connect-code-full-card">
                         <div class="card-header">
                             <div class="card-header-icon"><svg><use href="#ic-plug"/></svg></div>
@@ -426,6 +434,41 @@
                             <div class="step-item"><span class="step-num">1</span><span>Pobierz plugin z panelu bocznego.</span></div>
                             <div class="step-item"><span class="step-num">2</span><span>Zainstaluj w Roblox Studio.</span></div>
                             <div class="step-item"><span class="step-num">3</span><span><strong>Wklej</strong> Connect Code i kliknij CONNECT.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHOP VIEW -->
+        <div class="view-container hidden" id="viewShop">
+            <div class="page-content">
+                <div class="page-title">
+                    <div class="page-title-icon"><svg><use href="#ic-coins"/></svg></div>
+                    <div><h2>Sklep Tokenów</h2><p>Doładuj konto kredytami Astro</p></div>
+                </div>
+                <div class="shop-coming-soon">
+                    <div class="shop-soon-icon">🚀</div>
+                    <h3>Wkrótce dostępne</h3>
+                    <p>Płatności za tokeny będą dostępne już niedługo.<br>Tymczasem możesz używać darmowych kredytów.</p>
+                    <div class="shop-packages-preview">
+                        <div class="shop-pkg">
+                            <div class="shop-pkg-amount">50</div>
+                            <div class="shop-pkg-name">Starter</div>
+                            <div class="shop-pkg-price">Złotość</div>
+                            <div class="shop-pkg-badge soon">Wkrótce</div>
+                        </div>
+                        <div class="shop-pkg featured">
+                            <div class="shop-pkg-amount">200</div>
+                            <div class="shop-pkg-name">Pro</div>
+                            <div class="shop-pkg-price">Najlepszy wybór</div>
+                            <div class="shop-pkg-badge soon">Wkrótce</div>
+                        </div>
+                        <div class="shop-pkg">
+                            <div class="shop-pkg-amount">500</div>
+                            <div class="shop-pkg-name">Ultra</div>
+                            <div class="shop-pkg-price">Maksymalnie</div>
+                            <div class="shop-pkg-badge soon">Wkrótce</div>
                         </div>
                     </div>
                 </div>
@@ -455,16 +498,16 @@
                         <div class="card-header-icon"><svg><use href="#ic-key"/></svg></div>
                         <h3>Globalny klucz API (Groq)</h3>
                     </div>
-                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Używany przez wszystkich użytkowników</p>
+                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Używany przez wszystkich użytkowników. Ustawiasz raz — działa globalnie.</p>
                     <div class="admin-box">
-                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-                            <span style="color:var(--text4);font-size:0.78rem;">Aktualny:</span>
-                            <code id="currentApiKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:var(--green);">Ładowanie...</code>
+                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+                            <span style="color:var(--text4);font-size:0.78rem;">Aktualny klucz:</span>
+                            <code id="currentApiKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:var(--green);">Sprawdzanie...</code>
                         </div>
                         <input type="text" class="form-input" id="adminApiKey" placeholder="gsk_... (klucz Groq API)">
                         <input type="password" class="form-input" id="adminPass" placeholder="Hasło admina">
                         <div style="display:flex;gap:8px;">
-                            <button class="btn-primary" id="adminSetKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Ustaw klucz</button>
+                            <button class="btn-primary" id="adminSetKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Ustaw klucz globalnie</button>
                             <button class="btn-secondary" id="adminCheckKeyBtn"><svg><use href="#ic-eye"/></svg> Sprawdź</button>
                         </div>
                     </div>
@@ -472,11 +515,12 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-header-icon"><svg><use href="#ic-coins"/></svg></div>
-                        <h3>Zarządzanie kredytami</h3>
+                        <h3>Dodaj kredyty użytkownikowi</h3>
                     </div>
                     <div class="admin-box">
-                        <input type="text" class="form-input" id="adminUserId" placeholder="User ID">
-                        <input type="number" class="form-input" id="adminAmount" placeholder="Ilość kredytów">
+                        <input type="email" class="form-input" id="adminUserEmail" placeholder="Email użytkownika (np. jan@example.com)">
+                        <input type="number" class="form-input" id="adminAmount" placeholder="Ilość kredytów do dodania">
+                        <input type="password" class="form-input" id="adminPassCredits" placeholder="Hasło admina">
                         <button class="btn-primary" id="adminAddBtn"><svg><use href="#ic-plus"/></svg> Dodaj kredyty</button>
                     </div>
                 </div>

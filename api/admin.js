@@ -43,17 +43,19 @@ exports.handler = async function(event) {
 
         // ── Add credits ──────────────────────────────────────
         if (action === "addCredits") {
-            var targetId = body.userId; // can be UUID or username
+            var targetId = body.userId; // can be UUID, username, or email
             var amount   = Number(body.amount);
             if (!targetId) return { statusCode: 400, headers, body: JSON.stringify({ error: "userId required" }) };
             if (!amount || amount <= 0) return { statusCode: 400, headers, body: JSON.stringify({ error: "amount invalid" }) };
 
-            // Find user — try by id first, then username
+            // Find user — try by id, username, or email
             var rows = await supa(SUPA_URL, SUPA_KEY, "GET",
-                "profiles?or=(id.eq." + encodeURIComponent(targetId) + ",username.eq." + encodeURIComponent(targetId) + ")&select=id,username,credits");
+                "profiles?or=(id.eq." + encodeURIComponent(targetId) +
+                ",username.eq." + encodeURIComponent(targetId) +
+                ",email.eq." + encodeURIComponent(targetId) + ")&select=id,username,email,credits&limit=1");
 
             if (!Array.isArray(rows) || rows.length === 0) {
-                return { statusCode: 404, headers, body: JSON.stringify({ ok: false, error: "Użytkownik nie znaleziony" }) };
+                return { statusCode: 404, headers, body: JSON.stringify({ ok: false, error: "Użytkownik nie znaleziony (sprawdź email)" }) };
             }
             var user = rows[0];
             var newCredits = user.credits + amount;
@@ -63,7 +65,7 @@ exports.handler = async function(event) {
 
             return {
                 statusCode: 200, headers,
-                body: JSON.stringify({ ok: true, userId: user.id, username: user.username, added: amount, total: newCredits })
+                body: JSON.stringify({ ok: true, userId: user.id, username: user.username, email: user.email, added: amount, total: newCredits })
             };
         }
 

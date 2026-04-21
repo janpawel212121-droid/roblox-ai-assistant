@@ -374,15 +374,30 @@ var App = {
         this.credits     = d.credits || 0;
         this.usage       = d.usage   || 0;
 
+        var email = d.email || d.userId || '—';
+
+        // Side panel + top bar
         this.dom.uiUsername.textContent    = d.username;
         this.dom.uiConnectCode.textContent = d.connectCode;
         if (this.dom.topUsername) this.dom.topUsername.textContent = d.username;
         this.animateCounter(this.dom.uiCredits, 0, this.credits, 600);
 
-        this.dom.accUser.textContent    = d.username;
-        this.dom.accEmail.textContent   = d.email || d.userId;
-        this.dom.accCode.textContent    = d.connectCode;
-        this.animateCounter(this.dom.accCredits, 0, this.credits, 800);
+        // Account view — profile card (new IDs)
+        var accUserEl    = document.getElementById('accUser');
+        var accEmailEl   = document.getElementById('accEmail');
+        var accUser2El   = document.getElementById('accUser2');
+        var accEmail2El  = document.getElementById('accEmail2');
+        var accCredEl    = document.getElementById('accCredits');
+        var accCred2El   = document.getElementById('accCredits2');
+
+        if (accUserEl)   accUserEl.textContent   = d.username;
+        if (accEmailEl)  accEmailEl.textContent  = email;
+        if (accUser2El)  accUser2El.textContent  = d.username;
+        if (accEmail2El) accEmail2El.textContent = email;
+        if (accCredEl)   this.animateCounter(accCredEl,  0, this.credits, 800);
+        if (accCred2El)  this.animateCounter(accCred2El, 0, this.credits, 800);
+
+        this.dom.accCode.textContent = d.connectCode;
 
         if (d.isAdmin || d.email === 'janpawel212121@gmail.com' || d.username === 'Fleety001') {
             this.isAdmin = true;
@@ -1115,21 +1130,24 @@ var App = {
     },
 
     adminAddCredits: function() {
-        var self = this;
-        var p    = this.dom.adminPass.value;
-        var u    = this.dom.adminUserId.value;
-        var a    = parseInt(this.dom.adminAmount.value);
-        if (!p || !u || !a) { this.notify('Wypełnij wszystkie pola', 'warn'); return; }
+        var self  = this;
+        var email = document.getElementById('adminUserEmail') ? document.getElementById('adminUserEmail').value.trim() : '';
+        var p     = document.getElementById('adminPassCredits') ? document.getElementById('adminPassCredits').value : this.dom.adminPass.value;
+        var a     = parseInt(this.dom.adminAmount.value);
+        if (!p)       { this.notify('Wpisz hasło admina', 'warn'); return; }
+        if (!email)   { this.notify('Wpisz email użytkownika', 'warn'); return; }
+        if (!a || a <= 0) { this.notify('Podaj prawidłową ilość kredytów', 'warn'); return; }
 
         fetch('/api/admin', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'addCredits', password: p, userId: u, amount: a })
+            body: JSON.stringify({ action: 'addCredits', password: p, userId: email, amount: a })
         })
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.ok) {
-                self.notify('Dodano ' + a + ' kredytów dla ' + u, 'success');
-                if (u === self.userId) self.verifySession();
+                self.notify('Dodano ' + a + ' kr. dla ' + (d.username || email), 'success');
+                self.consolePrint('Admin: +' + a + ' kr. → ' + email, 'success');
+                if (d.userId === self.userId) self.verifySession();
             } else {
                 self.notify('Błąd: ' + (d.error || 'Nieprawidłowe hasło'), 'error');
             }
@@ -1161,18 +1179,19 @@ var App = {
     },
 
     adminLoadApiKey: function() {
-        var p = this.dom.adminPass.value;
-        if (!p) { document.getElementById('currentApiKey').textContent = '(wpisz hasło)'; return; }
-
+        var passEl = this.dom.adminPass;
+        var p = (passEl && passEl.value) ? passEl.value : '';
         fetch('/api/admin', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'getApiKey', password: p })
+            body: JSON.stringify({ action: 'getApiKey', password: p || (process && process.env ? '' : '') })
         })
         .then(function(r) { return r.json(); })
         .then(function(d) {
-            document.getElementById('currentApiKey').textContent = d.ok ? (d.apiKey || '(brak)') : '(błąd hasła)';
+            var el = document.getElementById('currentApiKey');
+            if (el) el.textContent = d.ok ? (d.apiKey || '(brak)') : '(wpisz hasło aby sprawdzić)';
         }).catch(function() {
-            document.getElementById('currentApiKey').textContent = '(błąd sieci)';
+            var el = document.getElementById('currentApiKey');
+            if (el) el.textContent = '(błąd sieci)';
         });
     },
 

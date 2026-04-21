@@ -684,7 +684,7 @@ a { text-decoration:none; }
 #msgInput {
     flex:1; background:transparent; border:none; color:var(--text);
     font-family:var(--font); font-size:0.95rem; resize:none; outline:none;
-    max-height:260px; min-height:48px; line-height:1.65;
+    max-height:200px; min-height:36px; line-height:1.6;
 }
 #msgInput::placeholder { color:var(--text4); font-size:0.93rem; }
 
@@ -906,3 +906,67 @@ a { text-decoration:none; }
     .top-tab { padding:6px 9px; font-size:0.75rem; }
     .input-toolbar { flex-wrap:wrap; gap:4px; }
 }
+
+/* =====================================================
+   ACCOUNT — Profile card
+   ===================================================== */
+.account-profile-card {
+    display:flex; align-items:center; gap:14px;
+    padding:16px 20px !important; grid-column: 1 / -1;
+}
+.acc-avatar {
+    width:54px; height:54px; border-radius:12px;
+    background:var(--bg3); border:1px solid var(--border2);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; overflow:hidden;
+}
+.acc-profile-info { flex:1; min-width:0; }
+.acc-username {
+    font-size:1rem; font-weight:700; color:var(--text); margin-bottom:2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.acc-email {
+    font-size:0.78rem; color:var(--text4);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.acc-credits-badge {
+    display:flex; align-items:center; gap:6px;
+    background:var(--green-dim); border:1px solid rgba(0,198,255,0.3);
+    padding:7px 16px; border-radius:99px; flex-shrink:0;
+    color:var(--green); font-weight:700; font-size:1.05rem;
+}
+.acc-credits-badge svg { width:13px; height:13px; }
+.acc-credits-unit { font-size:0.72rem; font-weight:400; opacity:0.75; }
+
+/* =====================================================
+   SHOP — Coming soon
+   ===================================================== */
+.shop-coming-soon { text-align:center; padding:48px 20px 32px; }
+.shop-soon-icon { font-size:3rem; margin-bottom:16px; }
+.shop-coming-soon h3 {
+    font-size:1.3rem; font-weight:700; color:var(--text); margin-bottom:8px;
+}
+.shop-coming-soon p {
+    color:var(--text4); font-size:0.9rem; line-height:1.7; margin-bottom:36px;
+}
+.shop-packages-preview { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.shop-pkg {
+    background:var(--bg2); border:1px solid var(--border2);
+    border-radius:var(--radius); padding:22px 26px;
+    min-width:130px; text-align:center;
+    opacity:0.55; cursor:default;
+}
+.shop-pkg.featured { border-color:var(--green); opacity:0.75; }
+.shop-pkg-amount { font-size:2rem; font-weight:800; color:var(--text); margin-bottom:4px; }
+.shop-pkg-name  { font-size:0.8rem; font-weight:700; color:var(--text3); margin-bottom:2px; }
+.shop-pkg-price { font-size:0.75rem; color:var(--text4); margin-bottom:12px; }
+.shop-pkg-badge.soon {
+    display:inline-block; padding:3px 10px; border-radius:99px;
+    font-size:0.65rem; font-weight:700;
+    background:var(--bg4); color:var(--text4); border:1px solid var(--border);
+}
+
+/* =====================================================
+   INPUT ROW — compact
+   ===================================================== */
+.input-row { padding:7px 10px 7px 10px; }
