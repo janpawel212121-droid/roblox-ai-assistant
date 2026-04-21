@@ -1,0 +1,7 @@
+{
+  "name": "roblox-ai-assistant",
+  "version": "3.0.0",
+  "dependencies": {
+    "crypto": "^1.0.1"
+  }
+}
