@@ -592,11 +592,11 @@ a { text-decoration:none; }
 }
 .select-selected:hover { border-color:var(--border2); color:var(--text2); }
 .select-items {
-    position:absolute; top:calc(100% + 5px); left:0;
+    position:absolute; bottom:calc(100% + 5px); left:0; top:auto;
     background:var(--bg3); border:1px solid var(--border2);
     border-radius:var(--radius-sm); z-index:9999;
-    box-shadow:0 8px 32px rgba(0,0,0,0.6); min-width:190px;
-    overflow:visible;
+    box-shadow:0 -8px 32px rgba(0,0,0,0.6); min-width:190px;
+    overflow:hidden;
 }
 .select-items div {
     padding:10px 14px; font-size:0.82rem; color:var(--text3);
