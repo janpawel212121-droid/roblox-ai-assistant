@@ -99,20 +99,19 @@ var App = {
         this.dom.regForm.onsubmit   = function(e) { e.preventDefault(); self.doRegister(); };
         document.getElementById('logoutBtn').onclick = function() { self.doLogout(); };
 
-        // Nav tabs — top tabs + rail buttons both trigger view switch
-        function switchView(target, clickedBtn) {
-            document.querySelectorAll('.top-tab, .rail-btn[data-target]').forEach(function(x) {
+        // Nav — rail buttons only (no top-tabs)
+        function switchView(target) {
+            document.querySelectorAll('.rail-btn[data-target]').forEach(function(x) {
                 if (x.getAttribute('data-target') === target) x.classList.add('active');
                 else x.classList.remove('active');
             });
             document.querySelectorAll('.view-container').forEach(function(v) { v.classList.add('hidden'); });
             var el = document.getElementById(target);
             if (el) el.classList.remove('hidden');
-            if (target === 'viewHistory') self.loadHistory();
-            if (target === 'viewAdmin')   self.adminLoadApiKey();
+            if (target === 'viewAdmin') self.adminLoadApiKey();
         }
-        document.querySelectorAll('.top-tab, .rail-btn[data-target]').forEach(function(t) {
-            t.onclick = function() { switchView(t.getAttribute('data-target'), t); };
+        document.querySelectorAll('.rail-btn[data-target]').forEach(function(t) {
+            t.onclick = function() { switchView(t.getAttribute('data-target')); };
         });
 
         // Custom Select Dropdown
@@ -160,8 +159,8 @@ var App = {
         };
         this.dom.msgInput.oninput = function() {
             self.dom.sendBtn.disabled = !this.value.trim() || self.generating;
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+            this.style.height = '22px';
+            this.style.height = Math.min(this.scrollHeight, 160) + 'px';
         };
 
         // Image upload
@@ -401,10 +400,14 @@ var App = {
 
         if (d.isAdmin || d.email === 'janpawel212121@gmail.com' || d.username === 'Fleety001') {
             this.isAdmin = true;
-            this.dom.adminTab.classList.remove('hidden');
+            var adminRail = document.getElementById('adminRailBtn');
+            if (adminRail) adminRail.classList.remove('hidden');
+            if (this.dom.adminTab) this.dom.adminTab.classList.remove('hidden');
         } else {
             this.isAdmin = false;
-            this.dom.adminTab.classList.add('hidden');
+            var adminRail2 = document.getElementById('adminRailBtn');
+            if (adminRail2) adminRail2.classList.add('hidden');
+            if (this.dom.adminTab) this.dom.adminTab.classList.add('hidden');
         }
 
         // Load isolated user chats
@@ -793,33 +796,41 @@ var App = {
                 var wasConnected = self._pluginConnected;
                 self._pluginConnected = connected;
 
-                // Log changes
                 if (connected !== wasConnected) {
-                    if (connected) {
-                        self.consolePrint('Plugin połączony ✓', 'success');
-                    } else {
-                        self.consolePrint('Plugin rozłączony', 'warn');
-                    }
+                    self.consolePrint(connected ? 'Plugin połączony ✓' : 'Plugin rozłączony', connected ? 'success' : 'warn');
                 }
 
-                document.querySelectorAll('.status-dot').forEach(function(dot) {
-                    dot.classList.toggle('connected', connected);
-                    dot.classList.toggle('disconnected', !connected);
-                });
+                // New plugin card dot (.pcc-dot)
+                var pccDot = document.getElementById('pluginStatusDot');
+                if (pccDot) {
+                    pccDot.classList.toggle('connected',    connected);
+                    pccDot.classList.toggle('disconnected', !connected);
+                }
+
+                // New badge
+                var badge = document.getElementById('pluginStatusBadge');
+                if (badge) {
+                    badge.textContent = connected ? 'Online' : 'Offline';
+                    badge.className = 'pcc-badge ' + (connected ? 'online' : 'offline');
+                }
+
+                // Rail brand dot
                 var railDot = document.getElementById('pluginDot');
                 if (railDot) railDot.classList.toggle('connected', connected);
-                var statusLabel  = document.getElementById('pluginStatusText');
-                var statusLabel2 = document.getElementById('pluginStatusText2');
-                var topLabel     = document.getElementById('topPluginLabel');
-                if (connected) {
-                    if (statusLabel)  statusLabel.textContent  = 'Plugin połączony';
-                    if (statusLabel2) statusLabel2.textContent = 'Plugin połączony';
-                    if (topLabel)     topLabel.textContent     = 'Plugin połączony';
-                } else {
-                    if (statusLabel)  statusLabel.textContent  = 'Offline';
-                    if (statusLabel2) statusLabel2.textContent = 'Rozłączony (Czekam...)';
-                    if (topLabel)     topLabel.textContent     = 'Offline';
+
+                // Top bar pill
+                var topLabel = document.getElementById('topPluginLabel');
+                var topDot   = document.getElementById('topPluginDot');
+                if (topLabel) topLabel.textContent = connected ? 'Online' : 'Offline';
+                if (topDot) {
+                    topDot.classList.toggle('connected',    connected);
+                    topDot.classList.toggle('disconnected', !connected);
                 }
+
+                // Legacy labels
+                var statusLabel = document.getElementById('pluginStatusText');
+                if (statusLabel) statusLabel.textContent = connected ? 'Online' : 'Offline';
+
             }).catch(function(e) {
                 self.consolePrint('Status check error: ' + e.message, 'error');
             });

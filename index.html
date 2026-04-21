@@ -138,10 +138,7 @@
             <button class="rail-btn active" data-target="viewChat" title="Chat">
                 <svg><use href="#ic-message"/></svg>
             </button>
-            <button class="rail-btn" data-target="viewHistory" title="Historia">
-                <svg><use href="#ic-history"/></svg>
-            </button>
-            <button class="rail-btn" data-target="viewEditor" title="Edytor">
+            <button class="rail-btn" data-target="viewEditor" title="Edytor kodu">
                 <svg><use href="#ic-file-code"/></svg>
             </button>
             <button class="rail-btn" data-target="viewShop" title="Sklep tokenów">
@@ -151,6 +148,9 @@
         <div class="rail-bottom">
             <button class="rail-btn" data-target="viewAccount" title="Konto">
                 <svg><use href="#ic-account"/></svg>
+            </button>
+            <button class="rail-btn hidden" data-target="viewAdmin" title="Admin" id="adminRailBtn">
+                <svg><use href="#ic-shield"/></svg>
             </button>
             <button class="rail-btn rail-btn--danger" id="logoutBtn" title="Wyloguj">
                 <svg><use href="#ic-logout"/></svg>
@@ -174,29 +174,28 @@
             </div>
         </div>
 
-        <!-- Connect Code -->
+        <!-- Plugin connect card -->
         <div class="side-block">
-            <div class="side-block-title">CONNECT CODE</div>
-            <div class="connect-code-row">
-                <code class="connect-code-val" id="uiConnectCode">—</code>
-                <button class="icon-btn" id="copyCodeBtn" title="Kopiuj">
-                    <svg><use href="#ic-copy"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- Plugin status -->
-        <div class="side-block">
-            <div class="plugin-status-card" id="pluginStatusBox">
-                <div class="psc-indicator">
-                    <span class="status-dot disconnected" id="pluginStatusDot"></span>
-                    <span class="psc-label" id="pluginStatusText2">Rozłączony (Czekam...)</span>
+            <div class="plugin-connect-card" id="pluginStatusBox">
+                <div class="pcc-header">
+                    <div class="pcc-status-row">
+                        <span class="pcc-dot disconnected" id="pluginStatusDot"></span>
+                        <span class="pcc-status-text">Roblox Studio</span>
+                    </div>
+                    <span class="pcc-badge offline" id="pluginStatusBadge">Offline</span>
                 </div>
-                <p class="psc-desc">Aby używać AI, zainstaluj wtyczkę w Roblox Studio i użyj Connect Code.</p>
+                <div class="pcc-code-row">
+                    <code class="pcc-code" id="uiConnectCode">—</code>
+                    <button class="pcc-copy-btn" id="copyCodeBtn" title="Kopiuj kod">
+                        <svg><use href="#ic-copy"/></svg>
+                    </button>
+                </div>
+                <a href="plugin%20roblox/Astro.lua" download="Astro.lua" class="pcc-dl-btn">
+                    <svg><use href="#ic-bolt"/></svg>
+                    Pobierz plugin
+                </a>
             </div>
-            <a href="plugin%20roblox/Astro.lua" download="Astro.lua" class="plugin-dl-btn">
-                <svg><use href="#ic-bolt"/></svg> Pobierz Wtyczkę
-            </a>
+            <div id="pluginStatusText2" style="display:none"></div>
         </div>
 
         <!-- Chats -->
@@ -237,7 +236,7 @@
     <!-- MAIN -->
     <main class="main-area">
 
-        <!-- Top bar — Lemonade style -->
+        <!-- Top bar — brand + plugin pill only -->
         <header class="top-bar">
             <div class="top-bar-brand">
                 <div class="top-brand-icon">
@@ -248,13 +247,6 @@
                 <span class="top-sep">·</span>
                 <span class="top-username" id="topUsername">—</span>
             </div>
-            <nav class="top-tabs">
-                <button class="top-tab active" data-target="viewChat">Chat</button>
-                <button class="top-tab" data-target="viewEditor">Edytor</button>
-                <button class="top-tab" data-target="viewAccount">Konto</button>
-                <button class="top-tab" data-target="viewHistory">Historia</button>
-                <button class="top-tab hidden" data-target="viewAdmin" id="adminTab">Admin</button>
-            </nav>
             <div class="top-bar-right">
                 <div class="top-plugin-pill" id="topPluginPill">
                     <span class="status-dot disconnected" id="topPluginDot"></span>
@@ -262,6 +254,9 @@
                 </div>
             </div>
         </header>
+
+        <!-- Hidden admin tab target -->
+        <button class="hidden" data-target="viewAdmin" id="adminTab" style="display:none"></button>
 
         <!-- CHAT VIEW -->
         <div class="view-container" id="viewChat">
