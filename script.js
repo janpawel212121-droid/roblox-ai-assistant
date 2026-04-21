@@ -412,6 +412,12 @@ var App = {
 
         // Load isolated user chats
         this.loadChats();
+
+        // Start plugin status polling
+        var self = this;
+        if (this._statusInterval) clearInterval(this._statusInterval);
+        this._statusInterval = setInterval(function() { self.checkPluginStatus(); }, 5000);
+        setTimeout(function() { self.checkPluginStatus(); }, 800);
     },
 
     animateCounter: function(el, from, to, duration) {
@@ -448,6 +454,8 @@ var App = {
         this.addMsg('user', text);
         this.dom.msgInput.value = '';
         this.dom.sendBtn.disabled = true;
+        this.dom.msgInput.disabled = true;
+        this.dom.msgInput.classList.add('generating');
         this.dom.msgInput.style.height = 'auto';
 
         this.generating = true;
@@ -544,7 +552,11 @@ var App = {
         .finally(function() {
             self.generating = false;
             self.dom.typing.classList.remove('active');
+            self.dom.msgInput.disabled = false;
+            self.dom.msgInput.classList.remove('generating');
+            self.dom.msgInput.placeholder = 'Opisz co chcesz stworzyć...';
             self.dom.sendBtn.disabled = !self.dom.msgInput.value.trim();
+            self.dom.msgInput.focus();
         });
     },
 
@@ -593,8 +605,8 @@ var App = {
             var parsed = this.parseBotMsg(text);
             div.innerHTML =
                 '<div class="msg-sender">' +
-                    '<img src="ikona.png" alt="" style="width:16px;height:16px;object-fit:contain;flex-shrink:0">' +
-                    '<span>Astro</span>' +
+                    '<img src="ikona.png" alt="" class="msg-logo">' +
+                    '<span class="msg-sender-name">Astro</span>' +
                 '</div>' +
                 (parsed.tools ? '<div class="tool-chain">' + parsed.tools + '</div>' : '') +
                 (parsed.text ? '<div class="msg-text">' + parsed.text + '</div>' : '');
@@ -639,9 +651,9 @@ var App = {
 
             tools +=
                 '<div class="tool-pill ' + actionClass + '">' +
-                    '<svg><use href="' + actionIcon + '"/></svg>' +
-                    '<span>' + actionLabel + ': <code>' + self.esc(info.name) + '</code></span>' +
-                    '<span class="tool-pill-meta">' + info.type + ' → ' + info.parent + '</span>' +
+                    '<svg class="tp-icon"><use href="' + actionIcon + '"/></svg>' +
+                    '<span class="tp-label">' + actionLabel + ' <span class="tp-name">' + self.esc(info.name) + '</span></span>' +
+                    '<span class="tp-meta">' + info.type + ' · ' + info.parent + '</span>' +
                     '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Kopiuj kod">' +
                         '<svg><use href="#ic-copy"/></svg>' +
                     '</button>' +
@@ -684,67 +696,74 @@ var App = {
             .replace(/\n/g, '<br>')
             .trim();
 
-        // Combine: plan steps (if any) + tool pills + text
-        var finalText = planHtml + remaining;
+        // Combine: pills go first, then plan steps, then text ONLY if no code was found
+        var finalText = planHtml + (tools ? '' : remaining);
         this.renderTree();
         return { tools: tools, text: finalText };
     },
 
     parseBotMsgSilently: function(text) {
-        var self = this;
-        var html = text;
-        html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
+        var self  = this;
+        var tools = '';
+        var remaining = text;
+
+        // Code blocks → tool pills (same as parseBotMsg but no plugin send / addFile)
+        remaining = remaining.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
             var info = self.parseInfo(code);
-            var actionBadge = '';
-            if (info.action === 'update') actionBadge = ' <span style="color:var(--yellow);font-size:0.63rem;font-weight:700;">UPDATE</span>';
-            else if (info.action === 'delete') actionBadge = ' <span style="color:var(--red);font-size:0.63rem;font-weight:700;">DELETE</span>';
-            return '<div class="code-wrap">' +
-                '<div class="code-top">' +
-                    '<span class="code-lang">' +
-                        '<svg style="width:12px;height:12px;"><use href="#ic-file-code"/></svg> ' +
-                        self.esc(info.name) +
-                        '<span class="code-lang-info">' + info.type + ' → ' + info.parent + '</span>' +
-                        actionBadge +
-                    '</span>' +
-                    '<div class="code-btns">' +
-                        '<button class="code-btn" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '">' +
-                            '<svg><use href="#ic-copy"/></svg> Kopiuj' +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-                '<pre><code>' + self.esc(code.trim()) + '</code></pre>' +
+            var actionIcon  = '#ic-file-code';
+            var actionLabel = 'Utworzono';
+            var actionClass = 'created';
+            if (info.action === 'update') { actionLabel = 'Zaktualizowano'; actionClass = 'updated'; }
+            if (info.action === 'delete') { actionLabel = 'Usunięto'; actionClass = 'deleted'; actionIcon = '#ic-trash'; }
+
+            tools +=
+                '<div class="tool-pill ' + actionClass + '">' +
+                    '<svg class="tp-icon"><use href="' + actionIcon + '"/></svg>' +
+                    '<span class="tp-label">' + actionLabel + ' <span class="tp-name">' + self.esc(info.name) + '</span></span>' +
+                    '<span class="tp-meta">' + info.type + ' · ' + info.parent + '</span>' +
+                    '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Kopiuj">' +
+                        '<svg><use href="#ic-copy"/></svg>' +
+                    '</button>' +
                 '</div>';
-                '</div>';
+            return '';
         });
 
+        // Checklist items → plan steps
         var checklistRegex = /(?:^[ \t]*-[ \t]+\[[xX \/]\][ \t]+.*(?:\r?\n|$))+/gm;
-        html = html.replace(checklistRegex, function(match) {
+        remaining = remaining.replace(checklistRegex, function(match) {
             var lines = match.trim().split('\n');
             var stepsHtml = '';
-            var count = lines.length;
-            for(var i=0; i<lines.length; i++) {
-               var line = lines[i].trim();
-               var stateMatch = line.match(/^[ \t]*-[ \t]+\[(x|X| |\/)\][ \t]+(.*)$/);
-               if(stateMatch) {
-                   var state = stateMatch[1].toLowerCase();
-                   var text = stateMatch[2];
-                   if(state === 'x') {
-                       stepsHtml += '<div class="plan-step checked"><svg><use href="#ic-check"/></svg> ' + text + '</div>';
-                   } else if(state === '/') {
-                       stepsHtml += '<div class="plan-step active"><span class="loader-spinner"></span> ' + text + '</div>';
-                   } else {
-                       stepsHtml += '<div class="plan-step"><div class="empty-checkbox"></div> ' + text + '</div>';
-                   }
-               }
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                var m = line.match(/^[ \t]*-[ \t]+\[(x|X| |\/)\][ \t]+(.*)$/);
+                if (m) {
+                    var state = m[1].toLowerCase(), label = m[2];
+                    if (state === 'x') stepsHtml += '<div class="plan-step checked"><svg><use href="#ic-check"/></svg> ' + label + '</div>';
+                    else if (state === '/') stepsHtml += '<div class="plan-step active"><span class="loader-spinner"></span> ' + label + '</div>';
+                    else stepsHtml += '<div class="plan-step"><div class="empty-checkbox"></div> ' + label + '</div>';
+                }
             }
-            return '<div class="plan-steps-box"><div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Steps (' + count + ')</div>' + stepsHtml + '</div>';
+            return '<div class="plan-steps-box"><div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Plan</div>' + stepsHtml + '</div>';
         });
 
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,212,255,0.08);border:1px solid var(--border);padding:2px 7px;border-radius:4px;font-size:0.8em;font-family:var(--mono);">$1</code>');
-        html = html.replace(/\n/g, '<br>');
-        return html;
+        // Format remaining text (same rules as parseBotMsg)
+        remaining = remaining
+            .replace(/^#{1,3}\s+(.+)$/gm, '<div class="msg-heading">$1</div>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
+            .replace(/^[\s]*[-•]\s+(.+)$/gm, '<div class="msg-bullet"><span class="bullet-dot"></span>$1</div>')
+            .replace(/\n{2,}/g, '<div class="msg-spacer"></div>')
+            .replace(/\n/g, '<br>')
+            .trim();
+
+        if (tools) {
+            return '<div class="msg-sender"><img src="ikona.png" alt="" class="msg-logo"><span class="msg-sender-name">Astro</span></div>' +
+                   '<div class="tool-chain">' + tools + '</div>' +
+                   (remaining ? '<div class="msg-text">' + remaining + '</div>' : '');
+        }
+        return remaining;
     },
+
 
     copyCode: function(btn) {
         var code = btn.getAttribute('data-code');
@@ -1088,19 +1107,14 @@ var App = {
             var roleClass = m.role === 'assistant' ? 'bot' : 'user';
             var div       = document.createElement('div');
             div.className = 'msg ' + roleClass;
-            var content   = roleClass === 'bot' ? this.parseBotMsgSilently(m.text) : this.esc(m.text);
             if (roleClass === 'bot') {
-                div.innerHTML =
-                    '<div class="msg-avatar bot">' +
-                        '<svg style="width:16px;height:16px;color:#fff;"><use href="#ic-robot"/></svg>' +
-                    '</div>' +
-                    '<div class="msg-body"><div class="msg-bubble">' + content + '</div></div>';
+                // parseBotMsgSilently returns full HTML (msg-sender + tool-chain + msg-text)
+                div.innerHTML = this.parseBotMsgSilently(m.text);
             } else {
                 div.innerHTML =
-                    '<div class="msg-avatar">' +
-                        '<svg style="width:16px;height:16px;color:var(--text3);"><use href="#ic-user"/></svg>' +
-                    '</div>' +
-                    '<div class="msg-body"><div class="msg-bubble">' + content + '</div></div>';
+                    '<div class="msg-user-row">' +
+                        '<div class="msg-user-bubble">' + this.esc(m.text) + '</div>' +
+                    '</div>';
             }
             this.dom.messages.appendChild(div);
         }
