@@ -114,6 +114,10 @@ exports.handler = async function(event) {
             return { statusCode: 500, headers, body: JSON.stringify({ error: "API_KEY_MISSING" }) };
         }
 
+        var maxTokens = 5000;
+        if (model.includes("8b")) maxTokens = 3000;
+        else if (model.includes("70b")) maxTokens = 8000;
+
         // Call Groq/OpenAI
         var aiRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
@@ -124,7 +128,7 @@ exports.handler = async function(event) {
             body: JSON.stringify({
                 model:       model,
                 messages:    messages,
-                max_tokens:  32768,
+                max_tokens:  maxTokens,
                 temperature: 0.5
             })
         });
