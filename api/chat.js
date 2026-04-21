@@ -124,7 +124,7 @@ exports.handler = async function(event) {
             body: JSON.stringify({
                 model:       model,
                 messages:    messages,
-                max_tokens:  8000,
+                max_tokens:  32768,
                 temperature: 0.5
             })
         });
@@ -141,6 +141,13 @@ exports.handler = async function(event) {
         var content = "Brak odpowiedzi";
         if (data.choices && data.choices[0] && data.choices[0].message) {
             content = data.choices[0].message.content;
+            // If response was cut off, append closing ``` so regex can still match
+            var finishReason = data.choices[0].finish_reason;
+            if (finishReason === "length") {
+                if ((content.match(/```/g) || []).length % 2 !== 0) {
+                    content += "\n```\n\n> ⚠️ Odpowiedź została skrócona. Napisz **kontynuuj** aby dostać resztę kodu.";
+                }
+            }
         }
 
         // Save history to Supabase

@@ -567,33 +567,38 @@ var App = {
 
     getSysPrompt: function() {
         return 'Jesteś ekspertem Roblox Studio i Luau. Tworzysz kompletne, działające systemy.\n\n' +
+        'INTERFEJS UŻYTKOWNIKA — WAŻNE:\n' +
+        'Twoje odpowiedzi są wyświetlane w specjalnym UI, który CHOWA tekst gdy generujesz kod.\n' +
+        'Dlatego: NIE pisz opisów, wstępów ani wyjaśnień przed/między blokami kodu.\n' +
+        'NIE pisz "Poniżej znajdziesz kod", "Oto kod", "Gotowe!" itp.\n' +
+        'Możesz napisać KRÓTKI checklist kroków (patrz PLANOWANIE), a potem od razu kod.\n\n' +
         'FORMAT KODU — KRYTYCZNIE WAŻNE:\n' +
         'Każdy blok kodu MUSI mieć na PIERWSZEJ LINII konfigurację w DOKŁADNIE takim formacie:\n' +
         '-- @NAME: NazwaPliku | @TYPE: TypSkryptu | @PARENT: Lokalizacja | @ACTION: create\n\n' +
         'Dozwolone @TYPE: LocalScript, Script, ModuleScript\n' +
         'Dozwolone @PARENT: StarterGui, ServerScriptService, ReplicatedStorage, StarterPlayerScripts, ServerStorage\n' +
         'Dozwolone @ACTION: create (nowy plik), update (zmień istniejący), delete (usuń plik)\n\n' +
-        'PRZYKŁAD:\n' +
+        'PRZYKŁAD POPRAWNEJ ODPOWIEDZI:\n' +
+        '- [x] Zaplanowano implementację\n' +
+        '- [/] Tworzenie MainMenuGUI\n' +
+        '- [ ] Weryfikacja\n\n' +
         '```lua\n' +
         '-- @NAME: MainMenuGUI | @TYPE: LocalScript | @PARENT: StarterGui | @ACTION: create\n' +
         'local Players = game:GetService("Players")\n' +
         '-- kod...\n' +
         '```\n\n' +
-        'ZASADY PLANOWANIA:\n' +
-        '1. ZAWSZE zacznij od PLANU — opisz jakie pliki stworzysz/zmienisz\n' +
-        '2. Użyj **Plan:** na początku\n' +
-        '3. Opisz architekturę i zależności między plikami\n\n' +
         'ZASADY KODU:\n' +
         '1. Pisz WYŁĄCZNIE w Luau\n' +
-        '2. Kod musi działać od razu\n' +
+        '2. Kod musi działać od razu bez modyfikacji\n' +
         '3. GUI twórz z Instance.new() — ScreenGui, Frame, TextButton, UICorner, UIGradient itd.\n' +
         '4. ZAWSZE dodawaj animacje TweenService\n' +
         '5. Używaj ładnych kolorów, gradientów, zaokrągleń\n' +
-        '6. Pisz DŁUGI, SZCZEGÓŁOWY kod — minimum 100 linii na skrypt GUI\n' +
+        '6. Pisz KOMPLETNY, SZCZEGÓŁOWY kod — minimum 100 linii na skrypt GUI\n' +
         '7. Dodawaj komentarze po polsku\n' +
         '8. Obsługuj błędy z pcall\n' +
-        '9. Możesz generować WIELE plików w jednej odpowiedzi\n\n' +
-        'Odpowiadaj po polsku. Bądź profesjonalny i szczegółowy.';
+        '9. Generuj WIELE plików naraz jeśli system tego wymaga\n' +
+        '10. NIGDY nie przerywaj bloku kodu — zawsze kończ ```\n\n' +
+        'Odpowiadaj po polsku. Zamiast opisywać co zrobisz — po prostu to zrób.';
     },
 
     addMsg: function(role, text) {
@@ -864,6 +869,13 @@ var App = {
     // PLUGIN & FILES
     // ==========================================
     sendToPlugin: function(blocks) {
+        // Guard: don't queue if plugin is not connected
+        if (!this._pluginConnected) {
+            this.notify('Plugin nie jest podłączony! Podłącz plugin w Roblox Studio.', 'warn');
+            this.consolePrint('Kod wygenerowany — ale plugin offline. Podłącz plugin i spróbuj ponownie.', 'warn');
+            return;
+        }
+
         var tasks = [];
         for (var i = 0; i < blocks.length; i++) {
             var inf = this.parseInfo(blocks[i].code);
@@ -890,6 +902,7 @@ var App = {
         .then(function(d) {
             if (d.success) {
                 self.consolePrint(tasks.length + ' zadań wysłanych do pluginu ✓', 'success');
+                self.notify(tasks.length + ' plików wysłanych do Roblox Studio!', 'success');
             } else {
                 self.consolePrint('Błąd wysyłki: ' + (d.error || 'Nieznany'), 'error');
             }
