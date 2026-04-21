@@ -48,14 +48,25 @@ exports.handler = async function(event) {
             if (!targetId) return { statusCode: 400, headers, body: JSON.stringify({ error: "userId required" }) };
             if (!amount || amount <= 0) return { statusCode: 400, headers, body: JSON.stringify({ error: "amount invalid" }) };
 
-            // Find user — try by id, username, or email
-            var rows = await supa(SUPA_URL, SUPA_KEY, "GET",
-                "profiles?or=(id.eq." + encodeURIComponent(targetId) +
-                ",username.eq." + encodeURIComponent(targetId) +
-                ",email.eq." + encodeURIComponent(targetId) + ")&select=id,username,email,credits&limit=1");
+            var rows = [];
+
+            // If looks like email — query directly (@ breaks inside or())
+            if (targetId.includes("@")) {
+                rows = await supa(SUPA_URL, SUPA_KEY, "GET",
+                    "profiles?email=eq." + encodeURIComponent(targetId) +
+                    "&select=id,username,email,credits&limit=1");
+            }
+
+            // If not found by email, try by id or username
+            if (!Array.isArray(rows) || rows.length === 0) {
+                rows = await supa(SUPA_URL, SUPA_KEY, "GET",
+                    "profiles?or=(id.eq." + encodeURIComponent(targetId) +
+                    ",username.eq." + encodeURIComponent(targetId) + ")" +
+                    "&select=id,username,email,credits&limit=1");
+            }
 
             if (!Array.isArray(rows) || rows.length === 0) {
-                return { statusCode: 404, headers, body: JSON.stringify({ ok: false, error: "Użytkownik nie znaleziony (sprawdź email)" }) };
+                return { statusCode: 404, headers, body: JSON.stringify({ ok: false, error: "Użytkownik nie znaleziony — sprawdź czy email jest poprawny" }) };
             }
             var user = rows[0];
             var newCredits = user.credits + amount;
