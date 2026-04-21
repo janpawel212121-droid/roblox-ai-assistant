@@ -182,6 +182,7 @@ var App = {
 
     setAuthError: function(msg) {
         this.dom.authErrorText.textContent = msg;
+        this.dom.authError.style.display = msg ? 'flex' : 'none';
         this.dom.authError.style.opacity = msg ? '1' : '0';
     },
 

@@ -296,9 +296,10 @@ body {
 .remember-label input:checked ~ .custom-check svg { color: #fff; }
 
 .auth-error {
+    display: none;
     color: var(--red); font-size: 0.78rem;
     min-height: 18px; text-align: left;
-    display: flex; align-items: center; gap: 6px;
+    align-items: center; gap: 6px;
 }
 .auth-error svg { width: 12px; height: 12px; flex-shrink: 0; }
 
@@ -929,13 +930,16 @@ body {
 /* Connect code card */
 .connect-code-full-card { grid-column: 1 / -1; }
 .code-display {
-    background: rgba(1,8,18,0.8);
-    border: 1px solid var(--border2);
-    padding: 16px 20px; border-radius: var(--radius-sm);
-    font-family: var(--mono); font-size: 1.05rem;
-    color: var(--cyan); letter-spacing: 2px;
-    text-align: center; margin-bottom: 20px;
+    background: linear-gradient(145deg, rgba(3,15,32,0.95), rgba(7,28,48,0.9));
+    border: 1px solid var(--cyan2);
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.15), inset 0 0 10px rgba(0,212,255,0.05);
+    padding: 20px; border-radius: var(--radius);
+    font-family: var(--mono); font-size: 1.25rem; font-weight: 800;
+    color: #fff; letter-spacing: 3px;
+    text-align: center; margin-bottom: 24px;
     position: relative;
+    text-shadow: 0 2px 10px rgba(0,212,255,0.4);
+    display: block; width: 100%;
 }
 .steps-list { display: flex; flex-direction: column; gap: 10px; }
 .step-item {
