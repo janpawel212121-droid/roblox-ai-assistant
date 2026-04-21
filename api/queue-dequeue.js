@@ -37,11 +37,10 @@ exports.handler = async function(event) {
             return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing connectCode" }) };
         }
 
-        // Validate connect code & get user
+        // Validate connect code & get user (no expiry check for plugin)
         var codeRows = await supa(SUPA_URL, SUPA_KEY, "GET",
             "connect_codes?code=eq." + encodeURIComponent(connectCode) +
-            "&expires_at=gt." + new Date().toISOString() +
-            "&select=user_id");
+            "&select=user_id&limit=1");
 
         if (!Array.isArray(codeRows) || codeRows.length === 0) {
             return { statusCode: 200, headers, body: JSON.stringify({ error: "INVALID_CODE", tasks: [] }) };

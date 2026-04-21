@@ -681,7 +681,7 @@ a { text-decoration:none; }
 #msgInput {
     flex:1; background:transparent; border:none; color:var(--text);
     font-family:var(--font); font-size:0.95rem; resize:none; outline:none;
-    max-height:260px; min-height:72px; line-height:1.65;
+    max-height:260px; min-height:48px; line-height:1.65;
 }
 #msgInput::placeholder { color:var(--text4); font-size:0.93rem; }
 

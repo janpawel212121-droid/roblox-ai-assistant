@@ -5,12 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astro — AI Asystent do Roblox</title>
     <meta name="description" content="Astro — zaawansowany asystent AI do tworzenia gier w Roblox Studio.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%2300c8ff'/><stop offset='100%25' stop-color='%230066ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%230a0a0a'/><path d='M65 15 C80 15 85 30 82 48 L65 65 L55 55 L72 38 C76 30 72 20 65 15Z' fill='url(%23g)'/><path d='M35 85 C28 78 30 65 35 60 L48 47 L53 52 L40 65 C36 72 38 80 35 85Z' fill='url(%23g)'/><circle cx='58' cy='42' r='7' fill='white' opacity='0.9'/><path d='M40 62 L30 80 L48 70Z' fill='%2300c8ff' opacity='0.8'/><path d='M62 40 L80 30 L70 48Z' fill='%2300c8ff' opacity='0.8'/></svg>">
     <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
     <link rel="stylesheet" href="style.css">
 
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
         <defs>
+            <!-- Rocket icon matching project logo -->
+            <symbol id="ic-rocket" viewBox="0 0 24 24">
+                <defs>
+                    <linearGradient id="rocketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#00c8ff"/>
+                        <stop offset="100%" stop-color="#0066ff"/>
+                    </linearGradient>
+                </defs>
+                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" fill="url(#rocketGrad)"/>
+                <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" fill="url(#rocketGrad)"/>
+                <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" fill="url(#rocketGrad)" opacity="0.7"/>
+                <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" fill="url(#rocketGrad)" opacity="0.7"/>
+                <circle cx="16" cy="8" r="1.5" fill="white"/>
+            </symbol>
             <symbol id="ic-waves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-4 7-4 7 4 7 4 3-4 7-4"/><path d="M2 17s3-4 7-4 7 4 7 4 3-4 7-4"/><path d="M2 7s3-4 7-4 7 4 7 4 3-4 7-4"/></symbol>
             <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
             <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
@@ -56,7 +71,7 @@
     <div class="auth-box">
         <div class="auth-logo">
             <div class="auth-logo-icon">
-                <svg><use href="#ic-sparkles"/></svg>
+                <svg><use href="#ic-rocket"/></svg>
             </div>
             <h2>Astro</h2>
             <p>Asystent AI do projektów Roblox</p>
@@ -115,7 +130,7 @@
     <nav class="icon-rail">
         <div class="rail-top">
             <div class="rail-brand" title="Astro">
-                <svg><use href="#ic-sparkles"/></svg>
+                <svg><use href="#ic-rocket"/></svg>
                 <span class="rail-brand-dot" id="pluginDot"></span>
             </div>
         </div>
@@ -223,7 +238,7 @@
         <header class="top-bar">
             <div class="top-bar-brand">
                 <div class="top-brand-icon">
-                    <svg><use href="#ic-sparkles"/></svg>
+                    <svg><use href="#ic-rocket"/></svg>
                 </div>
                 <span class="top-brand-name">Astro</span>
                 <span class="top-brand-tag">beta</span>
@@ -253,13 +268,13 @@
                 <div class="welcome" id="welcome">
                     <div class="welcome-glow"></div>
                     <div class="welcome-icon">
-                        <svg><use href="#ic-sparkles"/></svg>
+                        <svg><use href="#ic-rocket"/></svg>
                     </div>
                     <h2>Witaj w Astro</h2>
                     <p>Opisz mechanikę swojej gry lub wybierz gotowy moduł poniżej.</p>
                     <div class="suggestions">
                         <button class="chip" data-prompt="Stwórz kompletne GUI menu głównego z ScreenGui, ramkami, przyciskami Play/Settings/Credits, gradientami i animacjami wejścia. Użyj Instance.new dla każdego elementu GUI.">
-                            <svg><use href="#ic-sparkles"/></svg>
+                            <svg><use href="#ic-rocket"/></svg>
                             Stwórz menu główne GUI
                         </button>
                         <button class="chip" data-prompt="Stwórz system walki: GUI z HP barem i 4 umiejętnościami, moduł danych umiejętności, skrypt serwerowy do obrażeń. 3 osobne pliki Luau.">

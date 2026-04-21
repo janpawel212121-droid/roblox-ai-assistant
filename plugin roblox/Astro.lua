@@ -1,615 +1,397 @@
 -- ============================================================
---  Astro Plugin v6  |  Lemonade Theme
---  ciemny grafit, zieleń
+--  Astro Plugin v7  |  Lemonade-style UI
+--  fleetyai.netlify.app
 -- ============================================================
 
-local SERVER = "https://fleetyai.netlify.app"
+local SERVER     = "https://fleetyai.netlify.app"
 local POLL_DELAY = 2
-local VERSION = "v6"
+local VERSION    = "v7"
 
-local Http = game:GetService("HttpService")
-local Sel  = game:GetService("Selection")
-local CHS  = game:GetService("ChangeHistoryService")
-local TweenService = game:GetService("TweenService")
+local Http   = game:GetService("HttpService")
+local Sel    = game:GetService("Selection")
+local CHS    = game:GetService("ChangeHistoryService")
 
--- ── Toolbar ──────────────────────────────────────────────
+-- ── Toolbar button ────────────────────────────────────────
 local bar     = plugin:CreateToolbar("Astro")
-local mainBtn = bar:CreateButton("Astro", "AI Asystent do projektów Roblox", "rbxassetid://4458901886")
-local wInfo   = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Right, false, false, 320, 520, 280, 320)
-local w       = plugin:CreateDockWidgetPluginGui("Astro_v6", wInfo)
-w.Title       = "Astro"
+local mainBtn = bar:CreateButton("Astro", "Astro AI – kliknij aby otworzyć", "rbxassetid://4458901886")
 
--- ── Utility ──────────────────────────────────────────────
-local function make(class, props)
-    local i = Instance.new(class)
+local wInfo = DockWidgetPluginGuiInfo.new(
+    Enum.InitialDockState.Float, false, false, 340, 220, 300, 200)
+local widget = plugin:CreateDockWidgetPluginGui("Astro_Widget_v7", wInfo)
+widget.Title = "Astro"
+
+-- ── COLOURS ──────────────────────────────────────────────
+local BG      = Color3.fromRGB(30, 30, 30)
+local BG2     = Color3.fromRGB(42, 42, 42)
+local BG3     = Color3.fromRGB(56, 56, 56)
+local GREEN   = Color3.fromRGB(74, 222, 128)
+local RED     = Color3.fromRGB(235, 75, 75)
+local YELLOW  = Color3.fromRGB(250, 195, 55)
+local TEXT    = Color3.fromRGB(235, 235, 235)
+local TEXT2   = Color3.fromRGB(155, 155, 155)
+local BORDER  = Color3.fromRGB(65, 65, 65)
+local BLACK   = Color3.fromRGB(0, 0, 0)
+
+-- ── HELPER ───────────────────────────────────────────────
+local function ui(cls, props, parent)
+    local o = Instance.new(cls)
     for k, v in pairs(props) do
-        if k ~= "Parent" then
-            pcall(function() i[k] = v end)
-        end
+        if k ~= "Parent" then pcall(function() o[k] = v end) end
     end
-    if props.Parent then i.Parent = props.Parent end
-    return i
+    o.Parent = parent or widget
+    return o
+end
+local function corner(r, p)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, r or 8)
+    c.Parent = p
+end
+local function pad(l,r,t,b,p)
+    local x = Instance.new("UIPadding")
+    x.PaddingLeft   = UDim.new(0,l)
+    x.PaddingRight  = UDim.new(0,r)
+    x.PaddingTop    = UDim.new(0,t)
+    x.PaddingBottom = UDim.new(0,b)
+    x.Parent = p
+end
+local function vlist(gap, p)
+    local l = Instance.new("UIListLayout")
+    l.SortOrder      = Enum.SortOrder.LayoutOrder
+    l.FillDirection  = Enum.FillDirection.Vertical
+    l.Padding        = UDim.new(0, gap)
+    l.Parent         = p
+end
+local function hlist(gap, va, p)
+    local l = Instance.new("UIListLayout")
+    l.SortOrder         = Enum.SortOrder.LayoutOrder
+    l.FillDirection     = Enum.FillDirection.Horizontal
+    l.VerticalAlignment = va or Enum.VerticalAlignment.Center
+    l.Padding           = UDim.new(0, gap)
+    l.Parent            = p
+    return l
 end
 
-local function lerp(a, b, t) return a + (b - a) * t end
-local function tween(obj, props, dur, style, dir)
-    style = style or Enum.EasingStyle.Quart
-    dir   = dir   or Enum.EasingDirection.Out
-    local info = TweenInfo.new(dur or 0.25, style, dir)
-    TweenService:Create(obj, info, props):Play()
-end
-
--- ── PALETTE ──────────────────────────────────────────────
-local C = {
-    bg         = Color3.fromRGB(26,  26, 26),
-    bg2        = Color3.fromRGB(37,  37, 37),
-    bg3        = Color3.fromRGB(45,  45, 45),
-    bg4        = Color3.fromRGB(53,  53, 53),
-    cyan       = Color3.fromRGB(224, 224, 224),
-    teal       = Color3.fromRGB(76,  175, 80),
-    blue       = Color3.fromRGB(46,  125, 50),
-    green      = Color3.fromRGB(76,  175, 80),
-    red        = Color3.fromRGB(244, 67,  54),
-    yellow     = Color3.fromRGB(255, 235, 59),
-    textPrim   = Color3.fromRGB(240, 240, 240),
-    textSec    = Color3.fromRGB(204, 204, 204),
-    textMuted  = Color3.fromRGB(153, 153, 153),
-    white      = Color3.fromRGB(255, 255, 255),
-}
-
--- ── ROOT FRAME ───────────────────────────────────────────
-local root = make("Frame", {
-    Size             = UDim2.new(1, 0, 1, 0),
-    BackgroundColor3 = C.bg,
+-- ── ROOT ─────────────────────────────────────────────────
+local root = ui("Frame", {
+    Size = UDim2.new(1,0,1,0),
+    BackgroundColor3 = BG,
     BorderSizePixel  = 0,
-    Parent           = w,
-})
-make("UIListLayout", {
-    Padding       = UDim.new(0, 0),
-    SortOrder     = Enum.SortOrder.LayoutOrder,
-    FillDirection = Enum.FillDirection.Vertical,
-    Parent        = root,
-})
+}, widget)
+pad(14, 14, 14, 14, root)
+vlist(10, root)
 
--- ─────────────────────────────────────────────────────────
---  HEADER BAR
--- ─────────────────────────────────────────────────────────
-local header = make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 50),
-    BackgroundColor3 = C.bg2,
-    BorderSizePixel  = 0,
-    LayoutOrder      = 1,
-    Parent           = root,
-})
-make("UIStroke", { Color = Color3.fromRGB(0, 60, 90), Thickness = 1, Parent = header })
-
--- Logo icon (gradient square)
-local logoIcon = make("Frame", {
-    Size             = UDim2.new(0, 30, 0, 30),
-    Position         = UDim2.new(0, 12, 0.5, -15),
-    BackgroundColor3 = C.cyan,
-    BorderSizePixel  = 0,
-    Parent           = header,
-})
-make("UICorner", { CornerRadius = UDim.new(0, 8), Parent = logoIcon })
-make("UIGradient", {
-    Color    = ColorSequence.new(C.cyan, C.teal),
-    Rotation = 135,
-    Parent   = logoIcon,
-})
-
-local logoLabel = make("TextLabel", {
-    Size             = UDim2.new(0, 18, 0, 18),
-    Position         = UDim2.new(0.5, -9, 0.5, -9),
+-- ── ROW 1: Dot + Version + CONNECT + STATUS ───────────────
+local row1 = ui("Frame", {
+    Size = UDim2.new(1,0,0,36),
     BackgroundTransparency = 1,
-    Text             = "~",
-    TextColor3       = C.white,
-    Font             = Enum.Font.GothamBold,
-    TextSize         = 16,
-    Parent           = logoIcon,
-})
+    LayoutOrder = 1,
+}, root)
+hlist(8, Enum.VerticalAlignment.Center, row1)
 
--- Title text
-make("TextLabel", {
-    Size             = UDim2.new(0, 160, 0, 20),
-    Position         = UDim2.new(0, 52, 0, 8),
+-- Yellow dot (logo) — matches Lemonade screenshot
+local dot = ui("Frame", {
+    Size = UDim2.new(0,26,0,26),
+    BackgroundColor3 = YELLOW,
+    LayoutOrder = 1,
+}, row1)
+corner(99, dot)
+
+local dotInner = ui("TextLabel", {
+    Size = UDim2.new(1,0,1,0),
     BackgroundTransparency = 1,
-    Text             = "Astro",
-    TextColor3       = C.textPrim,
-    Font             = Enum.Font.GothamBold,
-    TextSize         = 14,
-    TextXAlignment   = Enum.TextXAlignment.Left,
-    Parent           = header,
-})
-make("TextLabel", {
-    Size             = UDim2.new(0, 160, 0, 14),
-    Position         = UDim2.new(0, 52, 0, 27),
+    Text = "✦",
+    TextColor3 = BLACK,
+    Font = Enum.Font.GothamBold,
+    TextSize = 13,
+}, dot)
+
+-- Version
+ui("TextLabel", {
+    Size = UDim2.new(0,52,1,0),
     BackgroundTransparency = 1,
-    Text             = "AI Asystent — "..VERSION,
-    TextColor3       = C.textMuted,
-    Font             = Enum.Font.Gotham,
-    TextSize         = 9,
-    TextXAlignment   = Enum.TextXAlignment.Left,
-    Parent           = header,
-})
+    Text = VERSION,
+    TextColor3 = TEXT2,
+    Font = Enum.Font.GothamBold,
+    TextSize = 13,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    LayoutOrder = 2,
+}, row1)
 
--- ─────────────────────────────────────────────────────────
---  STATUS BAR
--- ─────────────────────────────────────────────────────────
-local statusBar = make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 36),
-    BackgroundColor3 = C.bg3,
-    BorderSizePixel  = 0,
-    LayoutOrder      = 2,
-    Parent           = root,
-})
-make("UIStroke", { Color = Color3.fromRGB(0, 50, 80), Thickness = 1, Parent = statusBar })
-make("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12), Parent = statusBar })
-
--- Pulsing dot
-local statusDot = make("Frame", {
-    Size             = UDim2.new(0, 8, 0, 8),
-    Position         = UDim2.new(0, 0, 0.5, -4),
-    BackgroundColor3 = C.textMuted,
-    BorderSizePixel  = 0,
-    Parent           = statusBar,
-})
-make("UICorner", { CornerRadius = UDim.new(1, 0), Parent = statusDot })
-
-local statusTxt = make("TextLabel", {
-    Size             = UDim2.new(1, -80, 1, 0),
-    Position         = UDim2.new(0, 20, 0, 0),
+-- Spacer
+ui("Frame", {
+    Size = UDim2.new(1,0,1,0),
     BackgroundTransparency = 1,
-    Text             = "Oczekuje na połączenie",
-    TextColor3       = C.textMuted,
-    Font             = Enum.Font.Gotham,
-    TextSize         = 10,
-    TextXAlignment   = Enum.TextXAlignment.Left,
-    Parent           = statusBar,
-})
+    LayoutOrder = 3,
+}, row1)
 
--- Ops counter badge
-local opsBadge = make("Frame", {
-    Size             = UDim2.new(0, 0, 0, 18),
-    AutomaticSize    = Enum.AutomaticSize.X,
-    Position         = UDim2.new(1, 0, 0.5, -9),
-    AnchorPoint      = Vector2.new(1, 0),
-    BackgroundColor3 = C.bg4,
-    BorderSizePixel  = 0,
-    Parent           = statusBar,
-})
-make("UICorner", { CornerRadius = UDim.new(0, 99), Parent = opsBadge })
-make("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6), Parent = opsBadge })
-local opsLabel = make("TextLabel", {
-    Size             = UDim2.new(1, 0, 1, 0),
+-- CONNECT button
+local connectBtn = ui("TextButton", {
+    Size = UDim2.new(0,96,0,30),
+    BackgroundColor3 = GREEN,
+    Text = "Connect",
+    TextColor3 = BLACK,
+    Font = Enum.Font.GothamBold,
+    TextSize = 13,
+    AutoButtonColor = false,
+    LayoutOrder = 4,
+}, row1)
+corner(7, connectBtn)
+
+-- STATUS button
+local statusBtn = ui("TextButton", {
+    Size = UDim2.new(0,80,0,30),
+    BackgroundColor3 = BG3,
+    Text = "Status  ",
+    TextColor3 = TEXT,
+    Font = Enum.Font.GothamBold,
+    TextSize = 13,
+    AutoButtonColor = false,
+    LayoutOrder = 5,
+}, row1)
+corner(7, statusBtn)
+
+-- Status dot inside STATUS button
+local sDot = ui("Frame", {
+    Size = UDim2.new(0,8,0,8),
+    Position = UDim2.new(1,-12,0.5,-4),
+    BackgroundColor3 = RED,
+}, statusBtn)
+corner(99, sDot)
+
+-- ── ROW 2: Connect Code input ─────────────────────────────
+local codeBox = ui("Frame", {
+    Size = UDim2.new(1,0,0,34),
+    BackgroundColor3 = BG2,
+    LayoutOrder = 2,
+}, root)
+corner(8, codeBox)
+
+local codeStroke = Instance.new("UIStroke")
+codeStroke.Color     = BORDER
+codeStroke.Thickness = 1
+codeStroke.Parent    = codeBox
+pad(10, 10, 0, 0, codeBox)
+
+local codeInput = ui("TextBox", {
+    Size = UDim2.new(1,0,1,0),
     BackgroundTransparency = 1,
-    Text             = "0 ops",
-    TextColor3       = C.textMuted,
-    Font             = Enum.Font.GothamBold,
-    TextSize         = 9,
-    Parent           = opsBadge,
-})
-
--- ─────────────────────────────────────────────────────────
---  CONNECT CODE INPUT
--- ─────────────────────────────────────────────────────────
-local inputSection = make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 72),
-    BackgroundColor3 = C.bg2,
-    BorderSizePixel  = 0,
-    LayoutOrder      = 3,
-    Parent           = root,
-})
-make("UIStroke", { Color = Color3.fromRGB(0, 40, 70), Thickness = 1, Parent = inputSection })
-make("UIPadding", {
-    PaddingLeft  = UDim.new(0, 12), PaddingRight  = UDim.new(0, 12),
-    PaddingTop   = UDim.new(0, 10), PaddingBottom = UDim.new(0, 10),
-    Parent       = inputSection,
-})
-make("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, Parent = inputSection })
-
-make("TextLabel", {
-    Size             = UDim2.new(1, 0, 0, 10),
-    BackgroundTransparency = 1,
-    Text             = "CONNECT CODE",
-    TextColor3       = C.textMuted,
-    Font             = Enum.Font.GothamBold,
-    TextSize         = 8,
-    TextXAlignment   = Enum.TextXAlignment.Left,
-    LayoutOrder      = 1,
-    Parent           = inputSection,
-})
-
-local codeBox = make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 30),
-    BackgroundColor3 = Color3.fromRGB(1, 8, 18),
-    BorderSizePixel  = 0,
-    LayoutOrder      = 2,
-    Parent           = inputSection,
-})
-make("UICorner", { CornerRadius = UDim.new(0, 7), Parent = codeBox })
-make("UIStroke", { Color = Color3.fromRGB(0, 60, 100), Thickness = 1, Parent = codeBox })
-
-local codeInput = make("TextBox", {
-    Size             = UDim2.new(1, -12, 1, 0),
-    Position         = UDim2.new(0, 10, 0, 0),
-    BackgroundTransparency = 1,
-    Text             = plugin:GetSetting("Astro_ConnectCode") or "",
-    PlaceholderText  = "rc_xxxxxxxxxx",
-    TextColor3       = C.cyan,
-    PlaceholderColor3= C.textMuted,
-    Font             = Enum.Font.RobotoMono,
-    TextSize         = 11,
+    PlaceholderText = "Wklej Connect Code ze strony...",
+    PlaceholderColor3 = TEXT2,
+    TextColor3 = TEXT,
+    Font = Enum.Font.Code,
+    TextSize = 11,
     ClearTextOnFocus = false,
-    Parent           = codeBox,
-})
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Text = plugin:GetSetting("Astro_CC") or "",
+}, codeBox)
 
--- ─────────────────────────────────────────────────────────
---  CONNECT BUTTON
--- ─────────────────────────────────────────────────────────
-local connectBtn = make("TextButton", {
-    Size             = UDim2.new(1, 0, 0, 34),
-    BackgroundColor3 = C.cyan,
-    Text             = "",
-    BorderSizePixel  = 0,
-    LayoutOrder      = 4,
-    Parent           = root,
-})
-make("UICorner", { CornerRadius = UDim.new(0, 0), Parent = connectBtn })
-make("UIGradient", {
-    Color    = ColorSequence.new(C.cyan, C.teal),
-    Rotation = 135,
-    Parent   = connectBtn,
-})
-
-local connectBtnLabel = make("TextLabel", {
-    Size             = UDim2.new(1, 0, 1, 0),
+-- ── ROW 3: Hint ───────────────────────────────────────────
+local hint = ui("TextLabel", {
+    Size = UDim2.new(1,0,0,36),
     BackgroundTransparency = 1,
-    Text             = "CONNECT",
-    TextColor3       = C.white,
-    Font             = Enum.Font.GothamBold,
-    TextSize         = 12,
-    Parent           = connectBtn,
-})
+    Text = "Open Astro in the browser then press Connect",
+    TextColor3 = TEXT2,
+    Font = Enum.Font.Gotham,
+    TextSize = 12,
+    TextWrapped = true,
+    TextXAlignment = Enum.TextXAlignment.Center,
+    LayoutOrder = 3,
+}, root)
 
--- Hover effect
-connectBtn.MouseEnter:Connect(function()
-    tween(connectBtn, { BackgroundTransparency = 0.15 }, 0.18)
-end)
-connectBtn.MouseLeave:Connect(function()
-    tween(connectBtn, { BackgroundTransparency = 0 }, 0.18)
-end)
+-- ── ROW 4: Console ────────────────────────────────────────
+local console = ui("ScrollingFrame", {
+    Size = UDim2.new(1,0,0,72),
+    BackgroundColor3 = BG2,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 2,
+    ScrollBarImageColor3 = BG3,
+    CanvasSize = UDim2.new(0,0,0,0),
+    AutomaticCanvasSize = Enum.AutomaticSize.Y,
+    LayoutOrder = 4,
+}, root)
+corner(7, console)
+pad(8, 8, 6, 6, console)
+vlist(2, console)
 
--- ─────────────────────────────────────────────────────────
---  DIVIDER
--- ─────────────────────────────────────────────────────────
-make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 1),
-    BackgroundColor3 = Color3.fromRGB(0, 40, 70),
-    BorderSizePixel  = 0,
-    LayoutOrder      = 5,
-    Parent           = root,
-})
-
--- ─────────────────────────────────────────────────────────
---  LOG SECTION HEADER
--- ─────────────────────────────────────────────────────────
-local logHeader = make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 26),
-    BackgroundColor3 = C.bg2,
-    BorderSizePixel  = 0,
-    LayoutOrder      = 6,
-    Parent           = root,
-})
-make("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12), Parent = logHeader })
-make("TextLabel", {
-    Size             = UDim2.new(1, 0, 1, 0),
+-- Bottom row: Logs toggle + Logs Off button
+local bottomRow = ui("Frame", {
+    Size = UDim2.new(1,0,0,22),
     BackgroundTransparency = 1,
-    Text             = "KONSOLA",
-    TextColor3       = C.textMuted,
-    Font             = Enum.Font.GothamBold,
-    TextSize          = 8,
-    TextXAlignment   = Enum.TextXAlignment.Left,
-    Parent           = logHeader,
-})
+    LayoutOrder = 5,
+}, root)
+hlist(6, Enum.VerticalAlignment.Center, bottomRow)
 
--- ─────────────────────────────────────────────────────────
---  LOG BOX
--- ─────────────────────────────────────────────────────────
-local logWrap = make("Frame", {
-    Size             = UDim2.new(1, 0, 1, 0),
-    BackgroundColor3 = C.bg,
-    BorderSizePixel  = 0,
-    LayoutOrder      = 7,
-    Parent           = root,
-})
+ui("Frame", {
+    Size = UDim2.new(1,0,1,0),
+    BackgroundTransparency = 1,
+    LayoutOrder = 1,
+}, bottomRow)
 
-local logBox = make("ScrollingFrame", {
-    Size                 = UDim2.new(1, 0, 1, 0),
-    BackgroundColor3     = Color3.fromRGB(1, 6, 14),
-    BorderSizePixel      = 0,
-    ScrollBarThickness   = 2,
-    ScrollBarImageColor3 = C.cyan,
-    AutomaticCanvasSize  = Enum.AutomaticSize.Y,
-    CanvasSize           = UDim2.new(0, 0, 0, 0),
-    ScrollingDirection   = Enum.ScrollingDirection.Y,
-    Parent               = logWrap,
-})
-make("UIListLayout", {
-    Padding   = UDim.new(0, 0),
-    SortOrder = Enum.SortOrder.LayoutOrder,
-    Parent    = logBox,
-})
-make("UIPadding", {
-    PaddingLeft  = UDim.new(0, 10), PaddingRight  = UDim.new(0, 10),
-    PaddingTop   = UDim.new(0, 6),  PaddingBottom = UDim.new(0, 6),
-    Parent       = logBox,
-})
+local logsBtn = ui("TextButton", {
+    Size = UDim2.new(0,72,0,22),
+    BackgroundColor3 = BG3,
+    Text = "Logs Off",
+    TextColor3 = TEXT2,
+    Font = Enum.Font.Gotham,
+    TextSize = 11,
+    AutoButtonColor = false,
+    LayoutOrder = 2,
+}, bottomRow)
+corner(5, logsBtn)
 
--- ─────────────────────────────────────────────────────────
---  BOTTOM BAR (version)
--- ─────────────────────────────────────────────────────────
-make("Frame", {
-    Size             = UDim2.new(1, 0, 0, 24),
-    BackgroundColor3 = C.bg2,
-    BorderSizePixel  = 0,
-    LayoutOrder      = 8,
-    Parent           = root,
-})
+-- ── LOGGING ──────────────────────────────────────────────
+local logIdx   = 0
+local logsVisible = true
 
--- ────────────────────────────────────────────────────────
---  LOG FUNCTION
--- ─────────────────────────────────────────────────────────
-local logN = 0
-
-local LOG_TYPES = {
-    info  = { color = C.textSec,  prefix = "INFO " },
-    ok    = { color = C.teal,     prefix = "OK   " },
-    warn  = { color = C.yellow,   prefix = "WARN " },
-    err   = { color = C.red,      prefix = "ERR  " },
-    op    = { color = C.cyan,     prefix = "OP   " },
-}
-
-local function log(msg, ltype)
-    ltype = ltype or "info"
-    local lt = LOG_TYPES[ltype] or LOG_TYPES.info
-    logN = logN + 1
-
-    local row = make("Frame", {
-        Size             = UDim2.new(1, 0, 0, 0),
-        AutomaticSize    = Enum.AutomaticSize.Y,
+local function log(msg, kind)
+    if not logsVisible then return end
+    logIdx = logIdx + 1
+    local cols = { ok=GREEN, info=TEXT2, warn=YELLOW, err=RED, op=Color3.fromRGB(130,170,255) }
+    local pfx  = { ok="OK ", info="•• ", warn="!! ", err="ERR", op="→  " }
+    ui("TextLabel", {
+        Size = UDim2.new(1,0,0,14),
         BackgroundTransparency = 1,
-        LayoutOrder      = logN,
-        Parent           = logBox,
-    })
-    make("UIListLayout", {
-        FillDirection = Enum.FillDirection.Horizontal,
-        Padding       = UDim.new(0, 4),
-        SortOrder     = Enum.SortOrder.LayoutOrder,
-        VerticalAlignment = Enum.VerticalAlignment.Top,
-        Parent        = row,
-    })
-
-    -- time
-    make("TextLabel", {
-        Size             = UDim2.new(0, 55, 0, 0),
-        AutomaticSize    = Enum.AutomaticSize.Y,
-        BackgroundTransparency = 1,
-        Text             = os.date("%H:%M:%S"),
-        TextColor3       = C.textMuted,
-        Font             = Enum.Font.RobotoMono,
-        TextSize         = 9,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        LayoutOrder      = 1,
-        Parent           = row,
-    })
-    -- type badge
-    make("TextLabel", {
-        Size             = UDim2.new(0, 36, 0, 0),
-        AutomaticSize    = Enum.AutomaticSize.Y,
-        BackgroundTransparency = 1,
-        Text             = lt.prefix,
-        TextColor3       = lt.color,
-        Font             = Enum.Font.GothamBold,
-        TextSize         = 9,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        LayoutOrder      = 2,
-        Parent           = row,
-    })
-    -- message
-    make("TextLabel", {
-        Size             = UDim2.new(1, -100, 0, 0),
-        AutomaticSize    = Enum.AutomaticSize.Y,
-        BackgroundTransparency = 1,
-        Text             = msg,
-        TextColor3       = lt.color,
-        Font             = Enum.Font.RobotoMono,
-        TextSize         = 9,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        TextWrapped      = true,
-        LayoutOrder      = 3,
-        Parent           = row,
-    })
-
+        Text = (pfx[kind] or "   ") .. " " .. msg,
+        TextColor3 = cols[kind] or TEXT2,
+        Font = Enum.Font.Code,
+        TextSize = 10,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        LayoutOrder = logIdx,
+    }, console)
     task.defer(function()
-        logBox.CanvasPosition = Vector2.new(0, logBox.AbsoluteCanvasSize.Y)
+        console.CanvasPosition = Vector2.new(0, console.AbsoluteCanvasSize.Y + 100)
     end)
 end
 
--- ─────────────────────────────────────────────────────────
---  STATUS UPDATE
--- ─────────────────────────────────────────────────────────
-local function setStatus(text, color)
-    statusTxt.Text      = text
-    statusTxt.TextColor3 = color
-    statusDot.BackgroundColor3 = color
-    -- pulse animation
-    tween(statusDot, { BackgroundTransparency = 0.6 }, 0.4)
-    task.delay(0.4, function()
-        tween(statusDot, { BackgroundTransparency = 0 }, 0.4)
-    end)
-end
-
--- ─────────────────────────────────────────────────────────
---  PARENT MAP
--- ─────────────────────────────────────────────────────────
-local function getParent(n)
+-- ── TASK RUNNER ──────────────────────────────────────────
+local function getContainer(name)
     local map = {
         ServerScriptService  = game:GetService("ServerScriptService"),
         ReplicatedStorage    = game:GetService("ReplicatedStorage"),
         ServerStorage        = game:GetService("ServerStorage"),
         Workspace            = workspace,
+        StarterGui           = game:GetService("StarterGui"),
         StarterPlayerScripts = game:GetService("StarterPlayer"):FindFirstChild("StarterPlayerScripts"),
     }
-    return map[n] or game:GetService("StarterGui")
+    return map[name] or game:GetService("StarterGui")
 end
 
-local function findScript(name, parent)
-    local p = getParent(parent)
-    for _, child in ipairs(p:GetChildren()) do
-        if child.Name == name and (child:IsA("BaseScript") or child:IsA("ModuleScript")) then
-            return child
+local function findExisting(name, parent)
+    local p = getContainer(parent)
+    if not p then return end
+    for _, c in ipairs(p:GetChildren()) do
+        if c.Name == name and (c:IsA("BaseScript") or c:IsA("ModuleScript")) then
+            return c
         end
     end
 end
 
--- ─────────────────────────────────────────────────────────
---  TASK RUNNER
--- ─────────────────────────────────────────────────────────
-local totalOps = 0
-
+local opsTotal = 0
 local function runTask(t, idx, total)
     local name   = t.scriptName or "Script"
     local stype  = t.scriptType or "LocalScript"
     local parent = t.parent     or "StarterGui"
-    local action = t.action     or "create"
-    local prefix = total > 1 and ("[" .. idx .. "/" .. total .. "] ") or ""
+    local action = (t.action or "create"):lower()
+    local pre    = total > 1 and ("[" .. idx .. "/" .. total .. "] ") or ""
 
     if action == "delete" then
-        log(prefix .. "Usuwanie: " .. name, "warn")
-        local e = findScript(name, parent)
-        if e then
-            e:Destroy()
-            log("Usunieto: " .. name, "ok")
-        else
-            log("Nie znaleziono: " .. name, "warn")
-        end
-
-    elseif action == "update" then
-        log(prefix .. "Update: " .. name, "op")
-        local e = findScript(name, parent)
-        if e then
-            e.Source = t.code
-            Sel:Set({e})
-            CHS:SetWaypoint("Update " .. name)
-            log("Zaktualizowano: " .. name, "ok")
-        else
-            action = "create" -- fallback
-        end
+        local e = findExisting(name, parent)
+        if e then e:Destroy(); log(pre .. "Usunięto: " .. name, "ok")
+        else log("Nie znaleziono: " .. name, "warn") end
+        opsTotal = opsTotal + 1
+        return
     end
 
-    if action == "create" then
-        log(prefix .. "Tworzenie: " .. name, "op")
-        task.wait(0.25)
-        local ok, err = pcall(function()
-            local old = findScript(name, parent)
-            if old then old:Destroy() end
-            local inst
-            if     stype == "ModuleScript" then inst = Instance.new("ModuleScript")
-            elseif stype == "Script"       then inst = Instance.new("Script")
-            else                                inst = Instance.new("LocalScript")
-            end
-            inst.Source = t.code
-            inst.Name   = name
-            inst.Parent = getParent(parent)
-            Sel:Set({inst})
-            CHS:SetWaypoint("Astro: " .. name)
-        end)
-        if ok then
-            log(name .. " -> " .. parent, "ok")
-        else
-            log("Blad: " .. tostring(err), "err")
+    if action == "update" then
+        local e = findExisting(name, parent)
+        if e then
+            e.Source = t.code or ""
+            Sel:Set({e}); CHS:SetWaypoint("Update " .. name)
+            log(pre .. "Zaktualizowano: " .. name, "ok")
+            opsTotal = opsTotal + 1
+            return
         end
+        -- fall through to create if not found
     end
 
-    totalOps = totalOps + 1
-    opsLabel.Text = totalOps .. " ops"
+    -- create
+    task.wait(0.1)
+    local ok, err = pcall(function()
+        local old = findExisting(name, parent)
+        if old then old:Destroy() end
+        local inst
+        if     stype == "ModuleScript" then inst = Instance.new("ModuleScript")
+        elseif stype == "Script"       then inst = Instance.new("Script")
+        else                                inst = Instance.new("LocalScript") end
+        inst.Name   = name
+        inst.Source = t.code or ""
+        inst.Parent = getContainer(parent)
+        Sel:Set({inst}); CHS:SetWaypoint("Astro: " .. name)
+    end)
+    if ok then log(pre .. "Utworzono: " .. name .. " → " .. parent, "ok")
+    else      log("Błąd create: " .. tostring(err):sub(1,50), "err") end
+    opsTotal = opsTotal + 1
 end
 
--- ─────────────────────────────────────────────────────────
---  POLLING
--- ─────────────────────────────────────────────────────────
+-- ── CONNECTION ───────────────────────────────────────────
 local active = false
 
+local function setUI(connected)
+    if connected then
+        connectBtn.Text = "Disconnect"
+        connectBtn.BackgroundColor3 = RED
+        sDot.BackgroundColor3 = GREEN
+        hint.Text = "Połączono ✓  Oczekiwanie na zadania..."
+    else
+        connectBtn.Text = "Connect"
+        connectBtn.BackgroundColor3 = GREEN
+        sDot.BackgroundColor3 = RED
+        hint.Text = "Open Astro in the browser then press Connect"
+    end
+end
+
 local function poll(code)
-    local ok, result = pcall(function()
-        local url  = SERVER .. "/api/queue-dequeue?connectCode=" .. code
+    local ok, res = pcall(function()
+        local url  = SERVER .. "/api/queue-dequeue?connectCode=" .. Http:UrlEncode(code)
         local resp = Http:GetAsync(url, true)
         return Http:JSONDecode(resp)
     end)
 
     if not ok then
-        setStatus("Blad sieci", C.yellow)
+        sDot.BackgroundColor3 = YELLOW  -- network issue, keep trying
         return
     end
 
-    local data = result
-
-    if data.error == "INVALID_CODE" then
-        log("Nieprawidlowy Connect Code!", "err")
-        active = false
+    if res.error == "INVALID_CODE" then
+        log("Nieprawidłowy Connect Code!", "err")
+        active = false; setUI(false)
         return
     end
 
-    setStatus("Polaczono", C.teal)
+    sDot.BackgroundColor3 = GREEN  -- ping OK
 
-    if data.tasks and #data.tasks > 0 then
-        log(#data.tasks .. " operacji do wykonania", "op")
-        table.sort(data.tasks, function(a, b) return (a.order or 0) < (b.order or 0) end)
-        for i, t in ipairs(data.tasks) do
-            runTask(t, i, #data.tasks)
-            if i < #data.tasks then task.wait(0.35) end
+    local tasks = res.tasks
+    if tasks and type(tasks) == "table" and #tasks > 0 then
+        log(#tasks .. " zadań do wykonania", "op")
+        table.sort(tasks, function(a, b)
+            return (a.order or 0) < (b.order or 0)
+        end)
+        for i, t in ipairs(tasks) do
+            runTask(t, i, #tasks)
+            if i < #tasks then task.wait(0.2) end
         end
-        log("Wszystkie operacje zakonczone!", "ok")
+        log("Gotowe! " .. opsTotal .. " operacji łącznie", "ok")
     end
 end
 
--- ─────────────────────────────────────────────────────────
---  CONNECT / DISCONNECT
--- ─────────────────────────────────────────────────────────
-local function setConnectState(connected)
-    if connected then
-        connectBtnLabel.Text = "ROZLACZ"
-        -- red gradient on disconnect
-        local grad = connectBtn:FindFirstChildOfClass("UIGradient")
-        if grad then
-            grad.Color = ColorSequence.new(Color3.fromRGB(220, 50, 80), Color3.fromRGB(180, 30, 60))
-        end
-        connectBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 80)
-    else
-        connectBtnLabel.Text = "CONNECT"
-        local grad = connectBtn:FindFirstChildOfClass("UIGradient")
-        if grad then
-            grad.Color = ColorSequence.new(C.cyan, C.teal)
-        end
-        connectBtn.BackgroundColor3 = C.cyan
-    end
-end
-
-local function start()
-    local code = codeInput.Text:match("^%s*(.-)%s*$")
-    if not code or code == "" then
-        log("Wpisz Connect Code ze strony!", "err")
-        return
-    end
-    plugin:SetSetting("Astro_ConnectCode", code)
+local function startPolling(code)
     if active then return end
     active = true
-
-    setConnectState(true)
-    setStatus("Laczenie...", C.cyan)
-    log("Polaczono! Kod: " .. code:sub(1, 8) .. "...", "ok")
-
+    plugin:SetSetting("Astro_CC", code)
+    setUI(true)
+    log("Połączono! Kod: " .. code:sub(1,12) .. "...", "ok")
     task.spawn(function()
         while active do
             poll(code)
@@ -618,26 +400,44 @@ local function start()
     end)
 end
 
-local function stop()
+local function stopPolling()
     active = false
-    setConnectState(false)
-    setStatus("Rozlaczono", C.yellow)
-    log("Rozlaczono", "warn")
+    setUI(false)
+    log("Rozłączono", "warn")
 end
 
--- ─────────────────────────────────────────────────────────
---  EVENTS
--- ─────────────────────────────────────────────────────────
+-- ── EVENTS ───────────────────────────────────────────────
 connectBtn.MouseButton1Click:Connect(function()
-    if active then stop() else start() end
+    if active then
+        stopPolling()
+    else
+        local code = codeInput.Text:match("^%s*(.-)%s*$")
+        if code == "" then
+            log("Wklej Connect Code!", "err"); return
+        end
+        startPolling(code)
+    end
+end)
+
+statusBtn.MouseButton1Click:Connect(function()
+    if active then
+        log("Status: Połączono ✓", "ok")
+    else
+        log("Status: Rozłączono", "warn")
+    end
+end)
+
+logsBtn.MouseButton1Click:Connect(function()
+    logsVisible = not logsVisible
+    console.Visible = logsVisible
+    logsBtn.Text = logsVisible and "Logs Off" or "Logs On"
+    logsBtn.TextColor3 = logsVisible and TEXT2 or GREEN
 end)
 
 mainBtn.Click:Connect(function()
-    w.Enabled = not w.Enabled
+    widget.Enabled = not widget.Enabled
 end)
 
--- ─────────────────────────────────────────────────────────
---  STARTUP LOGS
--- ─────────────────────────────────────────────────────────
+-- ── INIT ─────────────────────────────────────────────────
 log("Astro " .. VERSION .. " gotowy", "ok")
-log("Wpisz Connect Code i kliknij CONNECT", "info")
+log("Wklej Connect Code i kliknij Connect", "info")
