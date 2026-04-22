@@ -517,12 +517,12 @@ var App = {
         }
 
         var sysPrompt = this.getSysPrompt() + fileCtx;
-        
-        // Zawsze dodajemy instrukcje planowania i wykonania całości bez zatrzymywania
-        sysPrompt += '\n\nWAŻNE: ZAWSZE na samym początku swojej odpowiedzi wygeneruj plan działania jako checklistę w Markdown.\nUżyj [-] [ ] Zadanie, [-] [x] Zrobione.\nPrzykładowy start odpowiedzi:\n- [x] Zrozumienie wymagań\n- [/] Tworzenie plików i skryptów\n- [ ] Weryfikacja kodu\nZnacznik [x] używaj dla ukończonych, [/] dla punktu który teraz realizujesz. Następnie WYGENERUJ CAŁY KOD bez zatrzymywania się na pytania, po prostu zrób to od razu od A do Z, nie czekaj na pozwolenie.\n';
-        
-        // Instrukcje odnośnie palet kolorów, jeśli użytkownik prosi o UI
-        sysPrompt += '\nJEŚLI Użytkownik prosi o stworzenie UI (GUI, ScreenGui itp.), ZAWSZE pod koniec zapytaj o wybór palety z tych opcji: 🍋 Lemonade, 🌙 Midnight, 🌸 Pastel, 🕹️ Arcade, ⚙️ Industrial. Dostosuj kolory generowanego kodu do tej, którą wybierze w kolejnej wiadomości.\n';
+        // Jeśli user prosi o UI, dodaj instrukcję palety kolorów
+        var promptLower = (text || '').toLowerCase();
+        var isUiRequest = /\b(gui|ui|screengui|menu|interfejs|okno|sklep gui|hud|frame|button|textbutton|textlabel)\b/.test(promptLower);
+        if (isUiRequest) {
+            sysPrompt += '\nUżytkownik poprosił o stworzenie interfejsu. Wygeneruj pełny, kompletny kod GUI. Nie pytaj o palety kolorów w kodzie — zostaną wybrane przez UI.\n';
+        }
 
         var apiMsgs = [{ role: 'system', content: sysPrompt }];
         for (var i = 0; i < this.messages.length; i++) {
@@ -575,7 +575,6 @@ var App = {
             }
             if (d.error) throw new Error(d.error);
 
-            self.addMsg('bot', d.content);
             self.credits = d.credits;
             self.usage   = d.usage;
             self.updateCreditsDisplay();
@@ -583,8 +582,11 @@ var App = {
 
             var blocks = self.extractCode(d.content);
             if (blocks.length > 0) {
-                self.consolePrint('Znaleziono ' + blocks.length + ' bloków kodu — wysyłam do pluginu', 'info');
-                self.sendToPlugin(blocks);
+                // Show animated plan, then send code after delay
+                self.addMsg('bot', d.content);
+                self.animatePlanSequence(blocks, d.content, isUiRequest);
+            } else {
+                self.addMsg('bot', d.content);
             }
         })
         .catch(function(e) {
@@ -622,9 +624,6 @@ var App = {
         'Dozwolone @PARENT: StarterGui, ServerScriptService, ReplicatedStorage, StarterPlayerScripts, ServerStorage\n' +
         'Dozwolone @ACTION: create (nowy plik), update (zmień istniejący), delete (usuń plik)\n\n' +
         'PRZYKŁAD POPRAWNEJ ODPOWIEDZI:\n' +
-        '- [x] Zaplanowano implementację\n' +
-        '- [/] Tworzenie MainMenuGUI\n' +
-        '- [ ] Weryfikacja\n\n' +
         '```lua\n' +
         '-- @NAME: MainMenuGUI | @TYPE: LocalScript | @PARENT: StarterGui | @ACTION: create\n' +
         'local Players = game:GetService("Players")\n' +
@@ -642,6 +641,173 @@ var App = {
         '9. Generuj WIELE plików naraz jeśli system tego wymaga\n' +
         '10. NIGDY nie przerywaj bloku kodu — zawsze kończ ```\n\n' +
         'Odpowiadaj po polsku. Zamiast opisywać co zrobisz — po prostu to zrób.';
+    },
+
+    // ==========================================
+    // ANIMATED PLAN SEQUENCE
+    // ==========================================
+    animatePlanSequence: function(blocks, content, isUiRequest) {
+        var self = this;
+
+        // Find the last bot message div that was just added
+        var msgDivs = this.dom.messages.querySelectorAll('.msg.bot');
+        var msgDiv = msgDivs[msgDivs.length - 1];
+        if (!msgDiv) return;
+
+        // Build plan steps
+        var steps = [
+            { label: 'Zrozumienie wymagań',    delay: 0,    doneAt: 2000 },
+            { label: 'Tworzenie plików i skryptów', delay: 2000, doneAt: 10000 },
+            { label: 'Weryfikacja kodu',        delay: 10000, doneAt: 12000 }
+        ];
+        if (isUiRequest) {
+            steps.push({ label: 'Dostosowanie kolorów do wybranej palety', delay: 12000, doneAt: 13500 });
+        }
+
+        // Build plan DOM
+        var planBox = document.createElement('div');
+        planBox.className = 'plan-box';
+        planBox.innerHTML =
+            '<div class="plan-box-header">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+                '<span>PLAN</span>' +
+            '</div>';
+
+        var stepEls = [];
+        steps.forEach(function(s, i) {
+            var el = document.createElement('div');
+            el.className = 'plan-step pending';
+            el.style.animationDelay = (i * 0.05) + 's';
+            el.innerHTML =
+                '<div class="plan-step-icon">' +
+                    '<div class="ps-spinner"></div>' +
+                    '<div class="ps-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+                    '<div class="ps-empty"></div>' +
+                '</div>' +
+                '<span class="plan-step-label">' + self.esc(s.label) + '</span>';
+            planBox.appendChild(el);
+            stepEls.push(el);
+        });
+
+        // Insert plan box BEFORE the msg-text div
+        var msgTextDiv = msgDiv.querySelector('.msg-text');
+        if (msgTextDiv) {
+            msgDiv.querySelector('.msg-sender') && msgDiv.insertBefore(planBox, msgTextDiv);
+        } else {
+            msgDiv.appendChild(planBox);
+        }
+        self.scrollDown();
+
+        // Animate steps
+        var totalSteps = steps.length;
+        var filesSent = false;
+
+        steps.forEach(function(s, i) {
+            setTimeout(function() {
+                stepEls[i].className = 'plan-step active';
+            }, s.delay);
+
+            setTimeout(function() {
+                stepEls[i].className = 'plan-step done';
+
+                // After step 1 (index 1) finishes — send code to plugin
+                if (i === 1 && !filesSent) {
+                    filesSent = true;
+                    self.consolePrint('Wysyłam ' + blocks.length + ' bloków kodu do pluginu...', 'info');
+                    self.sendToPlugin(blocks);
+
+                    // Show created-file card for each block
+                    blocks.forEach(function(b) {
+                        var card = document.createElement('div');
+                        card.className = 'plan-created-card';
+                        card.innerHTML =
+                            '<div class="plan-created-icon">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                            '</div>' +
+                            '<div class="plan-created-info">' +
+                                '<div class="plan-created-title">' + self.esc(b.name || 'Plik Lua') + '</div>' +
+                                '<div class="plan-created-sub">' + self.esc((b.type || 'Script') + ' · ' + (b.parent || 'StarterGui')) + '</div>' +
+                            '</div>' +
+                            '<button class="plan-copy-btn" title="Kopiuj kod">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+                            '</button>';
+                        card.querySelector('.plan-copy-btn').onclick = function() {
+                            navigator.clipboard.writeText(b.code || '').then(function() {
+                                self.notify('Skopiowano kod!', 'success');
+                            });
+                        };
+                        planBox.appendChild(card);
+                    });
+                    self.scrollDown();
+                }
+
+                // After last step, show color picker if UI request
+                if (i === totalSteps - 1 && isUiRequest) {
+                    setTimeout(function() {
+                        self.renderColorPicker(planBox, blocks);
+                        self.scrollDown();
+                    }, 400);
+                }
+            }, s.doneAt);
+        });
+    },
+
+    renderColorPicker: function(container, blocks) {
+        var self = this;
+        var palettes = [
+            { id: 'lemonade',   name: 'Lemonade' },
+            { id: 'midnight',   name: 'Midnight' },
+            { id: 'pastel',     name: 'Pastel' },
+            { id: 'arcade',     name: 'Arcade' },
+            { id: 'industrial', name: 'Industrial' },
+            { id: 'freeform',   name: 'Freeform' }
+        ];
+
+        var box = document.createElement('div');
+        box.className = 'color-picker-box';
+        box.innerHTML = '<div class="color-picker-label">Wybierz paletę kolorów UI:</div>';
+
+        var row = document.createElement('div');
+        row.className = 'color-picker-palettes';
+
+        palettes.forEach(function(p) {
+            var btn = document.createElement('button');
+            btn.className = 'cp-palette cp-' + p.id;
+            btn.innerHTML =
+                '<div class="cp-dots"><div class="cp-dot"></div><div class="cp-dot"></div><div class="cp-dot"></div></div>' +
+                '<div class="cp-name">' + p.name + '</div>';
+
+            btn.onclick = function() {
+                row.querySelectorAll('.cp-palette').forEach(function(b) { b.classList.remove('selected'); });
+                btn.classList.add('selected');
+
+                var label = box.querySelector('.color-picker-label');
+                if (label) label.innerHTML = 'Wybrana paleta: <strong>' + p.name + '</strong>';
+
+                // Ask AI to recolor using the chosen palette
+                self.sendPaletteRequest(p.name);
+            };
+            row.appendChild(btn);
+        });
+
+        box.appendChild(row);
+        container.appendChild(box);
+    },
+
+    sendPaletteRequest: function(paletteName) {
+        var self = this;
+        var paletteDescriptions = {
+            'Lemonade':   'jasne, ciepłe odcienie — żółty #FDE68A, miętowy #6EE7B7, niebieski #60A5FA',
+            'Midnight':   'granatowe i fioletowe — tło #1E3A5F, akcenty #818CF8, biel #E0E7FF',
+            'Pastel':     'delikatne pastele — różowy #F9A8D4, błękitny #A5F3FC, liliowy #D8B4FE',
+            'Arcade':     'neonowe kolory retro — pomarańczowy #F97316, fioletowy #A855F7, cyjan #22D3EE',
+            'Industrial': 'stonowane odcienie — szary #78716C, amber #F59E0B, jasny szary #E5E7EB',
+            'Freeform':   'domyślne kolory — zachowaj aktualne kolory z kodu'
+        };
+        var desc = paletteDescriptions[paletteName] || paletteName;
+        var msg = 'Zmień kolory w wygenerowanym GUI na paletę ' + paletteName + ': ' + desc + '. Zachowaj strukturę i logikę, zmień tylko Color3.fromRGB i kolory tekstów.';
+        this.dom.msgInput.value = msg;
+        this.send();
     },
 
     addMsg: function(role, text) {
