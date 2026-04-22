@@ -119,37 +119,7 @@ var App = {
             t.onclick = function() { switchView(t.getAttribute('data-target')); };
         });
 
-        // Custom Select Dropdown
-        var customSelect = document.getElementById('customModelSelect');
-        var selectSelected = customSelect.querySelector('.select-selected');
-        var selectItems = customSelect.querySelector('.select-items');
-        var realSelectInput = document.getElementById('modelSelect');
-        var titleSpan = document.getElementById('customModelSelectTitle');
-
-        selectSelected.onclick = function(e) {
-            e.stopPropagation();
-            selectItems.classList.toggle('select-hide');
-            this.classList.toggle('select-arrow-active');
-        };
-
-        selectItems.querySelectorAll('div').forEach(function(item) {
-            item.onclick = function(e) {
-                e.stopPropagation();
-                titleSpan.textContent = this.textContent;
-                realSelectInput.value = this.getAttribute('data-value');
-                selectItems.classList.add('select-hide');
-                selectSelected.classList.remove('select-arrow-active');
-                selectItems.querySelectorAll('div').forEach(function(i) { i.classList.remove('same-as-selected'); });
-                this.classList.add('same-as-selected');
-            };
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!customSelect.contains(e.target)) {
-                selectItems.classList.add('select-hide');
-                selectSelected.classList.remove('select-arrow-active');
-            }
-        });
+        // Old custom dropdown logic removed
 
         // Plugin ping monitor — every 3s
         setInterval(function() {
