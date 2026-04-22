@@ -1182,31 +1182,183 @@ a { text-decoration:none; }
 .acc-credits-unit { font-size:0.72rem; font-weight:400; opacity:0.75; }
 
 /* =====================================================
-   SHOP — Coming soon
+   SHOP — Polar.sh packages
    ===================================================== */
-.shop-coming-soon { text-align:center; padding:48px 20px 32px; }
-.shop-soon-icon { font-size:3rem; margin-bottom:16px; }
-.shop-coming-soon h3 {
-    font-size:1.3rem; font-weight:700; color:var(--text); margin-bottom:8px;
+.shop-packages-container {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
 }
-.shop-coming-soon p {
-    color:var(--text4); font-size:0.9rem; line-height:1.7; margin-bottom:36px;
-}
-.shop-packages-preview { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
 .shop-pkg {
-    background:var(--bg2); border:1px solid var(--border2);
-    border-radius:var(--radius); padding:22px 26px;
-    min-width:130px; text-align:center;
-    opacity:0.55; cursor:default;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 28px 24px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.25s var(--ease);
 }
-.shop-pkg.featured { border-color:var(--green); opacity:0.75; }
-.shop-pkg-amount { font-size:2rem; font-weight:800; color:var(--text); margin-bottom:4px; }
-.shop-pkg-name  { font-size:0.8rem; font-weight:700; color:var(--text3); margin-bottom:2px; }
-.shop-pkg-price { font-size:0.75rem; color:var(--text4); margin-bottom:12px; }
-.shop-pkg-badge.soon {
-    display:inline-block; padding:3px 10px; border-radius:99px;
-    font-size:0.65rem; font-weight:700;
-    background:var(--bg4); color:var(--text4); border:1px solid var(--border);
+.shop-pkg:hover {
+    border-color: rgba(255,255,255,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+.shop-pkg.featured {
+    border-color: rgba(0,198,255,0.4);
+    background: linear-gradient(180deg, rgba(0,198,255,0.03) 0%, var(--bg2) 100%);
+}
+.shop-pkg.featured:hover {
+    border-color: var(--green);
+    box-shadow: 0 16px 40px rgba(0,198,255,0.15);
+}
+.shop-pkg-badge-top {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--green);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 99px;
+    letter-spacing: -0.2px;
+}
+.shop-pkg-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+.shop-pkg-amount {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1;
+}
+.shop-pkg-unit {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text4);
+    margin-left: 4px;
+}
+.shop-pkg-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text2);
+    margin-top: 8px;
+}
+.shop-pkg-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex: 1;
+}
+.shop-pkg-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: var(--text3);
+}
+.shop-pkg-feature svg {
+    width: 16px;
+    height: 16px;
+    color: var(--status-green);
+    flex-shrink: 0;
+}
+.shop-pkg-pricebox {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+.shop-pkg-pln {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.shop-pkg-usd {
+    font-size: 0.85rem;
+    color: var(--text4);
+    font-weight: 500;
+}
+.shop-pkg-btn {
+    background: var(--bg4);
+    color: var(--text);
+    border: 1px solid var(--border2);
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+.shop-pkg-btn:hover {
+    background: var(--bg5);
+    color: #fff;
+}
+.shop-pkg-btn.btn-featured {
+    background: var(--green);
+    color: #000;
+    border: none;
+}
+.shop-pkg-btn.btn-featured:hover {
+    background: #0af;
+}
+
+/* Polar setup box */
+.polar-info-box {
+    max-width: 890px;
+    margin: 40px auto 0;
+    background: rgba(96, 165, 250, 0.05);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 14px;
+    padding: 24px;
+}
+.polar-info-box h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.polar-info-box h3 svg { width: 18px; height: 18px; }
+.polar-info-box p {
+    font-size: 0.95rem;
+    color: var(--text3);
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+.polar-info-box ol {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text2);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+.polar-info-box code {
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 0.85em;
+    border: 1px solid var(--border2);
 }
 
 /* =====================================================

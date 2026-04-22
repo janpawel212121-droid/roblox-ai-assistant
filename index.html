@@ -619,35 +619,77 @@
 
         <!-- SHOP VIEW -->
         <div class="view-container hidden" id="viewShop">
-            <div class="page-content">
-                <div class="page-title">
-                    <div class="page-title-icon"><svg><use href="#ic-coins"/></svg></div>
-                    <div><h2>Token Store</h2><p>Top up your account with Astro credits</p></div>
+            <div class="page-content" style="max-width: 1000px; margin: 0 auto; width: 100%;">
+                <div class="page-title" style="text-align: center; margin-bottom: 40px; justify-content: center;">
+                    <div><h2 style="font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">Token Store</h2><p style="font-size: 1.05rem; margin-top: 6px;">Top up your account with Astro credits via Polar</p></div>
                 </div>
-                <div class="shop-coming-soon">
-                    <div class="shop-soon-icon">🚀</div>
-                    <h3>Coming soon</h3>
-                    <p>Payments for tokens will be available soon.<br>In the meantime, you can use free credits.</p>
-                    <div class="shop-packages-preview">
-                        <div class="shop-pkg">
-                            <div class="shop-pkg-amount">50</div>
+
+                <div class="shop-packages-container">
+                    <!-- Starter -->
+                    <div class="shop-pkg">
+                        <div class="shop-pkg-header">
+                            <div class="shop-pkg-amount">40<span class="shop-pkg-unit">cr</span></div>
                             <div class="shop-pkg-name">Starter</div>
-                            <div class="shop-pkg-price">Great start</div>
-                            <div class="shop-pkg-badge soon">Soon</div>
                         </div>
-                        <div class="shop-pkg featured">
-                            <div class="shop-pkg-amount">200</div>
-                            <div class="shop-pkg-name">Pro</div>
-                            <div class="shop-pkg-price">Best value</div>
-                            <div class="shop-pkg-badge soon">Soon</div>
+                        <div class="shop-pkg-features">
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Perfect for small fixes</div>
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Instant delivery</div>
                         </div>
-                        <div class="shop-pkg">
-                            <div class="shop-pkg-amount">500</div>
-                            <div class="shop-pkg-name">Ultra</div>
-                            <div class="shop-pkg-price">Max power</div>
-                            <div class="shop-pkg-badge soon">Soon</div>
+                        <div class="shop-pkg-pricebox">
+                            <div class="shop-pkg-pln">🇵🇱 15 PLN</div>
+                            <div class="shop-pkg-usd">🇺🇸 ~$3.75 USD</div>
                         </div>
+                        <button class="shop-pkg-btn" onclick="window.open('https://buy.polar.sh/polar_cl_zVHiBcdwJPk9NvZGhMiexS7MSUzdcCPoKSvpO4f0bha', '_blank')">Buy with Polar</button>
                     </div>
+
+                    <!-- Pro -->
+                    <div class="shop-pkg featured">
+                        <div class="shop-pkg-badge-top">Most Popular</div>
+                        <div class="shop-pkg-header">
+                            <div class="shop-pkg-amount">160<span class="shop-pkg-unit">cr</span></div>
+                            <div class="shop-pkg-name">Pro</div>
+                        </div>
+                        <div class="shop-pkg-features">
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Build complete GUIs</div>
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Claude Sonnet access</div>
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Priority generation</div>
+                        </div>
+                        <div class="shop-pkg-pricebox">
+                            <div class="shop-pkg-pln">🇵🇱 30 PLN</div>
+                            <div class="shop-pkg-usd">🇺🇸 ~$7.50 USD</div>
+                        </div>
+                        <button class="shop-pkg-btn btn-featured" onclick="window.open('https://buy.polar.sh/polar_cl_5ZliBnVDTvFlvHklqvpEbEP3a7kwKmnvSaawL3PgDeP', '_blank')">Buy with Polar</button>
+                    </div>
+
+                    <!-- Ultra -->
+                    <div class="shop-pkg">
+                        <div class="shop-pkg-header">
+                            <div class="shop-pkg-amount">350<span class="shop-pkg-unit">cr</span></div>
+                            <div class="shop-pkg-name">Ultra</div>
+                        </div>
+                        <div class="shop-pkg-features">
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> For advanced games</div>
+                            <div class="shop-pkg-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Uncapped file context</div>
+                        </div>
+                        <div class="shop-pkg-pricebox">
+                            <div class="shop-pkg-pln">🇵🇱 100 PLN</div>
+                            <div class="shop-pkg-usd">🇺🇸 ~$25.00 USD</div>
+                        </div>
+                        <button class="shop-pkg-btn" onclick="window.open('https://buy.polar.sh/polar_cl_299lZbGwxZjuDURFTjTpXl3BRPPCxzKuyV6MJ07u7Tu', '_blank')">Buy with Polar</button>
+                    </div>
+                </div>
+
+                <!-- Setup Guide -->
+                <div class="polar-info-box">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> How to accept payments via Polar.sh</h3>
+                    <p>Polar is the modern merchant platform for developers. It handles global tax (VAT), Stripe integration, and developer APIs natively.</p>
+                    <ol>
+                        <li>Sign up at <strong>polar.sh</strong> and connect your Stripe account.</li>
+                        <li>Create 3 new Products (Starter, Pro, Ultra) as "One-time purchases". Set prices to 15 PLN, 30 PLN, and 100 PLN.</li>
+                        <li>Copy the <strong>Checkout Link</strong> for each product from the Polar dashboard.</li>
+                        <li>In <code>index.html</code>, replace the <code>onclick="alert(...)"</code> functions in the shop buttons with <code>window.open('YOUR_POLAR_LINK', '_blank')</code>.</li>
+                        <li><em>(Advanced API integration)</em> Set up a <strong>Webhook</strong> in Polar to call your backend server upon <code>order.created</code>, which will automatically grant credits to the user's Supabase account.</li>
+                    </ol>
                 </div>
             </div>
         </div>
