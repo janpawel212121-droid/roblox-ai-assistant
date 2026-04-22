@@ -38,7 +38,7 @@ exports.handler = async function(event) {
         // Password check
         var adminPass = process.env.ADMIN_PASSWORD || "SIGMAOHIO";
         if (!password || password !== adminPass) {
-            return { statusCode: 403, headers, body: JSON.stringify({ ok: false, error: "Nieprawidłowe hasło" }) };
+            return { statusCode: 403, headers, body: JSON.stringify({ ok: false, error: "Invalid password" }) };
         }
 
         // ── Add credits ──────────────────────────────────────
@@ -66,7 +66,7 @@ exports.handler = async function(event) {
             }
 
             if (!Array.isArray(rows) || rows.length === 0) {
-                return { statusCode: 404, headers, body: JSON.stringify({ ok: false, error: "Użytkownik nie znaleziony — sprawdź czy email jest poprawny" }) };
+                return { statusCode: 404, headers, body: JSON.stringify({ ok: false, error: "User not found — check if the email is correct" }) };
             }
             var user = rows[0];
             var newCredits = user.credits + amount;

@@ -190,7 +190,7 @@ exports.handler = async function(event) {
         // If response was cut off, append closing ``` so regex can still match
         if (finishReason === "length") {
             if ((content.match(/```/g) || []).length % 2 !== 0) {
-                content += "\n```\n\n> ⚠️ Odpowiedź została skrócona. Napisz **kontynuuj** aby dostać resztę kodu.";
+                content += "\n```\n\n> ⚠️ The response was truncated. Type **continue** to get the rest of the code.";
             }
         }
 

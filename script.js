@@ -225,7 +225,7 @@ var App = {
         // Credit packages — placeholder
         document.querySelectorAll('.credit-pkg').forEach(function(pkg) {
             pkg.onclick = function() {
-                self.notify('Płatności wkrótce dostępne!', 'info');
+                self.notify('Payments coming soon!', 'info');
             };
         });
     },
@@ -331,7 +331,7 @@ var App = {
                 if (appEl)   appEl.classList.remove('hidden');
                 self.setUserData(d);
                 self.hideAuth();
-                self.consolePrint('Zalogowano jako ' + d.username, 'success');
+                self.consolePrint('Logged in as ' + d.username, 'success');
             } else {
                 self.sessionToken = '';
                 localStorage.removeItem('astro_session');
@@ -353,7 +353,7 @@ var App = {
         var email    = document.getElementById('logEmail').value;
         var pass     = document.getElementById('logPass').value;
         var remember = document.getElementById('rememberMe').checked;
-        this.setAuthError('Logowanie...');
+        this.setAuthError('Logging in...');
 
         fetch('/api/auth', {
             method: 'POST',
@@ -372,13 +372,13 @@ var App = {
                 self.setUserData(d);
                 self.hideAuth();
                 self.setAuthError('');
-                self.consolePrint('Zalogowano!', 'success');
-                self.notify('Zalogowano pomyślnie!', 'success');
+                self.consolePrint('Logged in!', 'success');
+                self.notify('Successfully logged in!', 'success');
             } else {
-                self.setAuthError(d.error || 'Błąd logowania');
+                self.setAuthError(d.error || 'Login error');
             }
         }).catch(function(e) {
-            self.setAuthError('Błąd sieci: ' + e.message);
+            self.setAuthError('Network error: ' + e.message);
         });
     },
 
@@ -390,11 +390,11 @@ var App = {
         var remember = document.getElementById('rememberMeReg').checked;
         
         if (pass.length < 6) {
-            this.setAuthError('Hasło musi mieć minimum 6 znaków!');
+            this.setAuthError('Password must be at least 6 characters!');
             return;
         }
         
-        this.setAuthError('Tworzenie konta...');
+        this.setAuthError('Creating account...');
 
         fetch('/api/auth', {
             method: 'POST',
@@ -413,13 +413,13 @@ var App = {
                 self.setUserData(d);
                 self.hideAuth();
                 self.setAuthError('');
-                self.consolePrint('Konto utworzone!', 'success');
-                self.notify('Konto utworzone! Witaj! Masz 10 startowych kredytów.', 'success');
+                self.consolePrint('Account created!', 'success');
+                self.notify('Account created! Welcome! You have 10 starting credits.', 'success');
             } else {
-                self.setAuthError(d.error || 'Błąd rejestracji');
+                self.setAuthError(d.error || 'Registration error');
             }
         }).catch(function(e) {
-            self.setAuthError('Błąd sieci: ' + e.message);
+            self.setAuthError('Network error: ' + e.message);
         });
     },
 
@@ -507,7 +507,7 @@ var App = {
 
         // Block if plugin offline
         if (!this._pluginConnected) {
-            this.notify('Zanim wyślesz prompt, musisz połączyć się z pluginem w Roblox Studio!', 'error');
+            this.notify('Before sending a prompt, you must connect to the plugin in Roblox Studio!', 'error');
             this.dom.msgInput.parentElement.classList.add('shake');
             setTimeout(function() { self.dom.msgInput.parentElement.classList.remove('shake'); }, 500);
             return;
@@ -518,7 +518,7 @@ var App = {
         var mode  = 'plan'; // Always plan mode
 
         if (this.credits < cost) {
-            this.notify('Brak kredytów! Potrzebujesz: ' + cost + ', masz: ' + this.credits, 'error');
+            this.notify('No credits! You need: ' + cost + ', you have: ' + this.credits, 'error');
             return;
         }
 
@@ -532,26 +532,26 @@ var App = {
 
         this.generating = true;
         this.dom.typing.classList.add('active');
-        this.consolePrint('Wysyłanie (' + mode + ', koszt: ' + cost + ' kr.)...', 'info');
+        this.consolePrint('Sending (' + mode + ', cost: ' + cost + ' kr.)...', 'info');
         this.scrollDown();
 
         var fileCtx = '';
         if (this.files.length > 0) {
-            fileCtx = '\n\nAKTUALNE PLIKI W PROJEKCIE:\n';
+            fileCtx = '\n\nCURRENT FILES IN THE PROJECT:\n';
             for (var k = 0; k < this.files.length; k++) {
                 var ff = this.files[k];
-                fileCtx += '- ' + ff.name + ' (' + ff.type + ' w ' + ff.parent + ')\n';
+                fileCtx += '- ' + ff.name + ' (' + ff.type + ' in ' + ff.parent + ')\n';
             }
-            fileCtx += '\nJeśli użytkownik chce ZMIENIĆ istniejący plik, użyj @ACTION: update z tą samą nazwą.\n';
-            fileCtx += 'Jeśli chce USUNĄĆ plik, użyj @ACTION: delete.\n';
+            fileCtx += '\nIf the user wants to UPDATE an existing file, use @ACTION: update with the same name.\n';
+            fileCtx += 'If the user wants to DELETE a file, use @ACTION: delete.\n';
         }
 
         var sysPrompt = this.getSysPrompt() + fileCtx;
-        // Jeśli user prosi o UI, dodaj instrukcję palety kolorów
+        // If user asks for UI, add color palette instructions
         var promptLower = (text || '').toLowerCase();
         var isUiRequest = /\b(gui|ui|screengui|menu|interfejs|okno|sklep gui|hud|frame|button|textbutton|textlabel)\b/.test(promptLower);
         if (isUiRequest) {
-            sysPrompt += '\nUżytkownik poprosił o stworzenie interfejsu. Wygeneruj pełny, kompletny kod GUI. Nie pytaj o palety kolorów w kodzie — zostaną wybrane przez UI.\n';
+            sysPrompt += '\nThe user asked to create an interface. Generate full, complete GUI code. Do not ask for color palettes in the code — they will be chosen by the UI.\n';
         }
 
         var apiMsgs = [{ role: 'system', content: sysPrompt }];
@@ -596,10 +596,10 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.error === 'NO_CREDITS' || d.error === 'NOT_ENOUGH') {
-                throw new Error('Brak kredytów! Doładuj konto.');
+                throw new Error('No credits! Top up your account.');
             }
             if (d.error === 'LOGIN_REQUIRED' || d.error === 'INVALID_SESSION') {
-                self.notify('Sesja wygasła — zaloguj się ponownie', 'error');
+                self.notify('Session expired — log in again', 'error');
                 self.doLogout();
                 return;
             }
@@ -608,7 +608,7 @@ var App = {
             self.credits = d.credits;
             self.usage   = d.usage;
             self.updateCreditsDisplay();
-            self.consolePrint('Odpowiedź AI (' + d.cost + ' kr. użyte, pozostało: ' + d.credits + ' kr.)', 'success');
+            self.consolePrint('AI response (' + d.cost + ' kr. used, remaining: ' + d.credits + ' kr.)', 'success');
 
             var blocks = self.extractCode(d.content);
             if (blocks.length > 0) {
@@ -620,16 +620,16 @@ var App = {
             }
         })
         .catch(function(e) {
-            self.addMsg('bot', 'Błąd: ' + e.message);
+            self.addMsg('bot', 'Error: ' + e.message);
             self.notify(e.message, 'error');
-            self.consolePrint('Błąd: ' + e.message, 'error');
+            self.consolePrint('Error: ' + e.message, 'error');
         })
         .finally(function() {
             self.generating = false;
             self.dom.typing.classList.remove('active');
             self.dom.msgInput.disabled = false;
             self.dom.msgInput.classList.remove('generating');
-            self.dom.msgInput.placeholder = 'Opisz co chcesz stworzyć...';
+            self.dom.msgInput.placeholder = 'Describe what you want to create...';
             self.dom.sendBtn.disabled = !self.dom.msgInput.value.trim();
             self.dom.msgInput.focus();
         });
@@ -641,36 +641,36 @@ var App = {
     },
 
     getSysPrompt: function() {
-        return 'Jesteś ekspertem Roblox Studio i Luau. Tworzysz kompletne, działające systemy.\n\n' +
-        'INTERFEJS UŻYTKOWNIKA — WAŻNE:\n' +
-        'Twoje odpowiedzi są wyświetlane w specjalnym UI, który CHOWA tekst gdy generujesz kod.\n' +
-        'Dlatego: NIE pisz opisów, wstępów ani wyjaśnień przed/między blokami kodu.\n' +
-        'NIE pisz "Poniżej znajdziesz kod", "Oto kod", "Gotowe!" itp.\n' +
-        'Możesz napisać KRÓTKI checklist kroków (patrz PLANOWANIE), a potem od razu kod.\n\n' +
-        'FORMAT KODU — KRYTYCZNIE WAŻNE:\n' +
-        'Każdy blok kodu MUSI mieć na PIERWSZEJ LINII konfigurację w DOKŁADNIE takim formacie:\n' +
-        '-- @NAME: NazwaPliku | @TYPE: TypSkryptu | @PARENT: Lokalizacja | @ACTION: create\n\n' +
-        'Dozwolone @TYPE: LocalScript, Script, ModuleScript\n' +
-        'Dozwolone @PARENT: StarterGui, ServerScriptService, ReplicatedStorage, StarterPlayerScripts, ServerStorage\n' +
-        'Dozwolone @ACTION: create (nowy plik), update (zmień istniejący), delete (usuń plik)\n\n' +
-        'PRZYKŁAD POPRAWNEJ ODPOWIEDZI:\n' +
+        return 'You are a Roblox Studio and Luau expert. You create complete, working systems.\n\n' +
+        'USER INTERFACE — IMPORTANT:\n' +
+        'Your responses are displayed in a special UI that HIDES the text when you generate code.\n' +
+        'Therefore: DO NOT write descriptions, intros, or explanations before/between code blocks.\n' +
+        'DO NOT write "Here is the code", "Ready!", etc.\n' +
+        'You can write a SHORT checklist of steps (see PLANNING), and then immediately the code.\n\n' +
+        'CODE FORMAT — CRITICALLY IMPORTANT:\n' +
+        'Each code block MUST have on the FIRST LINE a configuration in EXACTLY this format:\n' +
+        '-- @NAME: FileName | @TYPE: ScriptType | @PARENT: Location | @ACTION: create\n\n' +
+        'Allowed @TYPE: LocalScript, Script, ModuleScript\n' +
+        'Allowed @PARENT: StarterGui, ServerScriptService, ReplicatedStorage, StarterPlayerScripts, ServerStorage\n' +
+        'Allowed @ACTION: create (new file), update (modify existing), delete (remove file)\n\n' +
+        'EXAMPLE OF CORRECT RESPONSE:\n' +
         '```lua\n' +
         '-- @NAME: MainMenuGUI | @TYPE: LocalScript | @PARENT: StarterGui | @ACTION: create\n' +
         'local Players = game:GetService("Players")\n' +
-        '-- kod...\n' +
+        '-- code...\n' +
         '```\n\n' +
-        'ZASADY KODU:\n' +
-        '1. Pisz WYŁĄCZNIE w Luau\n' +
-        '2. Kod musi działać od razu bez modyfikacji\n' +
-        '3. GUI twórz z Instance.new() — ScreenGui, Frame, TextButton, UICorner, UIGradient itd.\n' +
-        '4. ZAWSZE dodawaj animacje TweenService\n' +
-        '5. Używaj ładnych kolorów, gradientów, zaokrągleń\n' +
-        '6. Pisz KOMPLETNY, SZCZEGÓŁOWY kod — minimum 100 linii na skrypt GUI\n' +
-        '7. Dodawaj komentarze po polsku\n' +
-        '8. Obsługuj błędy z pcall\n' +
-        '9. Generuj WIELE plików naraz jeśli system tego wymaga\n' +
-        '10. NIGDY nie przerywaj bloku kodu — zawsze kończ ```\n\n' +
-        'Odpowiadaj po polsku. Zamiast opisywać co zrobisz — po prostu to zrób.';
+        'CODE RULES:\n' +
+        '1. Write EXCLUSIVELY in Luau\n' +
+        '2. Code must work immediately without modifications\n' +
+        '3. Create GUIs with Instance.new() — ScreenGui, Frame, TextButton, UICorner, UIGradient etc.\n' +
+        '4. ALWAYS add TweenService animations\n' +
+        '5. Use nice colors, gradients, rounded corners\n' +
+        '6. Write COMPLETE, DETAILED code — minimum 100 lines per GUI script\n' +
+        '7. Add comments in English\n' +
+        '8. Handle errors with pcall\n' +
+        '9. Generate MULTIPLE files at once if the system requires it\n' +
+        '10. NEVER break a code block — always end with ```\n\n' +
+        'Answer in English. Instead of describing what you will do — just do it.';
     },
 
     // ==========================================
@@ -686,12 +686,12 @@ var App = {
 
         // Build plan steps
         var steps = [
-            { label: 'Zrozumienie wymagań',    delay: 0,    doneAt: 2000 },
-            { label: 'Tworzenie plików i skryptów', delay: 2000, doneAt: 10000 },
-            { label: 'Weryfikacja kodu',        delay: 10000, doneAt: 12000 }
+            { label: 'Understanding requirements',    delay: 0,    doneAt: 2000 },
+            { label: 'Creating files and scripts', delay: 2000, doneAt: 10000 },
+            { label: 'Verifying code',        delay: 10000, doneAt: 12000 }
         ];
         if (isUiRequest) {
-            steps.push({ label: 'Dostosowanie kolorów do wybranej palety', delay: 12000, doneAt: 13500 });
+            steps.push({ label: 'Adapting colors to selected palette', delay: 12000, doneAt: 13500 });
         }
 
         // Build plan DOM
@@ -743,7 +743,7 @@ var App = {
                 // After step 1 (index 1) finishes — send code to plugin
                 if (i === 1 && !filesSent) {
                     filesSent = true;
-                    self.consolePrint('Wysyłam ' + blocks.length + ' bloków kodu do pluginu...', 'info');
+                    self.consolePrint('Sending ' + blocks.length + ' code blocks to plugin...', 'info');
                     self.sendToPlugin(blocks);
 
                     // Show created-file card for each block
@@ -755,15 +755,15 @@ var App = {
                                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
                             '</div>' +
                             '<div class="plan-created-info">' +
-                                '<div class="plan-created-title">' + self.esc(b.name || 'Plik Lua') + '</div>' +
+                                '<div class="plan-created-title">' + self.esc(b.name || 'Lua file') + '</div>' +
                                 '<div class="plan-created-sub">' + self.esc((b.type || 'Script') + ' · ' + (b.parent || 'StarterGui')) + '</div>' +
                             '</div>' +
-                            '<button class="plan-copy-btn" title="Kopiuj kod">' +
+                            '<button class="plan-copy-btn" title="Copy code">' +
                                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
                             '</button>';
                         card.querySelector('.plan-copy-btn').onclick = function() {
                             navigator.clipboard.writeText(b.code || '').then(function() {
-                                self.notify('Skopiowano kod!', 'success');
+                                self.notify('Code copied!', 'success');
                             });
                         };
                         planBox.appendChild(card);
@@ -795,7 +795,7 @@ var App = {
 
         var box = document.createElement('div');
         box.className = 'color-picker-box';
-        box.innerHTML = '<div class="color-picker-label">Wybierz paletę kolorów UI:</div>';
+        box.innerHTML = '<div class="color-picker-label">Choose UI color palette:</div>';
 
         var row = document.createElement('div');
         row.className = 'color-picker-palettes';
@@ -812,7 +812,7 @@ var App = {
                 btn.classList.add('selected');
 
                 var label = box.querySelector('.color-picker-label');
-                if (label) label.innerHTML = 'Wybrana paleta: <strong>' + p.name + '</strong>';
+                if (label) label.innerHTML = 'Selected palette: <strong>' + p.name + '</strong>';
 
                 // Ask AI to recolor using the chosen palette
                 self.sendPaletteRequest(p.name);
@@ -827,15 +827,15 @@ var App = {
     sendPaletteRequest: function(paletteName) {
         var self = this;
         var paletteDescriptions = {
-            'Lemonade':   'jasne, ciepłe odcienie — żółty #FDE68A, miętowy #6EE7B7, niebieski #60A5FA',
-            'Midnight':   'granatowe i fioletowe — tło #1E3A5F, akcenty #818CF8, biel #E0E7FF',
-            'Pastel':     'delikatne pastele — różowy #F9A8D4, błękitny #A5F3FC, liliowy #D8B4FE',
-            'Arcade':     'neonowe kolory retro — pomarańczowy #F97316, fioletowy #A855F7, cyjan #22D3EE',
-            'Industrial': 'stonowane odcienie — szary #78716C, amber #F59E0B, jasny szary #E5E7EB',
-            'Freeform':   'domyślne kolory — zachowaj aktualne kolory z kodu'
+            'Lemonade':   'bright, warm shades — yellow #FDE68A, mint #6EE7B7, blue #60A5FA',
+            'Midnight':   'navy and purple — background #1E3A5F, accents #818CF8, white #E0E7FF',
+            'Pastel':     'soft pastels — pink #F9A8D4, light blue #A5F3FC, lilac #D8B4FE',
+            'Arcade':     'retro neon colors — orange #F97316, purple #A855F7, cyan #22D3EE',
+            'Industrial': 'muted shades — gray #78716C, amber #F59E0B, light gray #E5E7EB',
+            'Freeform':   'default colors — keep the current colors from the code'
         };
         var desc = paletteDescriptions[paletteName] || paletteName;
-        var msg = 'Zmień kolory w wygenerowanym GUI na paletę ' + paletteName + ': ' + desc + '. Zachowaj strukturę i logikę, zmień tylko Color3.fromRGB i kolory tekstów.';
+        var msg = 'Change the colors in the generated GUI to the ' + paletteName + ' palette: ' + desc + '. Keep the structure and logic, change only Color3.fromRGB and text colors.';
         this.dom.msgInput.value = msg;
         this.send();
     },
@@ -857,7 +857,7 @@ var App = {
         } else {
             var imgHtml = '';
             if (this._attachedImagePreview) {
-                imgHtml = '<img src="' + this._attachedImagePreview + '" class="msg-img-preview" alt="załącznik">';
+                imgHtml = '<img src="' + this._attachedImagePreview + '" class="msg-img-preview" alt="attachment">';
                 this._attachedImagePreview = null;
             }
             div.innerHTML =
@@ -883,10 +883,10 @@ var App = {
             self.saveChats();
 
             var actionIcon = '#ic-file-code';
-            var actionLabel = 'Utworzono';
+            var actionLabel = 'Created';
             var actionClass = 'created';
-            if (info.action === 'update') { actionLabel = 'Zaktualizowano'; actionClass = 'updated'; }
-            if (info.action === 'delete') { actionLabel = 'Usunięto'; actionClass = 'deleted'; actionIcon = '#ic-trash'; }
+            if (info.action === 'update') { actionLabel = 'Updated'; actionClass = 'updated'; }
+            if (info.action === 'delete') { actionLabel = 'Deleted'; actionClass = 'deleted'; actionIcon = '#ic-trash'; }
 
             // Send to plugin if auto-insert
             if (self.dom.autoInsert && self.dom.autoInsert.checked) {
@@ -898,7 +898,7 @@ var App = {
                     '<svg class="tp-icon"><use href="' + actionIcon + '"/></svg>' +
                     '<span class="tp-label">' + actionLabel + ' <span class="tp-name">' + self.esc(info.name) + '</span></span>' +
                     '<span class="tp-meta">' + info.type + ' · ' + info.parent + '</span>' +
-                    '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Kopiuj kod">' +
+                    '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Copy code">' +
                         '<svg><use href="#ic-copy"/></svg>' +
                     '</button>' +
                 '</div>';
@@ -926,7 +926,7 @@ var App = {
                     }
                 }
             }
-            planHtml += '<div class="plan-steps-box"><div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Plan (' + count + ' kroków)</div>' + stepsHtml + '</div>';
+            planHtml += '<div class="plan-steps-box"><div class="plan-steps-header"><svg><use href="#ic-history"/></svg> Plan (' + count + ' steps)</div>' + stepsHtml + '</div>';
             return '';
         });
 
@@ -955,17 +955,17 @@ var App = {
         remaining = remaining.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
             var info = self.parseInfo(code);
             var actionIcon  = '#ic-file-code';
-            var actionLabel = 'Utworzono';
+            var actionLabel = 'Created';
             var actionClass = 'created';
-            if (info.action === 'update') { actionLabel = 'Zaktualizowano'; actionClass = 'updated'; }
-            if (info.action === 'delete') { actionLabel = 'Usunięto'; actionClass = 'deleted'; actionIcon = '#ic-trash'; }
+            if (info.action === 'update') { actionLabel = 'Updated'; actionClass = 'updated'; }
+            if (info.action === 'delete') { actionLabel = 'Deleted'; actionClass = 'deleted'; actionIcon = '#ic-trash'; }
 
             tools +=
                 '<div class="tool-pill ' + actionClass + '">' +
                     '<svg class="tp-icon"><use href="' + actionIcon + '"/></svg>' +
                     '<span class="tp-label">' + actionLabel + ' <span class="tp-name">' + self.esc(info.name) + '</span></span>' +
                     '<span class="tp-meta">' + info.type + ' · ' + info.parent + '</span>' +
-                    '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Kopiuj">' +
+                    '<button class="tool-pill-copy" onclick="App.copyCode(this)" data-code="' + self.escAttr(code.trim()) + '" title="Copy">' +
                         '<svg><use href="#ic-copy"/></svg>' +
                     '</button>' +
                 '</div>';
@@ -1012,7 +1012,7 @@ var App = {
     copyCode: function(btn) {
         var code = btn.getAttribute('data-code');
         navigator.clipboard.writeText(code);
-        this.notify('Kod skopiowany!', 'success');
+        this.notify('Code copied!', 'success');
     },
 
     insertCode: function(btn) {
@@ -1021,7 +1021,7 @@ var App = {
         var self = this;
         var blocks = [{ code: code }];
         self.sendToPlugin(blocks);
-        self.notify('Wysłano "' + name + '" do pluginu!', 'success');
+        self.notify('Sent "' + name + '" to plugin!', 'success');
     },
 
     parseInfo: function(code) {
@@ -1060,7 +1060,7 @@ var App = {
                 self._pluginConnected = connected;
 
                 if (connected !== wasConnected) {
-                    self.consolePrint(connected ? 'Plugin połączony ✓' : 'Plugin rozłączony', connected ? 'success' : 'warn');
+                    self.consolePrint(connected ? 'Plugin connected ✓' : 'Plugin disconnected', connected ? 'success' : 'warn');
                 }
 
                 // New plugin card dot (.pcc-dot)
@@ -1110,8 +1110,8 @@ var App = {
     sendToPlugin: function(blocks) {
         // Guard: don't queue if plugin is not connected
         if (!this._pluginConnected) {
-            this.notify('Plugin nie jest podłączony! Podłącz plugin w Roblox Studio.', 'warn');
-            this.consolePrint('Kod wygenerowany — ale plugin offline. Podłącz plugin i spróbuj ponownie.', 'warn');
+            this.notify('Plugin is not connected! Connect the plugin in Roblox Studio.', 'warn');
+            this.consolePrint('Code generated — but plugin is offline. Connect the plugin and try again.', 'warn');
             return;
         }
 
@@ -1140,14 +1140,14 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.success) {
-                self.consolePrint(tasks.length + ' zadań wysłanych do pluginu ✓', 'success');
-                self.notify(tasks.length + ' plików wysłanych do Roblox Studio!', 'success');
+                self.consolePrint(tasks.length + ' tasks sent to plugin ✓', 'success');
+                self.notify(tasks.length + ' files sent to Roblox Studio!', 'success');
             } else {
-                self.consolePrint('Błąd wysyłki: ' + (d.error || 'Nieznany'), 'error');
+                self.consolePrint('Sending error: ' + (d.error || 'Unknown'), 'error');
             }
         })
         .catch(function(e) {
-            self.consolePrint('Błąd sieci: ' + e.message, 'error');
+            self.consolePrint('Network error: ' + e.message, 'error');
         });
     },
 
@@ -1162,7 +1162,7 @@ var App = {
             this.dom.fileTree.innerHTML =
                 '<div class="tree-empty">' +
                     '<svg><use href="#ic-inbox"/></svg>' +
-                    '<p>Brak plików</p>' +
+                    '<p>No files</p>' +
                 '</div>';
             return;
         }
@@ -1218,15 +1218,15 @@ var App = {
         document.getElementById('viewEditor').classList.remove('hidden');
 
         this.renderTree();
-        this.consolePrint('Otwarty: ' + f.name, 'info');
+        this.consolePrint('Opened: ' + f.name, 'info');
     },
 
     editorSave: function() {
-        if (!this.currentFile) { this.notify('Najpierw wybierz plik z Explorera', 'warn'); return; }
+        if (!this.currentFile) { this.notify('First, select a file from Explorer', 'warn'); return; }
         this.currentFile.code = this.dom.editorCode.value;
         this.sendToPlugin([{ code: this.currentFile.code }]);
-        this.notify('Zapisano i wysłano do pluginu!', 'success');
-        this.consolePrint('Zapisano: ' + this.currentFile.name, 'success');
+        this.notify('Saved and sent to plugin!', 'success');
+        this.consolePrint('Saved: ' + this.currentFile.name, 'success');
     },
 
     editorDelete: function() {
@@ -1245,12 +1245,12 @@ var App = {
         });
         this.files = this.files.filter(function(x) { return x.name !== name; });
         this.currentFile = null;
-        this.dom.editorFileName.innerHTML = '<svg><use href="#ic-file-code"/></svg> Wybierz plik z Explorera';
+        this.dom.editorFileName.innerHTML = '<svg><use href="#ic-file-code"/></svg> Select a file from Explorer';
         this.dom.editorCode.value = '';
         this.renderTree();
         this.saveChats();
-        this.notify(name + ' usunięty', 'info');
-        this.consolePrint('Usunięto: ' + name, 'warn');
+        this.notify(name + ' deleted', 'info');
+        this.consolePrint('Deleted: ' + name, 'warn');
     },
 
     // ==========================================
@@ -1277,7 +1277,7 @@ var App = {
         if (chat) {
             chat.messages = this.messages;
             chat.files    = this.files;
-            if (this.messages.length > 0 && chat.title === 'Nowy czat') {
+            if (this.messages.length > 0 && chat.title === 'New chat') {
                 chat.title = this.messages[0].text.substring(0, 32) + '...';
             }
         }
@@ -1288,7 +1288,7 @@ var App = {
     createNewChat: function(isInitial) {
         if (!isInitial) this.saveChats();
         var newId = 'chat_' + Date.now();
-        this.chats.unshift({ id: newId, title: 'Nowy czat', messages: [], files: [] });
+        this.chats.unshift({ id: newId, title: 'New chat', messages: [], files: [] });
         this.switchChat(newId);
     },
 
@@ -1307,7 +1307,7 @@ var App = {
 
         this.dom.welcome.style.display = this.messages.length === 0 ? 'block' : 'none';
         this.currentFile = null;
-        this.dom.editorFileName.innerHTML = '<svg><use href="#ic-file-code"/></svg> Wybierz plik z Explorera';
+        this.dom.editorFileName.innerHTML = '<svg><use href="#ic-file-code"/></svg> Select a file from Explorer';
         this.dom.editorCode.value = '';
         this.scrollDown();
     },
@@ -1377,32 +1377,32 @@ var App = {
     // ==========================================
     loadHistory: function() {
         var self = this;
-        this.dom.historyList.innerHTML = '<p style="color:var(--text4)">Ładowanie...</p>';
+        this.dom.historyList.innerHTML = '<p style="color:var(--text4)">Loading...</p>';
         fetch('/api/history?sessionToken=' + this.sessionToken)
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (!d.history || d.history.length === 0) {
-                self.dom.historyList.innerHTML = '<p style="color:var(--text4)">Brak historii — zacznij pisać z AI!</p>';
+                self.dom.historyList.innerHTML = '<p style="color:var(--text4)">No history — start chatting with AI!</p>';
                 return;
             }
             var h = '';
             for (var i = d.history.length - 1; i >= 0; i--) {
                 var item  = d.history[i];
-                var time  = new Date(item.timestamp).toLocaleString('pl-PL');
+                var time  = new Date(item.timestamp).toLocaleString('en-US');
                 var mode  = item.mode === 'plan' ? 'plan' : '';
                 var label = item.mode === 'plan' ? 'Plan' : 'Quick';
                 h += '<div class="history-item">' +
                     '<div class="history-prompt">' + self.esc(item.userMsg) + '</div>' +
                     '<div class="history-meta">' +
                         '<span class="history-badge ' + mode + '">' + label + '</span>' +
-                        '<span>Koszt: ' + item.cost + ' kr.</span>' +
+                        '<span>Cost: ' + item.cost + ' kr.</span>' +
                         '<span>' + time + '</span>' +
                     '</div>' +
                 '</div>';
             }
             self.dom.historyList.innerHTML = h;
         }).catch(function() {
-            self.dom.historyList.innerHTML = '<p style="color:var(--red)">Błąd ładowania historii</p>';
+            self.dom.historyList.innerHTML = '<p style="color:var(--red)">Error loading history</p>';
         });
     },
 
@@ -1411,9 +1411,9 @@ var App = {
         var email = document.getElementById('adminUserEmail') ? document.getElementById('adminUserEmail').value.trim() : '';
         var p     = document.getElementById('adminPassCredits') ? document.getElementById('adminPassCredits').value : this.dom.adminPass.value;
         var a     = parseInt(this.dom.adminAmount.value);
-        if (!p)       { this.notify('Wpisz hasło admina', 'warn'); return; }
-        if (!email)   { this.notify('Wpisz email użytkownika', 'warn'); return; }
-        if (!a || a <= 0) { this.notify('Podaj prawidłową ilość kredytów', 'warn'); return; }
+        if (!p)       { this.notify('Enter admin password', 'warn'); return; }
+        if (!email)   { this.notify('Enter user email', 'warn'); return; }
+        if (!a || a <= 0) { this.notify('Enter a valid amount of credits', 'warn'); return; }
 
         fetch('/api/admin', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1422,21 +1422,21 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.ok) {
-                self.notify('Dodano ' + a + ' kr. dla ' + (d.username || email), 'success');
+                self.notify('Added ' + a + ' kr. for ' + (d.username || email), 'success');
                 self.consolePrint('Admin: +' + a + ' kr. → ' + email, 'success');
                 if (d.userId === self.userId) self.verifySession();
             } else {
-                self.notify('Błąd: ' + (d.error || 'Nieprawidłowe hasło'), 'error');
+                self.notify('Error: ' + (d.error || 'Invalid password'), 'error');
             }
-        }).catch(function() { self.notify('Błąd sieci', 'error'); });
+        }).catch(function() { self.notify('Network error', 'error'); });
     },
 
     adminSetApiKey: function() {
         var self = this;
         var p    = this.dom.adminPass.value;
         var key  = document.getElementById('adminApiKey').value.trim();
-        if (!p)   { this.notify('Wpisz hasło admina', 'warn'); return; }
-        if (!key) { this.notify('Wpisz klucz API', 'warn'); return; }
+        if (!p)   { this.notify('Enter admin password', 'warn'); return; }
+        if (!key) { this.notify('Enter API key', 'warn'); return; }
 
         fetch('/api/admin', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1445,14 +1445,14 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.ok) {
-                self.notify('Klucz API ustawiony globalnie!', 'success');
-                self.consolePrint('Globalny klucz API zaktualizowany', 'success');
+                self.notify('API key set globally!', 'success');
+                self.consolePrint('Global API key updated', 'success');
                 document.getElementById('adminApiKey').value = '';
                 self.adminLoadApiKey();
             } else {
-                self.notify('Błąd: ' + (d.error || 'Nieprawidłowe hasło'), 'error');
+                self.notify('Error: ' + (d.error || 'Invalid password'), 'error');
             }
-        }).catch(function() { self.notify('Błąd sieci', 'error'); });
+        }).catch(function() { self.notify('Network error', 'error'); });
     },
 
     adminLoadApiKey: function() {
@@ -1465,10 +1465,10 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             var el = document.getElementById('currentApiKey');
-            if (el) el.textContent = d.ok ? (d.apiKey || '(brak)') : '(wpisz hasło aby sprawdzić)';
+            if (el) el.textContent = d.ok ? (d.apiKey || '(none)') : '(enter password to check)';
         }).catch(function() {
             var el = document.getElementById('currentApiKey');
-            if (el) el.textContent = '(błąd sieci)';
+            if (el) el.textContent = '(network error)';
         });
     },
 
@@ -1479,8 +1479,8 @@ var App = {
         var keyEl = document.getElementById('adminClaudeKey');
         var key  = keyEl ? keyEl.value.trim() : '';
         
-        if (!p)   { this.notify('Wpisz hasło admina', 'warn'); return; }
-        if (!key) { this.notify('Wpisz klucz API (Claude)', 'warn'); return; }
+        if (!p)   { this.notify('Enter admin password', 'warn'); return; }
+        if (!key) { this.notify('Enter API key (Claude)', 'warn'); return; }
 
         fetch('/api/admin', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1489,14 +1489,14 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.ok) {
-                self.notify('Klucz API Claude ustawiony globalnie!', 'success');
-                self.consolePrint('Globalny klucz Claude zaktualizowany', 'success');
+                self.notify('Claude API key set globally!', 'success');
+                self.consolePrint('Global Claude key updated', 'success');
                 if (keyEl) keyEl.value = '';
                 self.adminLoadClaudeKey();
             } else {
-                self.notify('Błąd: ' + (d.error || 'Nieprawidłowe hasło'), 'error');
+                self.notify('Error: ' + (d.error || 'Invalid password'), 'error');
             }
-        }).catch(function() { self.notify('Błąd sieci', 'error'); });
+        }).catch(function() { self.notify('Network error', 'error'); });
     },
 
     adminLoadClaudeKey: function() {
@@ -1509,10 +1509,10 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             var el = document.getElementById('currentClaudeKey');
-            if (el) el.textContent = d.ok ? (d.apiKey || '(brak)') : '(wpisz hasło aby sprawdzić)';
+            if (el) el.textContent = d.ok ? (d.apiKey || '(none)') : '(enter password to check)';
         }).catch(function() {
             var el = document.getElementById('currentClaudeKey');
-            if (el) el.textContent = '(błąd sieci)';
+            if (el) el.textContent = '(network error)';
         });
     },
 

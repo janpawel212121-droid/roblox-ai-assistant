@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astro — AI Asystent do Roblox</title>
-    <meta name="description" content="Astro — zaawansowany asystent AI do tworzenia gier w Roblox Studio.">
+    <title>Astro — AI Assistant for Roblox</title>
+    <meta name="description" content="Astro — advanced AI assistant for game development in Roblox Studio.">
     <link rel="icon" type="image/png" href="ikona.png">
     <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
@@ -74,47 +74,47 @@
                 <img src="ikona.png" alt="Astro" style="width:44px;height:44px;object-fit:contain;">
             </div>
             <h2>Astro</h2>
-            <p>Asystent AI do projektów Roblox</p>
+            <p>AI Assistant for Roblox projects</p>
         </div>
         <div class="auth-tabs">
-            <button class="auth-tab active" id="tabLoginBtn"><svg><use href="#ic-login"/></svg> Logowanie</button>
-            <button class="auth-tab" id="tabRegBtn"><svg><use href="#ic-user-plus"/></svg> Rejestracja</button>
+            <button class="auth-tab active" id="tabLoginBtn"><svg><use href="#ic-login"/></svg> Login</button>
+            <button class="auth-tab" id="tabRegBtn"><svg><use href="#ic-user-plus"/></svg> Register</button>
         </div>
         <form class="auth-form" id="loginForm">
             <div class="form-field">
                 <svg class="field-icon"><use href="#ic-mail"/></svg>
-                <input type="email" id="logEmail" placeholder="Adres email" required autocomplete="email">
+                <input type="email" id="logEmail" placeholder="Email address" required autocomplete="email">
             </div>
             <div class="form-field">
                 <svg class="field-icon"><use href="#ic-lock"/></svg>
-                <input type="password" id="logPass" placeholder="Hasło" required autocomplete="current-password">
+                <input type="password" id="logPass" placeholder="Password" required autocomplete="current-password">
             </div>
             <label class="remember-label">
                 <input type="checkbox" id="rememberMe" checked>
                 <span class="custom-check"><svg><use href="#ic-check"/></svg></span>
-                Zapamiętaj mnie
+                Remember me
             </label>
-            <button type="submit" class="btn-primary"><svg><use href="#ic-login"/></svg> Zaloguj się</button>
+            <button type="submit" class="btn-primary"><svg><use href="#ic-login"/></svg> Login</button>
         </form>
         <form class="auth-form hidden" id="regForm">
             <div class="form-field">
                 <svg class="field-icon"><use href="#ic-user"/></svg>
-                <input type="text" id="regUser" placeholder="Nazwa użytkownika (min. 3 znaki)" required minlength="3">
+                <input type="text" id="regUser" placeholder="Username (min. 3 chars)" required minlength="3">
             </div>
             <div class="form-field">
                 <svg class="field-icon"><use href="#ic-mail"/></svg>
-                <input type="email" id="regEmail" placeholder="Adres email" required autocomplete="email">
+                <input type="email" id="regEmail" placeholder="Email address" required autocomplete="email">
             </div>
             <div class="form-field">
                 <svg class="field-icon"><use href="#ic-lock"/></svg>
-                <input type="password" id="regPass" placeholder="Hasło (min. 6 znaków)" required minlength="6">
+                <input type="password" id="regPass" placeholder="Password (min. 6 chars)" required minlength="6">
             </div>
             <label class="remember-label">
                 <input type="checkbox" id="rememberMeReg" checked>
                 <span class="custom-check"><svg><use href="#ic-check"/></svg></span>
-                Zapamiętaj mnie
+                Remember me
             </label>
-            <button type="submit" class="btn-primary"><svg><use href="#ic-user-plus"/></svg> Utwórz konto</button>
+            <button type="submit" class="btn-primary"><svg><use href="#ic-user-plus"/></svg> Create account</button>
         </form>
         <div class="auth-error" id="authError">
             <svg><use href="#ic-alert"/></svg>
@@ -133,8 +133,8 @@
             <span class="lp-brand-name">Astro</span>
         </div>
         <div class="lp-nav-links">
-            <a href="#features" class="lp-nav-link">Funkcje</a>
-            <a href="#testimonials" class="lp-nav-link">Opinie</a>
+            <a href="#features" class="lp-nav-link">Features</a>
+            <a href="#testimonials" class="lp-nav-link">Testimonials</a>
             <a href="#faq" class="lp-nav-link">FAQ</a>
         </div>
         <button class="lp-dashboard-btn" id="lpDashboardBtn">Dashboard →</button>
@@ -145,7 +145,7 @@
         <div class="lp-hero-left">
             <div class="lp-badge">
                 <span class="lp-badge-dot"></span>
-                Nowe: Obsługa Claude Sonnet 4.5
+                New: Powered by Claude Sonnet 4.6
             </div>
             <h1 class="lp-headline">
                 The first<br>
@@ -153,18 +153,18 @@
                 for Roblox
             </h1>
             <p class="lp-sub">
-                Dołącz do tysięcy twórców używających Astro, by błyskawicznie zamieniać pomysły na działające systemy i GUI w Roblox Studio.
+                Join thousands of creators using Astro to instantly turn ideas into working systems and GUIs in Roblox Studio.
             </p>
             <div class="lp-cta-row">
                 <button class="lp-btn-primary" id="lpStartBtn">Start Prototyping</button>
                 <a href="https://youtu.be/dQw4w9WgXcQ" target="_blank" class="lp-btn-ghost">Watch Demo →</a>
             </div>
             <div class="lp-stats-row">
-                <div class="lp-stat"><span class="lp-stat-num">10 000+</span><span class="lp-stat-label">twórców</span></div>
+                <div class="lp-stat"><span class="lp-stat-num">10,000+</span><span class="lp-stat-label">creators</span></div>
                 <div class="lp-stat-sep"></div>
-                <div class="lp-stat"><span class="lp-stat-num">50 000+</span><span class="lp-stat-label">skryptów</span></div>
+                <div class="lp-stat"><span class="lp-stat-num">50,000+</span><span class="lp-stat-label">scripts</span></div>
                 <div class="lp-stat-sep"></div>
-                <div class="lp-stat"><span class="lp-stat-num">99%</span><span class="lp-stat-label">satysfakcja</span></div>
+                <div class="lp-stat"><span class="lp-stat-num">99%</span><span class="lp-stat-label">satisfaction</span></div>
             </div>
         </div>
         <div class="lp-hero-right">
@@ -173,16 +173,16 @@
                     <span class="lp-dot red"></span>
                     <span class="lp-dot yellow"></span>
                     <span class="lp-dot green"></span>
-                    <span class="lp-mockup-title">Astro — AI Asystent</span>
+                    <span class="lp-mockup-title">Astro — AI Assistant</span>
                 </div>
                 <div class="lp-mockup-body">
-                    <div class="lp-mockup-msg user">Stwórz GUI sklepu z kategoriami i animacjami</div>
+                    <div class="lp-mockup-msg user">Create a shop GUI with categories and animations</div>
                     <div class="lp-mockup-msg bot">
                         <img src="ikona.png" style="width:16px;height:16px;object-fit:contain;border-radius:50%;flex-shrink:0;">
                         <div class="lp-mockup-plan">
-                            <div class="lp-mp-step done">✓ Zrozumienie wymagań</div>
-                            <div class="lp-mp-step active">⟳ Tworzenie ShopGUI...</div>
-                            <div class="lp-mp-step pending">○ Weryfikacja kodu</div>
+                            <div class="lp-mp-step done">✓ Understanding requirements</div>
+                            <div class="lp-mp-step active">⟳ Creating ShopGUI...</div>
+                            <div class="lp-mp-step pending">○ Verifying code</div>
                         </div>
                     </div>
                     <div class="lp-mockup-file">
@@ -194,54 +194,75 @@
             <!-- Floating feature pills -->
             <div class="lp-pill lp-pill-1">🎨 Color Palettes</div>
             <div class="lp-pill lp-pill-2">⚡ Instant Inject</div>
-            <div class="lp-pill lp-pill-3">🤖 Claude + Llama</div>
+            <div class="lp-pill lp-pill-3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="display:inline-block;vertical-align:middle;margin-right:4px;margin-top:-2px;"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+                Claude Sonnet 4.6
+            </div>
         </div>
     </section>
 
     <!-- Features -->
     <section class="lp-features" id="features">
-        <h2 class="lp-section-title">Wszystko czego potrzebujesz</h2>
+        <h2 class="lp-section-title">Everything you need</h2>
         <div class="lp-features-grid">
             <div class="lp-feature-card">
-                <div class="lp-fc-icon">🚀</div>
-                <h3>Natychmiastowe wstrzykiwanie</h3>
-                <p>Kod generowany przez AI trafia prosto do Roblox Studio — bez kopiowania, bez wklejania.</p>
+                <div class="lp-fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></div>
+                <h3>Instant injection</h3>
+                <p>AI-generated code goes straight to Roblox Studio — no copying, no pasting.</p>
             </div>
             <div class="lp-feature-card">
-                <div class="lp-fc-icon">🎨</div>
-                <h3>Palety kolorów UI</h3>
-                <p>Wybierz estetykę GUI: Lemonade, Midnight, Pastel, Arcade lub Industrial.</p>
+                <div class="lp-fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10 9.8 9.8 0 0 0-2-6 2.4 2.4 0 0 0-2.4-2.4 5.2 5.2 0 0 0-1.8.3 2 2 0 0 1-2.4-1.2 5.2 5.2 0 0 0-1.4-2.7z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="10.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16.5" cy="12.5" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+                <h3>UI Color Palettes</h3>
+                <p>Choose your GUI aesthetic: Lemonade, Midnight, Pastel, Arcade, or Industrial.</p>
             </div>
             <div class="lp-feature-card">
-                <div class="lp-fc-icon">🧠</div>
-                <h3>Najlepsze modele AI</h3>
-                <p>Llama 3.3 70B, Llama 4 Scout i Claude Sonnet — wybierz model do swojego projektu.</p>
+                <div class="lp-fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg></div>
+                <h3>Powered by Claude</h3>
+                <p>Experience the brilliance of Claude Sonnet 4.6 (Thinking) — delivering unmatched coding accuracy for your Roblox projects.</p>
             </div>
             <div class="lp-feature-card">
-                <div class="lp-fc-icon">📋</div>
-                <h3>Plan działania</h3>
-                <p>AI najpierw planuje każde zadanie krok po kroku, zanim napisze jedną linię kodu.</p>
+                <div class="lp-fc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14h6"/><path d="M9 10h6"/></svg></div>
+                <h3>Action Plan</h3>
+                <p>The AI first plans every task step by step before writing a single line of code.</p>
             </div>
         </div>
     </section>
 
     <!-- Testimonials -->
     <section class="lp-testimonials" id="testimonials">
-        <h2 class="lp-section-title">Nie wierz nam na słowo</h2>
+        <h2 class="lp-section-title">Don't just take our word for it</h2>
         <div class="lp-testimonials-grid">
             <div class="lp-testimonial">
-                <div class="lp-t-stars">★★★★★</div>
-                <p>„Astro skróciło mi czas tworzenia systemu walki z 3 dni do 20 minut. Absolutna magia."</p>
+                <div class="lp-t-stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p>"Astro cut my combat system development time from 3 days to 20 minutes. Absolute magic."</p>
                 <div class="lp-t-author">@DevKacper</div>
             </div>
             <div class="lp-testimonial">
-                <div class="lp-t-stars">★★★★★</div>
-                <p>„Używam Astro do każdego projektu. Palety kolorów GUI to genialna funkcja!"</p>
+                <div class="lp-t-stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p>"I use Astro for every project. The GUI color palettes are a brilliant feature!"</p>
                 <div class="lp-t-author">@MajaBuilds</div>
             </div>
             <div class="lp-testimonial">
-                <div class="lp-t-stars">★★★★★</div>
-                <p>„W końcu AI, które rozumie Roblox i Luau na poziomie eksperta. Polecam każdemu."</p>
+                <div class="lp-t-stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p>"Finally, an AI that understands Roblox and Luau at an expert level. Highly recommended."</p>
                 <div class="lp-t-author">@XanderRL</div>
             </div>
         </div>
@@ -253,7 +274,7 @@
             <img src="ikona.png" alt="Astro" style="width:20px;height:20px;object-fit:contain;">
             <span>Astro</span>
         </div>
-        <span class="lp-footer-copy">© 2025 Astro AI. Wszelkie prawa zastrzeżone.</span>
+        <span class="lp-footer-copy">© 2025 Astro AI. All rights reserved.</span>
     </footer>
 </div>
 
@@ -272,21 +293,21 @@
             <button class="rail-btn active" data-target="viewChat" title="Chat">
                 <svg><use href="#ic-message"/></svg>
             </button>
-            <button class="rail-btn" data-target="viewEditor" title="Edytor kodu">
+            <button class="rail-btn" data-target="viewEditor" title="Code Editor">
                 <svg><use href="#ic-file-code"/></svg>
             </button>
-            <button class="rail-btn" data-target="viewShop" title="Sklep tokenów">
+            <button class="rail-btn" data-target="viewShop" title="Token Store">
                 <svg><use href="#ic-coins"/></svg>
             </button>
         </div>
         <div class="rail-bottom">
-            <button class="rail-btn" data-target="viewAccount" title="Konto">
+            <button class="rail-btn" data-target="viewAccount" title="Account">
                 <svg><use href="#ic-account"/></svg>
             </button>
             <button class="rail-btn hidden" data-target="viewAdmin" title="Admin" id="adminRailBtn">
                 <svg><use href="#ic-shield"/></svg>
             </button>
-            <button class="rail-btn rail-btn--danger" id="logoutBtn" title="Wyloguj">
+            <button class="rail-btn rail-btn--danger" id="logoutBtn" title="Logout">
                 <svg><use href="#ic-logout"/></svg>
             </button>
         </div>
@@ -320,13 +341,13 @@
                 </div>
                 <div class="pcc-code-row">
                     <code class="pcc-code" id="uiConnectCode">—</code>
-                    <button class="pcc-copy-btn" id="copyCodeBtn" title="Kopiuj kod">
+                    <button class="pcc-copy-btn" id="copyCodeBtn" title="Copy code">
                         <svg><use href="#ic-copy"/></svg>
                     </button>
                 </div>
                 <a href="plugin%20roblox/Astro.lua" download="Astro.lua" class="pcc-dl-btn">
                     <svg><use href="#ic-bolt"/></svg>
-                    Pobierz plugin
+                    Download plugin
                 </a>
             </div>
             <div id="pluginStatusText2" style="display:none"></div>
@@ -335,8 +356,8 @@
         <!-- Chats -->
         <div class="side-block side-block--grow">
             <div class="side-block-title">
-                CZATY
-                <button class="icon-btn" id="newChatBtn" title="Nowy czat">
+                CHATS
+                <button class="icon-btn" id="newChatBtn" title="New chat">
                     <svg><use href="#ic-plus"/></svg>
                 </button>
             </div>
@@ -349,7 +370,7 @@
             <div class="file-tree" id="fileTree">
                 <div class="tree-empty">
                     <svg><use href="#ic-inbox"/></svg>
-                    <p>Brak plików</p>
+                    <p>No files</p>
                 </div>
             </div>
         </div>
@@ -357,11 +378,11 @@
         <!-- Console -->
         <div class="side-console">
             <div class="side-block-title">
-                KONSOLA
-                <button class="icon-btn" id="clearConsole" title="Wyczyść"><svg><use href="#ic-trash"/></svg></button>
+                CONSOLE
+                <button class="icon-btn" id="clearConsole" title="Clear"><svg><use href="#ic-trash"/></svg></button>
             </div>
             <div class="console-output" id="consoleOutput">
-                <div class="console-line info"><span class="console-time">[--:--:--]</span> Gotowy</div>
+                <div class="console-line info"><span class="console-time">[--:--:--]</span> Ready</div>
             </div>
         </div>
 
@@ -402,20 +423,20 @@
                     <div class="welcome-icon">
                         <img src="ikona.png" alt="Astro" style="width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 0 24px rgba(0,198,255,0.4));">
                     </div>
-                    <h2>Witaj w Astro</h2>
-                    <p>Opisz mechanikę swojej gry lub wybierz gotowy moduł poniżej.</p>
+                    <h2>Welcome to Astro</h2>
+                    <p>Describe your game mechanic or pick a pre-made module below.</p>
                     <div class="suggestions">
-                        <button class="chip" data-prompt="Stwórz kompletne GUI menu głównego z ScreenGui, ramkami, przyciskami Play/Settings/Credits, gradientami i animacjami wejścia. Użyj Instance.new dla każdego elementu GUI.">
+                        <button class="chip" data-prompt="Create a complete main menu GUI with ScreenGui, frames, Play/Settings/Credits buttons, gradients, and entrance animations. Use Instance.new for every GUI element.">
                             <img src="ikona.png" alt="" style="width:14px;height:14px;object-fit:contain;">
-                            Stwórz menu główne GUI
+                            Create Main Menu GUI
                         </button>
-                        <button class="chip" data-prompt="Stwórz system walki: GUI z HP barem i 4 umiejętnościami, moduł danych umiejętności, skrypt serwerowy do obrażeń. 3 osobne pliki Luau.">
+                        <button class="chip" data-prompt="Create a combat system: GUI with HP bar and 4 skills, skill data module, server script for damage. 3 separate Luau files.">
                             <svg><use href="#ic-fire"/></svg>
-                            System walki (3 pliki)
+                            Combat System (3 files)
                         </button>
-                        <button class="chip" data-prompt="Stwórz ScreenGui z oknem sklepu: kategorie po lewej, lista przedmiotów po prawej, podgląd na dole, przycisk kup z animacją. Pełne GUI z Instance.new.">
+                        <button class="chip" data-prompt="Create a ScreenGui with a shop window: categories on the left, item list on the right, preview at the bottom, animated buy button. Full GUI with Instance.new.">
                             <svg><use href="#ic-store"/></svg>
-                            GUI Sklepu z kategoriami
+                            Shop GUI with Categories
                         </button>
                     </div>
                 </div>
@@ -429,7 +450,7 @@
                     </div>
                     <div class="typing-bubble">
                         <div class="dots"><span></span><span></span><span></span></div>
-                        <span>Astro generuje odpowiedź...</span>
+                        <span>Astro is generating a response...</span>
                     </div>
                 </div>
             </div>
@@ -539,16 +560,16 @@
                     <!-- Image preview strip -->
                     <div class="img-preview-bar" id="imgPreviewBar" style="display:none">
                         <img id="imgPreviewThumb" src="" alt="">
-                        <button class="img-remove-btn" id="imgRemoveBtn" title="Usuń zdjęcie">
+                        <button class="img-remove-btn" id="imgRemoveBtn" title="Remove image">
                             <svg><use href="#ic-x"/></svg>
                         </button>
                     </div>
                     <div class="input-row">
-                        <label class="attach-btn" id="attachBtn" title="Dodaj zdjęcie">
+                        <label class="attach-btn" id="attachBtn" title="Add image">
                             <svg><use href="#ic-store"/></svg>
                             <input type="file" id="imageInput" accept="image/*" style="display:none">
                         </label>
-                        <textarea id="msgInput" placeholder="Opisz co chcesz stworzyć..." rows="1"></textarea>
+                        <textarea id="msgInput" placeholder="Describe what you want to create..." rows="1"></textarea>
                         <button class="send-btn" id="sendBtn" disabled>
                             <svg><use href="#ic-send"/></svg>
                         </button>
@@ -560,13 +581,13 @@
         <!-- EDITOR VIEW -->
         <div class="view-container hidden" id="viewEditor">
             <div class="editor-toolbar">
-                <span id="editorFileName"><svg><use href="#ic-file-code"/></svg> Wybierz plik z Explorera</span>
+                <span id="editorFileName"><svg><use href="#ic-file-code"/></svg> Select a file from Explorer</span>
                 <div style="display:flex;gap:6px;margin-left:auto;">
-                    <button class="btn-secondary" id="editorSave"><svg><use href="#ic-save"/></svg> Zapisz i wyślij</button>
-                    <button class="btn-danger" id="editorDelete"><svg><use href="#ic-trash"/></svg> Usuń</button>
+                    <button class="btn-secondary" id="editorSave"><svg><use href="#ic-save"/></svg> Save and update</button>
+                    <button class="btn-danger" id="editorDelete"><svg><use href="#ic-trash"/></svg> Delete</button>
                 </div>
             </div>
-            <textarea id="editorCode" class="code-editor" placeholder="-- Kod Luau..." spellcheck="false"></textarea>
+            <textarea id="editorCode" class="code-editor" placeholder="-- Luau code..." spellcheck="false"></textarea>
         </div>
 
         <!-- ACCOUNT VIEW -->
@@ -574,7 +595,7 @@
             <div class="page-content">
                 <div class="page-title">
                     <div class="page-title-icon"><svg><use href="#ic-account"/></svg></div>
-                    <div><h2>Twoje konto</h2><p>Ustawienia i informacje o koncie</p></div>
+                    <div><h2>Your Account</h2><p>Settings and account info</p></div>
                 </div>
                 <div class="account-grid">
                     <!-- Profile card -->
@@ -597,11 +618,11 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-header-icon"><svg><use href="#ic-user"/></svg></div>
-                            <h3>Dane konta</h3>
+                            <h3>Account details</h3>
                         </div>
-                        <div class="stat-row"><span class="stat-row-label">Użytkownik</span><span class="stat-row-value" id="accUser2">—</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Username</span><span class="stat-row-value" id="accUser2">—</span></div>
                         <div class="stat-row"><span class="stat-row-label">Email</span><span class="stat-row-value" id="accEmail2">—</span></div>
-                        <div class="stat-row"><span class="stat-row-label">Kredyty</span><span class="stat-row-value" style="color:var(--green)" id="accCredits2">0</span></div>
+                        <div class="stat-row"><span class="stat-row-label">Credits</span><span class="stat-row-value" style="color:var(--green)" id="accCredits2">0</span></div>
                         <div class="stat-row"><span class="stat-row-label">Quick = 1 kr.</span><span class="stat-row-value" style="color:var(--text4)">Plan = 3 kr.</span></div>
                     </div>
 
@@ -609,13 +630,13 @@
                     <div class="card connect-code-full-card">
                         <div class="card-header">
                             <div class="card-header-icon"><svg><use href="#ic-plug"/></svg></div>
-                            <h3>Plugin Roblox Studio</h3>
+                            <h3>Roblox Studio Plugin</h3>
                         </div>
                         <code class="code-display" id="accCode">—</code>
                         <div class="steps-list">
-                            <div class="step-item"><span class="step-num">1</span><span>Pobierz plugin z panelu bocznego.</span></div>
-                            <div class="step-item"><span class="step-num">2</span><span>Zainstaluj w Roblox Studio.</span></div>
-                            <div class="step-item"><span class="step-num">3</span><span><strong>Wklej</strong> Connect Code i kliknij CONNECT.</span></div>
+                            <div class="step-item"><span class="step-num">1</span><span>Download the plugin from the side panel.</span></div>
+                            <div class="step-item"><span class="step-num">2</span><span>Install in Roblox Studio.</span></div>
+                            <div class="step-item"><span class="step-num">3</span><span><strong>Paste</strong> the Connect Code and click CONNECT.</span></div>
                         </div>
                     </div>
                 </div>
@@ -627,30 +648,30 @@
             <div class="page-content">
                 <div class="page-title">
                     <div class="page-title-icon"><svg><use href="#ic-coins"/></svg></div>
-                    <div><h2>Sklep Tokenów</h2><p>Doładuj konto kredytami Astro</p></div>
+                    <div><h2>Token Store</h2><p>Top up your account with Astro credits</p></div>
                 </div>
                 <div class="shop-coming-soon">
                     <div class="shop-soon-icon">🚀</div>
-                    <h3>Wkrótce dostępne</h3>
-                    <p>Płatności za tokeny będą dostępne już niedługo.<br>Tymczasem możesz używać darmowych kredytów.</p>
+                    <h3>Coming soon</h3>
+                    <p>Payments for tokens will be available soon.<br>In the meantime, you can use free credits.</p>
                     <div class="shop-packages-preview">
                         <div class="shop-pkg">
                             <div class="shop-pkg-amount">50</div>
                             <div class="shop-pkg-name">Starter</div>
-                            <div class="shop-pkg-price">Złotość</div>
-                            <div class="shop-pkg-badge soon">Wkrótce</div>
+                            <div class="shop-pkg-price">Great start</div>
+                            <div class="shop-pkg-badge soon">Soon</div>
                         </div>
                         <div class="shop-pkg featured">
                             <div class="shop-pkg-amount">200</div>
                             <div class="shop-pkg-name">Pro</div>
-                            <div class="shop-pkg-price">Najlepszy wybór</div>
-                            <div class="shop-pkg-badge soon">Wkrótce</div>
+                            <div class="shop-pkg-price">Best value</div>
+                            <div class="shop-pkg-badge soon">Soon</div>
                         </div>
                         <div class="shop-pkg">
                             <div class="shop-pkg-amount">500</div>
                             <div class="shop-pkg-name">Ultra</div>
-                            <div class="shop-pkg-price">Maksymalnie</div>
-                            <div class="shop-pkg-badge soon">Wkrótce</div>
+                            <div class="shop-pkg-price">Max power</div>
+                            <div class="shop-pkg-badge soon">Soon</div>
                         </div>
                     </div>
                 </div>
@@ -662,9 +683,9 @@
             <div class="page-content">
                 <div class="page-title">
                     <div class="page-title-icon"><svg><use href="#ic-history"/></svg></div>
-                    <div><h2>Historia czatów</h2><p>Twoje poprzednie zapytania do AI</p></div>
+                    <div><h2>Chat History</h2><p>Your previous queries to AI</p></div>
                 </div>
-                <div id="historyList"><p style="color:var(--text4);font-size:0.95rem;">Brak historii — zacznij pisać z AI!</p></div>
+                <div id="historyList"><p style="color:var(--text4);font-size:0.95rem;">No history — start chatting with AI!</p></div>
             </div>
         </div>
 
@@ -673,24 +694,24 @@
             <div class="page-content">
                 <div class="page-title">
                     <div class="page-title-icon"><svg><use href="#ic-shield"/></svg></div>
-                    <div><h2>Panel Admina</h2><p>Zarządzanie systemem Astro</p></div>
+                    <div><h2>Admin Panel</h2><p>Manage Astro system</p></div>
                 </div>
                 <div class="card" style="margin-bottom:16px;">
                     <div class="card-header">
                         <div class="card-header-icon"><svg><use href="#ic-key"/></svg></div>
-                        <h3>Globalny klucz API (Groq)</h3>
+                        <h3>Global API Key (Groq)</h3>
                     </div>
-                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Używany przez wszystkich użytkowników. Ustawiasz raz — działa globalnie.</p>
+                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Used by all users. Set once — works globally.</p>
                     <div class="admin-box">
                         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-                            <span style="color:var(--text4);font-size:0.78rem;">Aktualny klucz:</span>
-                            <code id="currentApiKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:var(--green);">Sprawdzanie...</code>
+                            <span style="color:var(--text4);font-size:0.78rem;">Current key:</span>
+                            <code id="currentApiKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:var(--green);">Checking...</code>
                         </div>
-                        <input type="text" class="form-input" id="adminApiKey" placeholder="gsk_... (klucz Groq API)">
-                        <input type="password" class="form-input" id="adminPass" placeholder="Hasło admina">
+                        <input type="text" class="form-input" id="adminApiKey" placeholder="gsk_... (Groq API key)">
+                        <input type="password" class="form-input" id="adminPass" placeholder="Admin password">
                         <div style="display:flex;gap:8px;">
-                            <button class="btn-primary" id="adminSetKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Ustaw klucz globalnie</button>
-                            <button class="btn-secondary" id="adminCheckKeyBtn"><svg><use href="#ic-eye"/></svg> Sprawdź</button>
+                            <button class="btn-primary" id="adminSetKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Set global key</button>
+                            <button class="btn-secondary" id="adminCheckKeyBtn"><svg><use href="#ic-eye"/></svg> Check</button>
                         </div>
                     </div>
                 </div>
@@ -698,32 +719,32 @@
                 <div class="card" style="margin-top:16px;margin-bottom:16px;">
                     <div class="card-header">
                         <div class="card-header-icon" style="background:rgba(204,90,55,0.15);"><img src="claude.png" style="width:16px;height:16px;object-fit:contain;"></div>
-                        <h3>Globalny klucz API (Claude)</h3>
+                        <h3>Global API Key (Claude)</h3>
                     </div>
-                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Wymagany do korzystania z agentów Claude Sonnet i Claude Opus.</p>
+                    <p style="font-size:0.85rem;color:var(--text4);margin-bottom:12px;">Required to use Claude Sonnet and Claude Opus agents.</p>
                     <div class="admin-box">
                         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-                            <span style="color:var(--text4);font-size:0.78rem;">Aktualny klucz:</span>
-                            <code id="currentClaudeKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:#cc5a37;">Sprawdzanie...</code>
+                            <span style="color:var(--text4);font-size:0.78rem;">Current key:</span>
+                            <code id="currentClaudeKey" style="background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:0.75rem;color:#cc5a37;">Checking...</code>
                         </div>
-                        <input type="text" class="form-input" id="adminClaudeKey" placeholder="sk-ant-... (klucz Claude API)">
-                        <input type="password" class="form-input" id="adminPassClaude" placeholder="Hasło admina">
+                        <input type="text" class="form-input" id="adminClaudeKey" placeholder="sk-ant-... (Claude API key)">
+                        <input type="password" class="form-input" id="adminPassClaude" placeholder="Admin password">
                         <div style="display:flex;gap:8px;">
-                            <button class="btn-primary" id="adminSetClaudeKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Ustaw klucz Claude</button>
-                            <button class="btn-secondary" id="adminCheckClaudeKeyBtn"><svg><use href="#ic-eye"/></svg> Sprawdź</button>
+                            <button class="btn-primary" id="adminSetClaudeKeyBtn" style="flex:1;"><svg><use href="#ic-key"/></svg> Set Claude key</button>
+                            <button class="btn-secondary" id="adminCheckClaudeKeyBtn"><svg><use href="#ic-eye"/></svg> Check</button>
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
                         <div class="card-header-icon"><svg><use href="#ic-coins"/></svg></div>
-                        <h3>Dodaj kredyty użytkownikowi</h3>
+                        <h3>Add credits to user</h3>
                     </div>
                     <div class="admin-box">
-                        <input type="email" class="form-input" id="adminUserEmail" placeholder="Email użytkownika (np. jan@example.com)">
-                        <input type="number" class="form-input" id="adminAmount" placeholder="Ilość kredytów do dodania">
-                        <input type="password" class="form-input" id="adminPassCredits" placeholder="Hasło admina">
-                        <button class="btn-primary" id="adminAddBtn"><svg><use href="#ic-plus"/></svg> Dodaj kredyty</button>
+                        <input type="email" class="form-input" id="adminUserEmail" placeholder="User email (e.g. jan@example.com)">
+                        <input type="number" class="form-input" id="adminAmount" placeholder="Amount of credits to add">
+                        <input type="password" class="form-input" id="adminPassCredits" placeholder="Admin password">
+                        <button class="btn-primary" id="adminAddBtn"><svg><use href="#ic-plus"/></svg> Add credits</button>
                     </div>
                 </div>
             </div>

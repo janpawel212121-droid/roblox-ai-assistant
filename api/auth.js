@@ -74,22 +74,22 @@ exports.handler = async function(event) {
             var email    = (body.email    || "").trim().toLowerCase();
             var password = body.password  || "";
 
-            if (!username || username.length < 3)   return { statusCode: 400, headers, body: JSON.stringify({ error: "Nazwa min 3 znaki" }) };
-            if (!email || !email.includes("@"))      return { statusCode: 400, headers, body: JSON.stringify({ error: "Niepoprawny email" }) };
-            if (!password || password.length < 6)    return { statusCode: 400, headers, body: JSON.stringify({ error: "Hasło min 6 znaków" }) };
+            if (!username || username.length < 3)   return { statusCode: 400, headers, body: JSON.stringify({ error: "Username min 3 characters" }) };
+            if (!email || !email.includes("@"))      return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid email" }) };
+            if (!password || password.length < 6)    return { statusCode: 400, headers, body: JSON.stringify({ error: "Password min 6 characters" }) };
 
             // Check username
             var existing = await supa(SUPA_URL, SUPA_KEY, "GET",
                 "profiles?username=eq." + encodeURIComponent(username) + "&select=id");
             if (Array.isArray(existing) && existing.length > 0) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "Nazwa zajęta" }) };
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Username taken" }) };
             }
 
             // Check email
             var emailCheck = await supa(SUPA_URL, SUPA_KEY, "GET",
                 "profiles?email=eq." + encodeURIComponent(email) + "&select=id");
             if (Array.isArray(emailCheck) && emailCheck.length > 0) {
-                return { statusCode: 400, headers, body: JSON.stringify({ error: "Email już zarejestrowany" }) };
+                return { statusCode: 400, headers, body: JSON.stringify({ error: "Email already registered" }) };
             }
 
             var role = email === ADMIN_EMAIL ? "admin" : "user";
@@ -105,7 +105,7 @@ exports.handler = async function(event) {
             });
             var newProfile = Array.isArray(newProfiles) ? newProfiles[0] : newProfiles;
             if (!newProfile || !newProfile.id) {
-                return { statusCode: 500, headers, body: JSON.stringify({ error: "Błąd tworzenia konta" }) };
+                return { statusCode: 500, headers, body: JSON.stringify({ error: "Error creating account" }) };
             }
 
             // Create session
@@ -144,17 +144,17 @@ exports.handler = async function(event) {
         if (action === "login") {
             var loginEmail = (body.email    || "").trim().toLowerCase();
             var loginPass  =  body.password || "";
-            if (!loginEmail || !loginPass) return { statusCode: 400, headers, body: JSON.stringify({ error: "Podaj email i hasło" }) };
+            if (!loginEmail || !loginPass) return { statusCode: 400, headers, body: JSON.stringify({ error: "Enter email and password" }) };
 
             var users = await supa(SUPA_URL, SUPA_KEY, "GET",
                 "profiles?email=eq." + encodeURIComponent(loginEmail) + "&select=id,username,email,password_hash,role,credits,usage_count");
 
             if (!Array.isArray(users) || users.length === 0) {
-                return { statusCode: 401, headers, body: JSON.stringify({ error: "Błędny email lub hasło" }) };
+                return { statusCode: 401, headers, body: JSON.stringify({ error: "Invalid email or password" }) };
             }
             var user = users[0];
             if (user.password_hash !== hashPass(loginPass)) {
-                return { statusCode: 401, headers, body: JSON.stringify({ error: "Błędny email lub hasło" }) };
+                return { statusCode: 401, headers, body: JSON.stringify({ error: "Invalid email or password" }) };
             }
 
             var loginToken = makeToken();
