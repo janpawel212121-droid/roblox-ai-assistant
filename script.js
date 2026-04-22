@@ -674,107 +674,172 @@ var App = {
     },
 
     // ==========================================
-    // ANIMATED PLAN SEQUENCE
+    // ANIMATED PLAN SEQUENCE — Cursor chip style
     // ==========================================
     animatePlanSequence: function(blocks, content, isUiRequest) {
         var self = this;
 
-        // Find the last bot message div that was just added
+        // Find the last bot message div
         var msgDivs = this.dom.messages.querySelectorAll('.msg.bot');
-        var msgDiv = msgDivs[msgDivs.length - 1];
+        var msgDiv  = msgDivs[msgDivs.length - 1];
         if (!msgDiv) return;
 
-        // Build plan steps
-        var steps = [
-            { label: 'Understanding requirements',    delay: 0,    doneAt: 2000 },
-            { label: 'Creating files and scripts', delay: 2000, doneAt: 10000 },
-            { label: 'Verifying code',        delay: 10000, doneAt: 12000 }
-        ];
-        if (isUiRequest) {
-            steps.push({ label: 'Adapting colors to selected palette', delay: 12000, doneAt: 13500 });
+        // ── Build the chip container ──────────────────────────
+        var planBox = document.createElement('div');
+        planBox.className = 'cplan-box';
+
+        // Extract AI's own plan lines from content (lines like "1. Do X" or "- Do X")
+        var aiSteps = [];
+        var planMatch = content.match(/(?:^|\n)\s*(?:\d+\.|[-•])\s+(?!\[)(.{5,80})/gm);
+        if (planMatch) {
+            for (var pi = 0; pi < planMatch.length && pi < 5; pi++) {
+                var raw = planMatch[pi].replace(/^\s*(?:\d+\.|[-•])\s+/, '').trim();
+                if (raw) aiSteps.push(raw);
+            }
         }
 
-        // Build plan DOM
-        var planBox = document.createElement('div');
-        planBox.className = 'plan-box';
-        planBox.innerHTML =
-            '<div class="plan-box-header">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
-                '<span>PLAN</span>' +
-            '</div>';
+        // ── Define the step sequence ──────────────────────────
+        var steps = [
+            {
+                icon: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+                label: 'Reading prompt',
+                delay: 0, doneAt: 800
+            },
+            {
+                icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/>',
+                label: 'Planning implementation',
+                delay: 900, doneAt: 1800
+            },
+            {
+                icon: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',
+                label: 'Checking for errors',
+                delay: 1900, doneAt: 3200
+            },
+            {
+                icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+                label: 'Writing ' + blocks.length + ' file' + (blocks.length !== 1 ? 's' : ''),
+                delay: 3300, doneAt: 10000
+            },
+            {
+                icon: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+                label: 'Injecting to Roblox Studio',
+                delay: 10100, doneAt: 11200
+            }
+        ];
 
-        var stepEls = [];
+        if (isUiRequest) {
+            steps.push({
+                icon: '<path d="M12 2a10 10 0 1 0 10 10 9.8 9.8 0 0 0-2-6 2.4 2.4 0 0 0-2.4-2.4 5.2 5.2 0 0 0-1.8.3 2 2 0 0 1-2.4-1.2 5.2 5.2 0 0 0-1.4-2.7z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/>',
+                label: 'Applying color palette',
+                delay: 11300, doneAt: 12800
+            });
+        }
+
+        // ── Build DOM chips ───────────────────────────────────
+        var chipEls = [];
         steps.forEach(function(s, i) {
-            var el = document.createElement('div');
-            el.className = 'plan-step pending';
-            el.style.animationDelay = (i * 0.05) + 's';
-            el.innerHTML =
-                '<div class="plan-step-icon">' +
-                    '<div class="ps-spinner"></div>' +
-                    '<div class="ps-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-                    '<div class="ps-empty"></div>' +
+            var chip = document.createElement('div');
+            chip.className = 'cplan-chip pending';
+            chip.innerHTML =
+                '<div class="cplan-chip-left">' +
+                    '<div class="cplan-status">' +
+                        '<div class="cplan-spinner"></div>' +
+                        '<svg class="cplan-check" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+                        '<div class="cplan-dot"></div>' +
+                    '</div>' +
+                    '<svg class="cplan-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + s.icon + '</svg>' +
                 '</div>' +
-                '<span class="plan-step-label">' + self.esc(s.label) + '</span>';
-            planBox.appendChild(el);
-            stepEls.push(el);
+                '<span class="cplan-label">' + self.esc(s.label) + '</span>';
+            planBox.appendChild(chip);
+            chipEls.push(chip);
         });
 
-        // Insert plan box BEFORE the msg-text div
+        // Insert before msg-text
         var msgTextDiv = msgDiv.querySelector('.msg-text');
         if (msgTextDiv) {
-            msgDiv.querySelector('.msg-sender') && msgDiv.insertBefore(planBox, msgTextDiv);
+            msgDiv.insertBefore(planBox, msgTextDiv);
         } else {
             msgDiv.appendChild(planBox);
         }
         self.scrollDown();
 
-        // Animate steps
-        var totalSteps = steps.length;
+        // ── Animate chips ─────────────────────────────────────
         var filesSent = false;
+        var totalSteps = steps.length;
 
         steps.forEach(function(s, i) {
+            // activate
             setTimeout(function() {
-                stepEls[i].className = 'plan-step active';
+                chipEls[i].className = 'cplan-chip active';
+                self.scrollDown();
             }, s.delay);
 
+            // done
             setTimeout(function() {
-                stepEls[i].className = 'plan-step done';
+                chipEls[i].className = 'cplan-chip done';
 
-                // After step 1 (index 1) finishes — send code to plugin
-                if (i === 1 && !filesSent) {
+                // After "Writing files" step — send code + show file cards
+                if (i === 3 && !filesSent) {
                     filesSent = true;
                     self.consolePrint('Sending ' + blocks.length + ' code blocks to plugin...', 'info');
                     self.sendToPlugin(blocks);
 
-                    // Show created-file card for each block
+                    var fileArea = document.createElement('div');
+                    fileArea.className = 'cplan-files';
                     blocks.forEach(function(b) {
                         var card = document.createElement('div');
-                        card.className = 'plan-created-card';
+                        card.className = 'cplan-file-card';
                         card.innerHTML =
-                            '<div class="plan-created-icon">' +
-                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                            '<svg class="cplan-file-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                            '<div class="cplan-file-info">' +
+                                '<div class="cplan-file-name">' + self.esc(b.name || 'Script') + '</div>' +
+                                '<div class="cplan-file-sub">' + self.esc((b.type || 'Script') + ' · ' + (b.parent || 'StarterGui')) + '</div>' +
                             '</div>' +
-                            '<div class="plan-created-info">' +
-                                '<div class="plan-created-title">' + self.esc(b.name || 'Lua file') + '</div>' +
-                                '<div class="plan-created-sub">' + self.esc((b.type || 'Script') + ' · ' + (b.parent || 'StarterGui')) + '</div>' +
-                            '</div>' +
-                            '<button class="plan-copy-btn" title="Copy code">' +
+                            '<button class="cplan-copy-btn" title="Copy code">' +
                                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
                             '</button>';
-                        card.querySelector('.plan-copy-btn').onclick = function() {
+                        card.querySelector('.cplan-copy-btn').onclick = function() {
                             navigator.clipboard.writeText(b.code || '').then(function() {
                                 self.notify('Code copied!', 'success');
                             });
                         };
-                        planBox.appendChild(card);
+                        fileArea.appendChild(card);
                     });
+                    planBox.appendChild(fileArea);
                     self.scrollDown();
                 }
 
-                // After last step, show color picker if UI request
-                if (i === totalSteps - 1 && isUiRequest) {
+                // After last step — show summary
+                if (i === totalSteps - 1) {
                     setTimeout(function() {
-                        self.renderColorPicker(planBox, blocks);
+                        // Build summary from remaining text in the response
+                        var summaryLines = [];
+                        var cleanContent = content.replace(/```[\s\S]*?```/g, '').trim();
+                        var descLines = cleanContent.split('\n').filter(function(l) {
+                            return l.trim().length > 30 && !/^#+/.test(l.trim()) && !/^\s*[-•\d]/.test(l.trim());
+                        });
+                        var summaryText = descLines.slice(0, 2).join(' ').trim();
+                        if (!summaryText) {
+                            summaryText = 'Created ' + blocks.length + ' file' + (blocks.length !== 1 ? 's' : '') +
+                                ' and injected them into Roblox Studio. The code uses TweenService animations, handles errors with pcall, and follows Luau best practices.';
+                        }
+
+                        var summary = document.createElement('div');
+                        summary.className = 'cplan-summary';
+                        summary.innerHTML =
+                            '<div class="cplan-summary-header">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' +
+                                '<span>Done</span>' +
+                            '</div>' +
+                            '<p class="cplan-summary-text">' + self.esc(summaryText) + '</p>';
+                        planBox.appendChild(summary);
+
+                        if (isUiRequest) {
+                            setTimeout(function() {
+                                self.renderColorPicker(planBox, blocks);
+                                self.scrollDown();
+                            }, 300);
+                        }
                         self.scrollDown();
                     }, 400);
                 }

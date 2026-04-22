@@ -134,7 +134,6 @@
         </div>
         <div class="lp-nav-links">
             <a href="#features" class="lp-nav-link">Features</a>
-            <a href="#testimonials" class="lp-nav-link">Testimonials</a>
             <a href="#faq" class="lp-nav-link">FAQ</a>
         </div>
         <button class="lp-dashboard-btn" id="lpDashboardBtn">Dashboard →</button>
@@ -143,10 +142,6 @@
     <!-- Hero -->
     <section class="lp-hero">
         <div class="lp-hero-left">
-            <div class="lp-badge">
-                <span class="lp-badge-dot"></span>
-                New: Powered by Claude Sonnet 4.6
-            </div>
             <h1 class="lp-headline">
                 The first<br>
                 <span class="lp-headline-accent">AI Code Tool</span><br>
@@ -176,26 +171,44 @@
                     <span class="lp-mockup-title">Astro — AI Assistant</span>
                 </div>
                 <div class="lp-mockup-body">
-                    <div class="lp-mockup-msg user">Create a shop GUI with categories and animations</div>
-                    <div class="lp-mockup-msg bot">
-                        <img src="ikona.png" style="width:16px;height:16px;object-fit:contain;border-radius:50%;flex-shrink:0;">
-                        <div class="lp-mockup-plan">
-                            <div class="lp-mp-step done">✓ Understanding requirements</div>
-                            <div class="lp-mp-step active">⟳ Creating ShopGUI...</div>
-                            <div class="lp-mp-step pending">○ Verifying code</div>
-                        </div>
+                    <div class="lp-mc-label">
+                        <span class="lp-mc-dot" style="background:#00c6ff;"></span>
+                        <span>ShopGUI</span>
                     </div>
-                    <div class="lp-mockup-file">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        <div><div style="font-size:.75rem;font-weight:700;color:#f7f7f7;">ShopGUI</div><div style="font-size:.65rem;color:#717171;">LocalScript · StarterGui</div></div>
+                    <div class="lp-tc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Reading user prompt
+                    </div>
+                    <div class="lp-tc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
+                        Understanding requirements
+                    </div>
+                    <div class="lp-tc lp-tc-expand">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <span>Writing code (2 files)</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11" class="lp-tc-arrow"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="lp-tc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Injecting to Roblox Studio
+                    </div>
+                    <div class="lp-tc-done">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
+                        Task completed successfully
                     </div>
                 </div>
             </div>
             <!-- Floating feature pills -->
-            <div class="lp-pill lp-pill-1">🎨 Color Palettes</div>
-            <div class="lp-pill lp-pill-2">⚡ Instant Inject</div>
+            <div class="lp-pill lp-pill-1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 2a10 10 0 1 0 10 10 9.8 9.8 0 0 0-2-6 2.4 2.4 0 0 0-2.4-2.4 5.2 5.2 0 0 0-1.8.3 2 2 0 0 1-2.4-1.2 5.2 5.2 0 0 0-1.4-2.7z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="10.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16.5" cy="12.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                Color Palettes
+            </div>
+            <div class="lp-pill lp-pill-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Instant Inject
+            </div>
             <div class="lp-pill lp-pill-3">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="display:inline-block;vertical-align:middle;margin-right:4px;margin-top:-2px;"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
                 Claude Sonnet 4.6
             </div>
         </div>
@@ -228,45 +241,6 @@
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="lp-testimonials" id="testimonials">
-        <h2 class="lp-section-title">Don't just take our word for it</h2>
-        <div class="lp-testimonials-grid">
-            <div class="lp-testimonial">
-                <div class="lp-t-stars">
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </div>
-                <p>"Astro cut my combat system development time from 3 days to 20 minutes. Absolute magic."</p>
-                <div class="lp-t-author">@DevKacper</div>
-            </div>
-            <div class="lp-testimonial">
-                <div class="lp-t-stars">
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </div>
-                <p>"I use Astro for every project. The GUI color palettes are a brilliant feature!"</p>
-                <div class="lp-t-author">@MajaBuilds</div>
-            </div>
-            <div class="lp-testimonial">
-                <div class="lp-t-stars">
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </div>
-                <p>"Finally, an AI that understands Roblox and Luau at an expert level. Highly recommended."</p>
-                <div class="lp-t-author">@XanderRL</div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="lp-footer">
