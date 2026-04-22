@@ -59,7 +59,6 @@ var App = {
             welcome:    document.getElementById('welcome'),
             typing:     document.getElementById('typing'),
             modelSelect:document.getElementById('modelSelect'),
-            autoInsert: document.getElementById('autoInsert'),
             agentBtn:   document.getElementById('agentBtn'),
             agentBtnIcon: document.getElementById('agentBtnIcon'),
             agentBtnLabel: document.getElementById('agentBtnLabel'),
@@ -105,18 +104,8 @@ var App = {
         document.getElementById('logoutBtn').onclick = function() { self.doLogout(); };
 
         // Nav — rail buttons only (no top-tabs)
-        function switchView(target) {
-            document.querySelectorAll('.rail-btn[data-target]').forEach(function(x) {
-                if (x.getAttribute('data-target') === target) x.classList.add('active');
-                else x.classList.remove('active');
-            });
-            document.querySelectorAll('.view-container').forEach(function(v) { v.classList.add('hidden'); });
-            var el = document.getElementById(target);
-            if (el) el.classList.remove('hidden');
-            if (target === 'viewAdmin') self.adminLoadApiKey();
-        }
         document.querySelectorAll('.rail-btn[data-target]').forEach(function(t) {
-            t.onclick = function() { switchView(t.getAttribute('data-target')); };
+            t.onclick = function() { self.switchView(t.getAttribute('data-target')); };
         });
 
         // Old custom dropdown logic removed
@@ -226,6 +215,21 @@ var App = {
                 self.notify('Płatności wkrótce dostępne!', 'info');
             };
         });
+    },
+
+    // ==========================================
+    // UI NAVIGATION
+    // ==========================================
+    switchView: function(target) {
+        var self = this;
+        document.querySelectorAll('.rail-btn[data-target]').forEach(function(x) {
+            if (x.getAttribute('data-target') === target) x.classList.add('active');
+            else x.classList.remove('active');
+        });
+        document.querySelectorAll('.view-container').forEach(function(v) { v.classList.add('hidden'); });
+        var el = document.getElementById(target);
+        if (el) el.classList.remove('hidden');
+        if (target === 'viewAdmin') self.adminLoadApiKey();
     },
 
     // ==========================================
@@ -481,7 +485,7 @@ var App = {
 
         var agent = this.currentAgent || { model: 'llama-3.3-70b-versatile', cost: 1, name: 'Llama 3.3 70B' };
         var cost  = agent.cost || 1;
-        var mode  = 'quick';
+        var mode  = 'plan'; // Always plan mode
 
         if (this.credits < cost) {
             this.notify('Brak kredytów! Potrzebujesz: ' + cost + ', masz: ' + this.credits, 'error');
@@ -513,6 +517,12 @@ var App = {
         }
 
         var sysPrompt = this.getSysPrompt() + fileCtx;
+        
+        // Zawsze dodajemy instrukcje planowania i wykonania całości bez zatrzymywania
+        sysPrompt += '\n\nWAŻNE: ZAWSZE na samym początku swojej odpowiedzi wygeneruj plan działania jako checklistę w Markdown.\nUżyj [-] [ ] Zadanie, [-] [x] Zrobione.\nPrzykładowy start odpowiedzi:\n- [x] Zrozumienie wymagań\n- [/] Tworzenie plików i skryptów\n- [ ] Weryfikacja kodu\nZnacznik [x] używaj dla ukończonych, [/] dla punktu który teraz realizujesz. Następnie WYGENERUJ CAŁY KOD bez zatrzymywania się na pytania, po prostu zrób to od razu od A do Z, nie czekaj na pozwolenie.\n';
+        
+        // Instrukcje odnośnie palet kolorów, jeśli użytkownik prosi o UI
+        sysPrompt += '\nJEŚLI Użytkownik prosi o stworzenie UI (GUI, ScreenGui itp.), ZAWSZE pod koniec zapytaj o wybór palety z tych opcji: 🍋 Lemonade, 🌙 Midnight, 🌸 Pastel, 🕹️ Arcade, ⚙️ Industrial. Dostosuj kolory generowanego kodu do tej, którą wybierze w kolejnej wiadomości.\n';
 
         var apiMsgs = [{ role: 'system', content: sysPrompt }];
         for (var i = 0; i < this.messages.length; i++) {
@@ -571,12 +581,10 @@ var App = {
             self.updateCreditsDisplay();
             self.consolePrint('Odpowiedź AI (' + d.cost + ' kr. użyte, pozostało: ' + d.credits + ' kr.)', 'success');
 
-            if (self.dom.autoInsert.checked) {
-                var blocks = self.extractCode(d.content);
-                if (blocks.length > 0) {
-                    self.consolePrint('Znaleziono ' + blocks.length + ' bloków kodu — wysyłam do pluginu', 'info');
-                    self.sendToPlugin(blocks);
-                }
+            var blocks = self.extractCode(d.content);
+            if (blocks.length > 0) {
+                self.consolePrint('Znaleziono ' + blocks.length + ' bloków kodu — wysyłam do pluginu', 'info');
+                self.sendToPlugin(blocks);
             }
         })
         .catch(function(e) {
