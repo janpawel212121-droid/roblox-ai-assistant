@@ -1317,49 +1317,6 @@ a { text-decoration:none; }
     background: #0af;
 }
 
-/* Polar setup box */
-.polar-info-box {
-    max-width: 890px;
-    margin: 40px auto 0;
-    background: rgba(96, 165, 250, 0.05);
-    border: 1px solid rgba(96, 165, 250, 0.2);
-    border-radius: 14px;
-    padding: 24px;
-}
-.polar-info-box h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--blue);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-.polar-info-box h3 svg { width: 18px; height: 18px; }
-.polar-info-box p {
-    font-size: 0.95rem;
-    color: var(--text3);
-    margin-bottom: 16px;
-    line-height: 1.6;
-}
-.polar-info-box ol {
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    color: var(--text2);
-    font-size: 0.9rem;
-    line-height: 1.6;
-}
-.polar-info-box code {
-    background: var(--bg);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--green);
-    font-family: var(--mono);
-    font-size: 0.85em;
-    border: 1px solid var(--border2);
-}
 
 /* =====================================================
    INPUT ROW — compact

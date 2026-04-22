@@ -678,19 +678,6 @@
                         <button class="shop-pkg-btn" onclick="window.open('https://buy.polar.sh/polar_cl_299lZbGwxZjuDURFTjTpXl3BRPPCxzKuyV6MJ07u7Tu', '_blank')">Buy with Polar</button>
                     </div>
                 </div>
-
-                <!-- Setup Guide -->
-                <div class="polar-info-box">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> How to accept payments via Polar.sh</h3>
-                    <p>Polar is the modern merchant platform for developers. It handles global tax (VAT), Stripe integration, and developer APIs natively.</p>
-                    <ol>
-                        <li>Sign up at <strong>polar.sh</strong> and connect your Stripe account.</li>
-                        <li>Create 3 new Products (Starter, Pro, Ultra) as "One-time purchases". Set prices to 15 PLN, 30 PLN, and 100 PLN.</li>
-                        <li>Copy the <strong>Checkout Link</strong> for each product from the Polar dashboard.</li>
-                        <li>In <code>index.html</code>, replace the <code>onclick="alert(...)"</code> functions in the shop buttons with <code>window.open('YOUR_POLAR_LINK', '_blank')</code>.</li>
-                        <li><em>(Advanced API integration)</em> Set up a <strong>Webhook</strong> in Polar to call your backend server upon <code>order.created</code>, which will automatically grant credits to the user's Supabase account.</li>
-                    </ol>
-                </div>
             </div>
         </div>
 
