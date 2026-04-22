@@ -20,10 +20,17 @@ var App = {
         this.cacheDom();
         this.bindEvents();
 
+        // Default: show landing, hide app
+        var landing = document.getElementById('landingPage');
+        var appEl   = document.querySelector('.app');
+        if (appEl)   appEl.classList.add('hidden');
+
         if (this.sessionToken) {
+            // Try to restore session — skip landing on success
             this.verifySession();
         } else {
-            this.showAuth();
+            // Show landing, do NOT show auth yet
+            if (landing) landing.classList.remove('hidden');
         }
     },
 
@@ -107,6 +114,12 @@ var App = {
         document.querySelectorAll('.rail-btn[data-target]').forEach(function(t) {
             t.onclick = function() { self.switchView(t.getAttribute('data-target')); };
         });
+
+        // Landing page buttons
+        var lpDashBtn  = document.getElementById('lpDashboardBtn');
+        var lpStartBtn = document.getElementById('lpStartBtn');
+        if (lpDashBtn)  lpDashBtn.onclick  = function() { self.showAuth(); };
+        if (lpStartBtn) lpStartBtn.onclick = function() { self.showAuth(); };
 
         // Old custom dropdown logic removed
 
@@ -283,8 +296,18 @@ var App = {
     // ==========================================
     // AUTH
     // ==========================================
-    showAuth: function() { this.dom.authModal.classList.add('active'); },
-    hideAuth: function() { this.dom.authModal.classList.remove('active'); },
+    showAuth: function() {
+        var landing = document.getElementById('landingPage');
+        if (landing) landing.classList.add('hidden');
+        this.dom.authModal.classList.add('active');
+    },
+    hideAuth: function() {
+        this.dom.authModal.classList.remove('active');
+        var landing = document.getElementById('landingPage');
+        var appEl   = document.querySelector('.app');
+        if (landing) landing.classList.add('hidden');
+        if (appEl)   appEl.classList.remove('hidden');
+    },
 
     setAuthError: function(msg) {
         this.dom.authErrorText.textContent = msg;
@@ -302,12 +325,19 @@ var App = {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (d.success) {
+                var landing = document.getElementById('landingPage');
+                var appEl   = document.querySelector('.app');
+                if (landing) landing.classList.add('hidden');
+                if (appEl)   appEl.classList.remove('hidden');
                 self.setUserData(d);
                 self.hideAuth();
                 self.consolePrint('Zalogowano jako ' + d.username, 'success');
             } else {
                 self.sessionToken = '';
                 localStorage.removeItem('astro_session');
+                // Show landing again on failed verify
+                var landing2 = document.getElementById('landingPage');
+                if (landing2) landing2.classList.remove('hidden');
                 self.showAuth();
             }
         })
