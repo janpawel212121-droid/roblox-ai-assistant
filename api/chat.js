@@ -101,56 +101,96 @@ exports.handler = async function(event) {
             "profiles?id=eq." + userId,
             { credits: newCredits, usage_count: newUsage });
 
-        // Get API key from Supabase settings or env
-        var keyRows = await supa(SUPA_URL, SUPA_KEY, "GET", "settings?key=eq.groq_api_key&select=value");
-        var groqKey = (Array.isArray(keyRows) && keyRows.length > 0 && keyRows[0].value)
-            ? keyRows[0].value
-            : process.env.GROQ_API_KEY;
+        var isClaude = model.startsWith("claude");
+        var apiKeyToUse, aiRes, content = "Brak odpowiedzi", finishReason;
 
-        if (!groqKey) {
-            // Refund
-            await supa(SUPA_URL, SUPA_KEY, "PATCH", "profiles?id=eq." + userId,
-                { credits: prof.credits, usage_count: prof.usage_count });
-            return { statusCode: 500, headers, body: JSON.stringify({ error: "API_KEY_MISSING" }) };
+        if (isClaude) {
+            var cRows = await supa(SUPA_URL, SUPA_KEY, "GET", "settings?key=eq.claude_api_key&select=value");
+            apiKeyToUse = (Array.isArray(cRows) && cRows.length > 0 && cRows[0].value) ? cRows[0].value : process.env.CLAUDE_API_KEY;
+
+            if (!apiKeyToUse) {
+                await supa(SUPA_URL, SUPA_KEY, "PATCH", "profiles?id=eq." + userId, { credits: prof.credits, usage_count: prof.usage_count });
+                return { statusCode: 500, headers, body: JSON.stringify({ error: "CLAUDE_API_KEY_MISSING" }) };
+            }
+
+            var sysMsg = "";
+            var claudeMsgs = messages.filter(m => {
+                if (m.role === "system") { sysMsg = m.content; return false; }
+                return true;
+            });
+
+            aiRes = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-api-key": apiKeyToUse,
+                    "anthropic-version": "2023-06-01"
+                },
+                body: JSON.stringify({
+                    model: model === "claude-sonnet-4-5" ? "claude-3-5-sonnet-20241022" : "claude-3-opus-20240229",
+                    max_tokens: 8000,
+                    system: sysMsg,
+                    messages: claudeMsgs,
+                    temperature: 0.5
+                })
+            });
+
+            if (!aiRes.ok) {
+                var errData = await aiRes.json();
+                await supa(SUPA_URL, SUPA_KEY, "PATCH", "profiles?id=eq." + userId, { credits: prof.credits, usage_count: prof.usage_count });
+                return { statusCode: aiRes.status, headers, body: JSON.stringify({ error: errData.error ? errData.error.message : "Claude error" }) };
+            }
+
+            var data = await aiRes.json();
+            if (data.content && data.content[0] && data.content[0].text) {
+                content = data.content[0].text;
+                finishReason = data.stop_reason === "max_tokens" ? "length" : "stop";
+            }
+
+        } else {
+            var gRows = await supa(SUPA_URL, SUPA_KEY, "GET", "settings?key=eq.groq_api_key&select=value");
+            apiKeyToUse = (Array.isArray(gRows) && gRows.length > 0 && gRows[0].value) ? gRows[0].value : process.env.GROQ_API_KEY;
+
+            if (!apiKeyToUse) {
+                await supa(SUPA_URL, SUPA_KEY, "PATCH", "profiles?id=eq." + userId, { credits: prof.credits, usage_count: prof.usage_count });
+                return { statusCode: 500, headers, body: JSON.stringify({ error: "GROQ_API_KEY_MISSING" }) };
+            }
+
+            var maxTokens = 5000;
+            if (model.includes("8b")) maxTokens = 3000;
+            else if (model.includes("70b")) maxTokens = 8000;
+
+            aiRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type":  "application/json",
+                    "Authorization": "Bearer " + apiKeyToUse
+                },
+                body: JSON.stringify({
+                    model:       model,
+                    messages:    messages,
+                    max_tokens:  maxTokens,
+                    temperature: 0.5
+                })
+            });
+
+            if (!aiRes.ok) {
+                var errData = await aiRes.json();
+                await supa(SUPA_URL, SUPA_KEY, "PATCH", "profiles?id=eq." + userId, { credits: prof.credits, usage_count: prof.usage_count });
+                return { statusCode: aiRes.status, headers, body: JSON.stringify({ error: errData.error ? errData.error.message : "Groq error" }) };
+            }
+
+            var data = await aiRes.json();
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                content = data.choices[0].message.content;
+                finishReason = data.choices[0].finish_reason;
+            }
         }
 
-        var maxTokens = 5000;
-        if (model.includes("8b")) maxTokens = 3000;
-        else if (model.includes("70b")) maxTokens = 8000;
-
-        // Call Groq/OpenAI
-        var aiRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type":  "application/json",
-                "Authorization": "Bearer " + groqKey
-            },
-            body: JSON.stringify({
-                model:       model,
-                messages:    messages,
-                max_tokens:  maxTokens,
-                temperature: 0.5
-            })
-        });
-
-        if (!aiRes.ok) {
-            var errData = await aiRes.json();
-            // Refund on Groq error
-            await supa(SUPA_URL, SUPA_KEY, "PATCH", "profiles?id=eq." + userId,
-                { credits: prof.credits, usage_count: prof.usage_count });
-            return { statusCode: aiRes.status, headers, body: JSON.stringify({ error: errData.error ? errData.error.message : "Groq error" }) };
-        }
-
-        var data    = await aiRes.json();
-        var content = "Brak odpowiedzi";
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-            content = data.choices[0].message.content;
-            // If response was cut off, append closing ``` so regex can still match
-            var finishReason = data.choices[0].finish_reason;
-            if (finishReason === "length") {
-                if ((content.match(/```/g) || []).length % 2 !== 0) {
-                    content += "\n```\n\n> ⚠️ Odpowiedź została skrócona. Napisz **kontynuuj** aby dostać resztę kodu.";
-                }
+        // If response was cut off, append closing ``` so regex can still match
+        if (finishReason === "length") {
+            if ((content.match(/```/g) || []).length % 2 !== 0) {
+                content += "\n```\n\n> ⚠️ Odpowiedź została skrócona. Napisz **kontynuuj** aby dostać resztę kodu.";
             }
         }
 

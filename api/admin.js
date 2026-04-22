@@ -139,6 +139,36 @@ exports.handler = async function(event) {
             };
         }
 
+        // ── Set Claude API key ───────────────────────────────
+        if (action === "setClaudeKey") {
+            var apiKey = (body.apiKey || "").trim();
+            if (!apiKey) return { statusCode: 400, headers, body: JSON.stringify({ error: "apiKey required" }) };
+
+            await fetch(SUPA_URL + "/rest/v1/settings", {
+                method: "POST",
+                headers: {
+                    "apikey":        SUPA_KEY,
+                    "Authorization": "Bearer " + SUPA_KEY,
+                    "Content-Type":  "application/json",
+                    "Prefer":        "resolution=merge-duplicates"
+                },
+                body: JSON.stringify({ key: "claude_api_key", value: apiKey })
+            });
+
+            return { statusCode: 200, headers, body: JSON.stringify({ ok: true, message: "Klucz Claude API zaktualizowany" }) };
+        }
+
+        // ── Get Claude API key ───────────────────────────────
+        if (action === "getClaudeKey") {
+            var kRows = await supa(SUPA_URL, SUPA_KEY, "GET", "settings?key=eq.claude_api_key&select=value");
+            var key   = Array.isArray(kRows) && kRows.length > 0 ? kRows[0].value : "";
+
+            return {
+                statusCode: 200, headers,
+                body: JSON.stringify({ ok: true, apiKey: key ? (key.substring(0, 8) + "...") : "(brak)" })
+            };
+        }
+
         return { statusCode: 400, headers, body: JSON.stringify({ error: "Unknown admin action" }) };
 
     } catch (err) {

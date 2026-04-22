@@ -14,6 +14,7 @@ var App = {
     files: [],
     currentFile: null,
     generating: false,
+    currentAgent: { model: 'llama-3.3-70b-versatile', cost: 1, name: 'Llama 3.3 70B', icon: 'grok.png' },
 
     init: function() {
         this.cacheDom();
@@ -59,6 +60,10 @@ var App = {
             typing:     document.getElementById('typing'),
             modelSelect:document.getElementById('modelSelect'),
             autoInsert: document.getElementById('autoInsert'),
+            agentBtn:   document.getElementById('agentBtn'),
+            agentBtnIcon: document.getElementById('agentBtnIcon'),
+            agentBtnLabel: document.getElementById('agentBtnLabel'),
+            agentPicker: document.getElementById('agentPicker'),
 
             historyList: document.getElementById('historyList'),
             adminTab:    document.getElementById('adminTab'),
@@ -224,6 +229,13 @@ var App = {
         document.getElementById('adminAddBtn').onclick    = function() { self.adminAddCredits(); };
         document.getElementById('adminSetKeyBtn').onclick = function() { self.adminSetApiKey(); };
         document.getElementById('adminCheckKeyBtn').onclick = function() { self.adminLoadApiKey(); };
+        var setClaudeBtn  = document.getElementById('adminSetClaudeKeyBtn');
+        var checkClaudeBtn = document.getElementById('adminCheckClaudeKeyBtn');
+        if (setClaudeBtn)  setClaudeBtn.onclick  = function() { self.adminSetClaudeKey(); };
+        if (checkClaudeBtn) checkClaudeBtn.onclick = function() { self.adminLoadClaudeKey(); };
+
+        // Agent picker toggle
+        this.initAgentPicker();
 
         // Editor
         document.getElementById('editorSave').onclick   = function() { self.editorSave(); };
@@ -242,6 +254,54 @@ var App = {
         document.querySelectorAll('.credit-pkg').forEach(function(pkg) {
             pkg.onclick = function() {
                 self.notify('Płatności wkrótce dostępne!', 'info');
+            };
+        });
+    },
+
+    // ==========================================
+    // AGENT PICKER
+    // ==========================================
+    initAgentPicker: function() {
+        var self = this;
+        var wrap = document.getElementById('agentWrap');
+        var btn  = this.dom.agentBtn;
+        var pkr  = this.dom.agentPicker;
+        if (!wrap || !btn || !pkr) return;
+
+        btn.onclick = function(e) {
+            e.stopPropagation();
+            pkr.classList.toggle('open');
+        };
+        document.addEventListener('click', function(e) {
+            if (!wrap.contains(e.target)) pkr.classList.remove('open');
+        });
+
+        pkr.querySelectorAll('.agent-card').forEach(function(card) {
+            card.onclick = function() {
+                if (card.classList.contains('locked') || card.classList.contains('soon')) return;
+                
+                // Remove active from all
+                pkr.querySelectorAll('.agent-card').forEach(function(c) { c.classList.remove('active'); });
+                card.classList.add('active');
+
+                // Set agent info
+                var modelName = card.getAttribute('data-model');
+                var costVal   = parseInt(card.getAttribute('data-cost')) || 1;
+                var iconUrl   = card.getAttribute('data-icon');
+                var shortName = card.getAttribute('data-name');
+
+                self.currentAgent = {
+                    model: modelName,
+                    cost: costVal,
+                    name: shortName,
+                    icon: iconUrl
+                };
+
+                // Update trigger button UI
+                self.dom.agentBtnIcon.src = iconUrl;
+                self.dom.agentBtnLabel.textContent = shortName;
+
+                pkr.classList.remove('open');
             };
         });
     },
@@ -449,9 +509,9 @@ var App = {
             return;
         }
 
-        var modeEl = document.querySelector('input[name="aiMode"]:checked');
-        var mode   = modeEl ? modeEl.value : 'quick';
-        var cost   = mode === 'plan' ? 3 : 1;
+        var agent = this.currentAgent || { model: 'llama-3.3-70b-versatile', cost: 1, name: 'Llama 3.3 70B' };
+        var cost  = agent.cost || 1;
+        var mode  = 'quick';
 
         if (this.credits < cost) {
             this.notify('Brak kredytów! Potrzebujesz: ' + cost + ', masz: ' + this.credits, 'error');
@@ -483,9 +543,6 @@ var App = {
         }
 
         var sysPrompt = this.getSysPrompt() + fileCtx;
-        if (mode === 'plan') {
-            sysPrompt += '\n\nWAŻNE: Użytkownik wykorzystuje tryb "PLAN". ZAWSZE na samym początku swojej odpowiedzi wygeneruj interaktywną listę kroków w Markdown (Checklista).\nUżyj [-] [ ] Zadanie, [-] [x] Zrobione.\nPrzykładowy start odpowiedzi:\n- [x] Zaplanowano implementację\n- [/] Tworzenie plików widoku\n- [ ] Weryfikacja kodu\nZnacznik [x] używaj dla rzeczy oczywistych, [/] dla punktu, który aktualnie jest najważniejszym focusem tej wiadomości, a [ ] dla reszty planu.\n';
-        }
 
         var apiMsgs = [{ role: 'system', content: sysPrompt }];
         for (var i = 0; i < this.messages.length; i++) {
@@ -494,7 +551,7 @@ var App = {
 
         // Include image in last user message if attached
         var imageBase64 = this._attachedImage || null;
-        var usedModel = this.dom.modelSelect.value;
+        var usedModel = agent.model || 'llama-3.3-70b-versatile';
         if (imageBase64) {
             // Switch to vision-capable model
             usedModel = 'meta-llama/llama-4-scout-17b-16e-instruct';
@@ -1237,6 +1294,50 @@ var App = {
             if (el) el.textContent = d.ok ? (d.apiKey || '(brak)') : '(wpisz hasło aby sprawdzić)';
         }).catch(function() {
             var el = document.getElementById('currentApiKey');
+            if (el) el.textContent = '(błąd sieci)';
+        });
+    },
+
+    adminSetClaudeKey: function() {
+        var self = this;
+        var passEl = document.getElementById('adminPassClaude') || this.dom.adminPass;
+        var p    = passEl ? passEl.value : '';
+        var keyEl = document.getElementById('adminClaudeKey');
+        var key  = keyEl ? keyEl.value.trim() : '';
+        
+        if (!p)   { this.notify('Wpisz hasło admina', 'warn'); return; }
+        if (!key) { this.notify('Wpisz klucz API (Claude)', 'warn'); return; }
+
+        fetch('/api/admin', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'setClaudeKey', password: p, apiKey: key })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.ok) {
+                self.notify('Klucz API Claude ustawiony globalnie!', 'success');
+                self.consolePrint('Globalny klucz Claude zaktualizowany', 'success');
+                if (keyEl) keyEl.value = '';
+                self.adminLoadClaudeKey();
+            } else {
+                self.notify('Błąd: ' + (d.error || 'Nieprawidłowe hasło'), 'error');
+            }
+        }).catch(function() { self.notify('Błąd sieci', 'error'); });
+    },
+
+    adminLoadClaudeKey: function() {
+        var passEl = document.getElementById('adminPassClaude') || this.dom.adminPass;
+        var p = (passEl && passEl.value) ? passEl.value : '';
+        fetch('/api/admin', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'getClaudeKey', password: p })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            var el = document.getElementById('currentClaudeKey');
+            if (el) el.textContent = d.ok ? (d.apiKey || '(brak)') : '(wpisz hasło aby sprawdzić)';
+        }).catch(function() {
+            var el = document.getElementById('currentClaudeKey');
             if (el) el.textContent = '(błąd sieci)';
         });
     },
