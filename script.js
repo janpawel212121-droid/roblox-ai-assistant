@@ -1,5 +1,5 @@
 var App = {
-    sessionToken: localStorage.getItem('astro_session') || '',
+    sessionToken: localStorage.getItem('roboai_session') || sessionStorage.getItem('roboai_session_temp') || '',
     userId: '',
     username: '',
     connectCode: '',
@@ -334,7 +334,8 @@ var App = {
                 self.consolePrint('Logged in as ' + d.username, 'success');
             } else {
                 self.sessionToken = '';
-                localStorage.removeItem('astro_session');
+                localStorage.removeItem('roboai_session');
+                sessionStorage.removeItem('roboai_session_temp');
                 // Show landing again on failed verify
                 var landing2 = document.getElementById('landingPage');
                 if (landing2) landing2.classList.remove('hidden');
@@ -343,7 +344,8 @@ var App = {
         })
         .catch(function() {
             self.sessionToken = '';
-            localStorage.removeItem('astro_session');
+            localStorage.removeItem('roboai_session');
+            sessionStorage.removeItem('roboai_session_temp');
             self.showAuth();
         });
     },
@@ -425,8 +427,8 @@ var App = {
 
     doLogout: function() {
         this.sessionToken = '';
-        localStorage.removeItem('astro_session');
-        sessionStorage.removeItem('astro_session_temp');
+        localStorage.removeItem('roboai_session');
+        sessionStorage.removeItem('roboai_session_temp');
         window.location.reload();
     },
 
